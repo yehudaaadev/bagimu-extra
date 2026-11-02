@@ -106,11 +106,16 @@
     </div>
 
     {{-- Ringkasan Metrik Singkat --}}
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
         <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-2xs">
             <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Total Anggota</span>
             <span class="text-2xl font-black text-slate-900 mt-1 block">{{ $totalAnggota }}</span>
             <span class="text-[10px] text-slate-500">Siswa aktif terdaftar</span>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-2xs">
+            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Sesi Pertemuan</span>
+            <span class="text-2xl font-black text-blue-700 mt-1 block">{{ $totalPertemuanEskul ?? 0 }}</span>
+            <span class="text-[10px] text-blue-600 font-semibold">Terselenggara</span>
         </div>
         <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-2xs">
             <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Sudah Dinilai</span>
@@ -122,9 +127,9 @@
             <span class="text-2xl font-black text-amber-700 mt-1 block">{{ max(0, $totalAnggota - $sudahDinilai) }}</span>
             <span class="text-[10px] text-amber-600 font-semibold">Perlu input nilai</span>
         </div>
-        <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-2xs">
+        <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-2xs col-span-2 sm:col-span-1">
             <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Sebaran Rombel</span>
-            <span class="text-2xl font-black text-blue-700 mt-1 block">{{ $daftarKelas->count() }}</span>
+            <span class="text-2xl font-black text-slate-800 mt-1 block">{{ $daftarKelas->count() }}</span>
             <span class="text-[10px] text-slate-500">Kelas asal siswa</span>
         </div>
     </div>
@@ -158,6 +163,10 @@
                             $alpaCount = $reg->kehadiran->where('status', \App\Enums\KehadiranStatus::ALPA)->count();
                             $tidakHadirCount = $izinCount + $sakitCount + $alpaCount;
                             $totalPertemuan = $reg->kehadiran->count();
+                            $basePertemuan = max($totalPertemuan, $totalPertemuanEskul ?? 0);
+                            $persenKehadiran = $basePertemuan > 0 ? round(($hadirCount / $basePertemuan) * 100) : 100;
+                            $isKritis = $basePertemuan >= 3 && $persenKehadiran < 75;
+                            $isWaspada = $basePertemuan >= 3 && $persenKehadiran >= 75 && $persenKehadiran < 85;
                             $predikat = $reg->predikat ?: ($reg->nilai !== null ? ($reg->nilai >= 85 ? 'A' : ($reg->nilai >= 70 ? 'B' : ($reg->nilai >= 55 ? 'C' : 'D'))) : '-');
                         @endphp
                         <tr class="hover:bg-slate-50/80 transition-colors">
@@ -210,9 +219,26 @@
                                     </span>
                                 @endif
                             </td>
-                            {{-- Total Pertemuan Terselenggara --}}
+                            {{-- Total Pertemuan Terselenggara & Indikator Kritis --}}
                             <td class="py-3 px-4 text-center font-bold text-slate-600">
-                                {{ $totalPertemuan }}
+                                <span class="font-bold text-slate-700 block">{{ $totalPertemuan }}</span>
+                                @if ($basePertemuan >= 3)
+                                    @if ($isKritis)
+                                        <span class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-200 mt-1" title="Tingkat Kehadiran {{ $persenKehadiran }}% (<75%)">
+                                            <span class="h-1.5 w-1.5 rounded-full bg-rose-600"></span>
+                                            {{ $persenKehadiran }}% Kritis
+                                        </span>
+                                    @elseif ($isWaspada)
+                                        <span class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200 mt-1" title="Tingkat Kehadiran {{ $persenKehadiran }}%">
+                                            <span class="h-1.5 w-1.5 rounded-full bg-amber-600"></span>
+                                            {{ $persenKehadiran }}%
+                                        </span>
+                                    @else
+                                        <span class="text-[10px] text-emerald-600 font-semibold block mt-0.5">
+                                            {{ $persenKehadiran }}% Hadir
+                                        </span>
+                                    @endif
+                                @endif
                             </td>
                             {{-- Nilai Angka Rapor --}}
                             <td class="py-3 px-4 text-center">

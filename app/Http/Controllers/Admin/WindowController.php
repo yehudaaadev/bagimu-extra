@@ -13,7 +13,7 @@ class WindowController extends Controller
 {
     public function index(Request $request)
     {
-        return redirect()->route('admin.periodes.index', $request->query());
+        return (new PeriodeController)->index($request);
     }
 
     public function update(Request $request, string $periode)

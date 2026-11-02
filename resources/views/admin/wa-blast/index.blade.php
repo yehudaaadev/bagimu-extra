@@ -81,18 +81,30 @@
         @if ($fonnteStatus['connected'])
             {{-- Panel info saat sudah terhubung --}}
             <div class="rounded-xl border border-emerald-200 bg-emerald-50/40 p-3.5">
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs mb-3">
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs mb-3">
                     <div>
                         <span class="block text-slate-400 font-medium">API Key</span>
-                        <span class="font-mono font-bold text-slate-700 text-sm">{{ $fonnteStatus['masked_token'] }}</span>
+                        <div class="flex items-center gap-1.5 mt-0.5">
+                            <span class="font-mono font-bold text-slate-700 text-sm">{{ $fonnteStatus['masked_token'] }}</span>
+                            @if (!empty($fonnteStatus['is_env']))
+                                <span class="rounded bg-blue-100 px-1.5 py-0.5 text-[10px] font-bold text-blue-700">.env</span>
+                            @endif
+                        </div>
                     </div>
                     <div>
                         <span class="block text-slate-400 font-medium">Pengirim</span>
-                        <span class="font-bold text-slate-800 text-sm">{{ $fonnteStatus['name'] }}</span>
+                        <span class="font-bold text-slate-800 text-sm mt-0.5 block">{{ $fonnteStatus['name'] }}</span>
                     </div>
                     <div>
                         <span class="block text-slate-400 font-medium">Nomor WA</span>
-                        <span class="font-bold text-emerald-700 font-mono text-sm">{{ $fonnteStatus['device'] }}</span>
+                        <span class="font-bold text-emerald-700 font-mono text-sm mt-0.5 block">{{ $fonnteStatus['device'] }}</span>
+                    </div>
+                    <div>
+                        <span class="block text-slate-400 font-medium">Sisa Kuota Akun</span>
+                        <div class="flex items-center gap-1.5 mt-0.5">
+                            <span class="font-bold {{ ($fonnteStatus['quota'] ?? 1000) > 100 ? 'text-blue-700' : 'text-amber-700' }} text-sm font-mono">{{ number_format($fonnteStatus['quota'] ?? 1000, 0, ',', '.') }}</span>
+                            <span class="text-[10px] text-slate-500 font-semibold">/ 1.000 pesan</span>
+                        </div>
                     </div>
                 </div>
 

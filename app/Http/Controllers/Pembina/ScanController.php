@@ -8,8 +8,10 @@ use App\Http\Controllers\Controller;
 use App\Models\AdminLog;
 use App\Models\Eskul;
 use App\Models\Kehadiran;
+use App\Models\Pertemuan;
 use App\Models\Registration;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ScanController extends Controller
 {
@@ -45,7 +47,7 @@ class ScanController extends Controller
             'tanggal' => ['required', 'date', 'before_or_equal:today', 'after_or_equal:'.now()->subYear()->toDateString()],
         ]);
 
-        $registration = $this->cari($data['kode']);
+        $registration = $this->cari($data['kode'], $eskul);
 
         if (! $registration) {
             return $this->gagal($request, 'QR/kode tidak dikenal. Pastikan E-Card siswa yang dipindai.');
@@ -63,47 +65,62 @@ class ScanController extends Controller
             return $this->gagal($request, 'E-Card sudah dicabut (cetak ulang). Minta kartu terbaru kepada siswa.');
         }
 
-        $baris = Kehadiran::where('eskul_id', $eskul->id)
-            ->where('registration_id', $registration->id)
-            ->whereDate('tanggal', $data['tanggal'])
-            ->first();
+        return DB::transaction(function () use ($request, $eskul, $data, $registration) {
+            $pertemuan = $eskul->pertemuans()->whereDate('tanggal', $data['tanggal'])->first();
+            if (! $pertemuan) {
+                $nomor = ((int) $eskul->pertemuans()->max('nomor')) + 1;
+                $pertemuan = $eskul->pertemuans()->create([
+                    'nomor' => $nomor,
+                    'tanggal' => $data['tanggal'],
+                    'keterangan' => 'Pertemuan reguler (Presensi Cepat QR)',
+                ]);
+            }
 
-        if ($baris && $baris->isLocked()) {
-            return $this->gagal($request, "Presensi tanggal {$data['tanggal']} sudah disahkan — tidak dapat diubah.");
-        }
+            $baris = Kehadiran::where('eskul_id', $eskul->id)
+                ->where('registration_id', $registration->id)
+                ->whereDate('tanggal', $data['tanggal'])
+                ->lockForUpdate()
+                ->first();
 
-        $sudah = $baris && $baris->status === KehadiranStatus::HADIR;
+            if ($baris && $baris->isLocked()) {
+                return $this->gagal($request, "Presensi tanggal {$data['tanggal']} sudah disahkan — tidak dapat diubah.");
+            }
 
-        if ($baris) {
-            $baris->update([
-                'status' => KehadiranStatus::HADIR,
-                'keterangan' => 'Presensi scan E-Card',
-            ]);
-        } else {
-            Kehadiran::create([
-                'eskul_id' => $eskul->id,
-                'registration_id' => $registration->id,
-                'tanggal' => $data['tanggal'],
-                'status' => KehadiranStatus::HADIR,
-                'keterangan' => 'Presensi scan E-Card',
-            ]);
-        }
+            $sudah = $baris && $baris->status === KehadiranStatus::HADIR;
 
-        AdminLog::record('pembina.scan', 'Kehadiran', (string) $eskul->id, "Scan presensi {$registration->user?->name} ({$eskul->name} {$data['tanggal']}).");
+            if ($baris) {
+                $baris->update([
+                    'status' => KehadiranStatus::HADIR,
+                    'keterangan' => 'Presensi scan E-Card',
+                ]);
+            } else {
+                Kehadiran::create([
+                    'eskul_id' => $eskul->id,
+                    'registration_id' => $registration->id,
+                    'tanggal' => $data['tanggal'],
+                    'status' => KehadiranStatus::HADIR,
+                    'keterangan' => 'Presensi scan E-Card',
+                ]);
+            }
 
-        $nama = $registration->user?->name ?? 'Siswa';
+            AdminLog::record('pembina.scan', 'Kehadiran', (string) $eskul->id, "Scan presensi {$registration->user?->name} ({$eskul->name} {$data['tanggal']}).");
 
-        if ($request->wantsJson()) {
-            return response()->json([
-                'ok' => true,
-                'nama' => $nama,
-                'kelas' => $registration->kelas,
-                'sudah' => $sudah,
-                'pesan' => $sudah ? "{$nama} sudah presensi sebelumnya." : "{$nama} presensi tercatat.",
-            ]);
-        }
+            $nama = $registration->user?->name ?? 'Siswa';
+            $pertemuanTeks = $pertemuan ? " (Pertemuan ke-{$pertemuan->nomor})" : '';
 
-        return back()->with('status', $sudah ? "{$nama} sudah presensi sebelumnya." : "{$nama} presensi tercatat.");
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'ok' => true,
+                    'nama' => $nama,
+                    'kelas' => $registration->kelas,
+                    'sudah' => $sudah,
+                    'pertemuan_nomor' => $pertemuan?->nomor,
+                    'pesan' => $sudah ? "{$nama} sudah presensi sebelumnya{$pertemuanTeks}." : "{$nama} presensi tercatat{$pertemuanTeks}.",
+                ]);
+            }
+
+            return back()->with('status', $sudah ? "{$nama} sudah presensi sebelumnya{$pertemuanTeks}." : "{$nama} presensi tercatat{$pertemuanTeks}.");
+        });
     }
 
     private function gagal(Request $request, string $pesan)
@@ -116,9 +133,9 @@ class ScanController extends Controller
     }
 
     /**
-     * Terima isi QR E-Card (URL verify / token hex) atau kode ESK-… ketik manual.
+     * Terima isi QR E-Card (URL verify / token hex / NIS) atau ketik manual.
      */
-    private function cari(string $kode): ?Registration
+    private function cari(string $kode, Eskul $eskul): ?Registration
     {
         $kode = trim($kode);
 
@@ -130,22 +147,52 @@ class ScanController extends Controller
             $kode = trim(end($parts));
         }
 
-        // 1. Cari via NIS langsung (angka maupun alfanumerik kartu pelajar)
-        $byNis = Registration::with('user')
+        // 1. Prioritas: Cari pendaftaran di eskul ini berdasarkan NIS
+        $byNisInEskul = Registration::with('user')
+            ->where('nis', $kode)
+            ->where('eskul_utama', $eskul->name)
+            ->latest('id')
+            ->first();
+        if ($byNisInEskul) {
+            return $byNisInEskul;
+        }
+
+        // 2. Prioritas: Cari pendaftaran di eskul ini berdasarkan username akun siswa
+        $byUserInEskul = Registration::with('user')
+            ->whereHas('user', fn ($q) => $q->where('username', $kode))
+            ->where('eskul_utama', $eskul->name)
+            ->latest('id')
+            ->first();
+        if ($byUserInEskul) {
+            return $byUserInEskul;
+        }
+
+        // 3. Fallback: Cari di eskul ini via verify_token hex E-Card
+        if (preg_match('/^[0-9a-fA-F]{32,64}$/', $kode)) {
+            $byTokenInEskul = Registration::with('user')
+                ->where('verify_token', strtolower($kode))
+                ->where('eskul_utama', $eskul->name)
+                ->first();
+            if ($byTokenInEskul) {
+                return $byTokenInEskul;
+            }
+        }
+
+        // 4. Jika tidak ada di eskul ini, cari global untuk mendeteksi apakah siswa terdaftar di eskul lain
+        $byNisGlobal = Registration::with('user')
             ->where('nis', $kode)
             ->latest('id')
             ->first();
-        if ($byNis) {
-            return $byNis;
+        if ($byNisGlobal) {
+            return $byNisGlobal;
         }
 
-        // 2. Cari via username akun siswa (terkoneksi NIS)
-        $byUser = Registration::with('user')
+        $byUserGlobal = Registration::with('user')
             ->whereHas('user', fn ($q) => $q->where('username', $kode))
             ->latest('id')
             ->first();
-        if ($byUser) {
-            return $byUser;
+        if ($byUserGlobal) {
+            return $byUserGlobal;
         }
 
         if (preg_match('/^[0-9a-fA-F]{32,64}$/', $kode)) {

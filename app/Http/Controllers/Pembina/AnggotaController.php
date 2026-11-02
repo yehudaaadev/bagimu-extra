@@ -90,6 +90,8 @@ class AnggotaController extends Controller
             ->whereNotNull('nilai')
             ->count();
 
+        $totalPertemuanEskul = $currentEskul ? $currentEskul->pertemuans()->count() : 0;
+
         return view('pembina.anggota.index', compact(
             'eskuls',
             'currentEskul',
@@ -98,7 +100,8 @@ class AnggotaController extends Controller
             'anggotaList',
             'daftarKelas',
             'totalAnggota',
-            'sudahDinilai'
+            'sudahDinilai',
+            'totalPertemuanEskul'
         ));
     }
 

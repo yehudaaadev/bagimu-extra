@@ -25,6 +25,7 @@ class NotificationLog extends Model
         return [
             'channel' => NotifChannel::class,
             'status' => NotifStatus::class,
+            'payload' => 'array',
             'sent_at' => 'datetime',
         ];
     }

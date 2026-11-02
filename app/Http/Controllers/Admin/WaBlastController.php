@@ -182,6 +182,15 @@ class WaBlastController extends Controller
             return back()->with('error', $msg);
         }
 
+        if (isset($status['quota']) && $status['quota'] <= 0) {
+            $msg = 'Batas kuota pesan gratis Fonnte Anda sudah habis (0 / 1.000). Silakan periksa atau isi ulang kuota Fonnte.';
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => $msg], 422);
+            }
+
+            return back()->with('error', $msg);
+        }
+
         $request->validate([
             'mode' => ['required', 'string', 'in:all,kelas,untokenized,unregistered,unblasted,selected'],
             'pesan' => ['required', 'string', 'max:2000'],
@@ -335,8 +344,10 @@ class WaBlastController extends Controller
                 $failCount++;
             }
 
-            // Jeda aman anti-banned: 1.5 detik per pesan
-            usleep(1500000);
+            // Jeda aman anti-banned: 1.5 detik per pesan (dilewati saat testing)
+            if (! app()->runningUnitTests()) {
+                usleep(1500000);
+            }
         }
 
         AdminLog::record('wa_blast.send', 'Student', null, "WA Blast gelombang: {$successCount} sukses, {$failCount} gagal (Gelombang ini: {$targets->count()}, Periode: {$currentPeriode})");

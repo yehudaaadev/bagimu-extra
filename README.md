@@ -29,13 +29,16 @@ Antarmuka dibangun dengan pendekatan minimalis modern menggunakan palet warna fu
 - **Penyesuaian Penempatan:** Fitur pembatalan atau pengeluaran siswa dari rombel perwalian baik per individu maupun checklist massal (*bulk action*).
 
 ### 3. Panel Pembina Ekstrakurikuler
-- **Direktori Anggota Siswa:** Menu dedicated direktori murid binaan (`/pembina/anggota`) yang menyajikan tabel anggota eskul lengkap dengan ringkasan kehadiran (berapa kali Hadir, Tidak Hadir: Izin/Sakit/Alpa, dan Total Pertemuan), NIS, Kelas Rombel, status Nilai Rapor, filter pencarian instan, dan ekspor data Excel.
+- **Direktori Anggota Siswa & Indikator Kritis (< 75%):** Menu dedicated direktori murid binaan (`/pembina/anggota`) yang menyajikan tabel anggota eskul lengkap dengan ringkasan kehadiran (berapa kali Hadir, Tidak Hadir: Izin/Sakit/Alpa, dan Total Pertemuan), kartu metrik sesi pertemuan terselenggara, NIS, Kelas Rombel, status Nilai Rapor, filter pencarian instan, ekspor data Excel, serta indikator visual peringatan dini otomatis (Kritis / Perhatian) bagi siswa dengan persentase kehadiran di bawah 75% setelah 3 pertemuan berlangsung.
 - **Navigasi Mandiri 6 Menu:** Tata kelola panel pembina terpadu dengan navigasi langsung ke Dashboard Saya, Direktori Anggota, Eskul Saya, Scan Presensi QR, Penilaian Rapor, serta Kegiatan & Jadwal.
-- **Banner Dashboard Berfoto Resmi:** Banner utama berlatar foto kampus sekolah dilengkapi overlay gradient lembut untuk keterbacaan teks dan penyajian identitas sekolah yang elegan.
+- **Banner Pure Deep Navy Monokromatik:** Seluruh banner utama (beranda, dashboard admin, dashboard pembina, dan layar masuk) menerapkan tema warna Deep Navy murni (#0b1e3d ke #1e3a8a) dengan pola mikro dot-grid presisi bebas gradasi ungu/indigo dan bebas efek neon AI slop.
 - **Penyederhanaan Modul Kegiatan:** Penghapusan filter eskul redundan (otomatis terarah ke eskul binaan) dan peniadaan opsi klasifikasi jenis kegiatan yang tidak diperlukan.
 - **Antarmuka 4 Tab Modern:** Tata letak responsif ramah layar ponsel yang membagi modul eskul secara rapi ke dalam tab Anggota, Presensi Pertemuan, Nilai Rapor, serta Jadwal & Izin.
-- **Presensi Pertemuan & Pemindai QR Kartu Pelajar:**
-  - Pemindaian instan kode QR kartu pelajar menggunakan kamera peramban yang membaca data NIS dari kartu resmi peserta.
+- **Presensi Pertemuan & Pemindai QR Handal:**
+  - Auto-create sesi pertemuan otomatis: saat pembina memindai E-Card siswa di lapangan pada tanggal hari ini, sistem otomatis membuat sesi pertemuan baru jika belum ada, tanpa mewajibkan pembina membuat pertemuan manual terlebih dahulu.
+  - Pemindaian instan kode QR kartu pelajar multi-mesin (dukungan pustaka Html5-QRCode serta fallback native `BarcodeDetector` API peramban).
+  - Penanganan fleksibel pergantian lensa kamera depan/belakang, deteksi panduan izin HTTPS, getar haptic, serta opsi pemindaian via unggah foto kartu.
+  - Pencarian pendaftaran berbasis NIS terisolasi khusus eskul pembina dan input cepat manual NIS berbasis AJAX tanpa reload halaman.
   - Fitur sekali klik "Tandai Semua Hadir" untuk kecepatan presensi lapangan tanpa klik satu per satu.
   - Pengisian presensi manual yang dikelompokkan teratur berdasarkan rombel kelas (Hadir, Izin, Sakit, Alpa).
 - **Pengesahan Sesi:** Fitur penguncian data absensi per tanggal pertemuan untuk menjamin validitas rekapitulasi.
@@ -46,10 +49,11 @@ Antarmuka dibangun dengan pendekatan minimalis modern menggunakan palet warna fu
 - **Ekspor Laporan:** Pengunduhan rekapitulasi kehadiran dan data anggota per periode dalam format Excel dan CSV.
 
 ### 4. Panel Administrator & Kesiswaan
+- **WhatsApp Gateway Siap Pakai & Proteksi Kuota 1.000 Pesan:** Integrasi Fonnte langsung membaca token dari konfigurasi `.env` (`FONNTE_TOKEN`) atau input antarmuka, dilengkapi pemantau sisa kuota terhadap batas 1.000 pesan gratis serta pencegah pengiriman jika kuota habis.
 - **WhatsApp Blast Anti-Banned & Proteksi Spam:** Pengiriman pesan massal terkelola dengan batas gelombang aman (25–50 siswa per gelombang), jeda waktu manusiawi (1,5 detik per nomor), serta pembatasan tegas maksimal 1 kali pengiriman per siswa per periode pendaftaran guna menjaga reputasi nomor WhatsApp instansi dari pemblokiran Meta.
 - **Pengaturan Identitas Instansi:** Kustomisasi nama instansi, logo (penyimpanan mandiri tanpa dependensi symlink), nomor kontak pengaduan, slogan, dan alamat.
 - **Periode & Jendela Pendaftaran Terpadu:** Pengaturan tahun ajaran aktif dan arsip lampau menggunakan dropdown pemilih interaktif satu pintu, kontrol buka/tutup jendela pendaftaran instan, form penjadwalan otomatis, kartu metrik partisipasi kesiswaan, rincian detail periode langsung di tempat tanpa navigasi terpisah, serta tabel riwayat komparasi seluruh periode.
-- **Rekapitulasi & Riwayat Multi-Periode:** Pemantauan data historis lintas tahun ajaran yang menyajikan informasi nama pembina pengampu, jumlah pendaftar per eskul, sebaran asal rombel kelas siswa, rincian siswa, serta ekspor rekapitulasi menyeluruh ke format Excel.
+- **Rekapitulasi & Super-Export 4-in-1 Excel:** Pemantauan data historis lintas tahun ajaran yang menyajikan informasi nama pembina pengampu, jumlah pendaftar per eskul, sebaran asal rombel kelas siswa, serta fasilitas Super-Export Excel multi-sheet (.xls) berkinerja tinggi yang menggabungkan 4 sheet utama (Ringkasan Kesiswaan, Data Pendaftar Lengkap, Rekap Presensi & Kehadiran, serta Rekap Nilai Rapor & Predikat) dalam sekali unduh.
 - **Direktori Siswa & Pelacakan Status:** Pelacakan status pemilihan eskul beserta penanda visual siklus hidup token login (Aktif, Sudah Dipakai, Dicabut, Belum Diterbitkan), filter instan tanpa reload, serta ekspor data multi-format.
 - **Distribusi Kredensial WhatsApp:** Integrasi gateway WhatsApp (Fonnte) untuk penerbitan dan pengiriman kredensial login (NIS dan Token) secara mandiri tanpa tautan otomatis yang berisiko.
 - **Pengelolaan Akses Pengguna:** Tata kelola akun staf, pembina eskul, wali kelas, operator, dan pimpinan sekolah.

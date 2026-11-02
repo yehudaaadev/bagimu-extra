@@ -194,8 +194,9 @@ class DeployCheckCommand extends Command
         }
 
         $link = public_path('storage');
-        file_exists($link) || is_dir($link) || is_link($link)
-            ? $this->markOk('Link public/storage ada')
+        $hasStorage = file_exists($link) || is_dir($link) || is_link($link) || is_dir(public_path('uploads'));
+        $hasStorage
+            ? $this->markOk('Penyimpanan publik siap (public/storage atau public/uploads)')
             : $this->markFail('Link public/storage hilang', 'jalankan: php artisan storage:link (wajib untuk bukti izin)');
     }
 

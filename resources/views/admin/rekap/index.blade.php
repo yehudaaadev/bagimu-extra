@@ -26,9 +26,14 @@
                 </div>
             </form>
 
-            <a href="{{ route('admin.rekap.export', ['periode' => $selectedPeriode]) }}" class="inline-flex items-center gap-1.5 rounded-xl border border-emerald-300 bg-emerald-50 px-3.5 py-1.5 text-xs font-bold text-emerald-800 hover:bg-emerald-100 transition shadow-2xs cursor-pointer">
-                <x-icon name="chart" class="h-3.5 w-3.5 text-emerald-700" />
-                <span>Ekspor Excel (.xls)</span>
+            <a href="{{ route('admin.rekap.export', ['periode' => $selectedPeriode]) }}" class="inline-flex items-center gap-1.5 rounded-xl border border-slate-300 bg-white px-3.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition shadow-2xs cursor-pointer">
+                <x-icon name="chart" class="h-3.5 w-3.5 text-slate-500" />
+                <span>Ekspor Ringkas (.xls)</span>
+            </a>
+
+            <a href="{{ route('admin.rekap.super-export', ['periode' => $selectedPeriode]) }}" class="inline-flex items-center gap-1.5 rounded-xl border border-emerald-300 bg-emerald-50 px-3.5 py-1.5 text-xs font-bold text-emerald-800 hover:bg-emerald-100 transition shadow-2xs cursor-pointer">
+                <x-icon name="document" class="h-3.5 w-3.5 text-emerald-700" />
+                <span>Super-Export (4 Sheet)</span>
             </a>
         </div>
     </div>

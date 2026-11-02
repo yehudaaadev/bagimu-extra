@@ -78,15 +78,11 @@
         </div>
     </header>
 
-    {{-- Hero Section - Sesuai Foto Desain Resmi (Latar Kampus SMK Bagimu Negeriku) --}}
-    <section class="relative overflow-hidden rounded-3xl bg-[#0e5cda] text-white shadow-xl shadow-blue-900/10 min-h-[360px] sm:min-h-[400px] px-6 py-10 sm:px-10 sm:py-12 lg:px-12 lg:py-14 flex flex-col justify-between">
-        {{-- Foto Asli Kampus SMK Bagimu Negeriku (Bersih Tanpa Teks Bawaan) --}}
-        <img src="{{ asset('images/dashboard-banner-clean.jpg') }}?v={{ filemtime(public_path('images/dashboard-banner-clean.jpg')) }}"
-             alt="Kampus SMK Bagimu Negeriku"
-             class="pointer-events-none absolute inset-0 h-full w-full object-cover object-right select-none z-0" />
-
-        {{-- Gradient Overlay Halus untuk Kontras & Keterbacaan Sempurna --}}
-        <div class="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#0a4fc0]/95 via-[#0e5cda]/80 to-transparent sm:via-[#0e5cda]/65 z-0"></div>
+    {{-- Hero Section - Pure Deep Navy Monokromatik --}}
+    <section class="relative overflow-hidden rounded-3xl bg-gradient-to-b from-[#0b1e3d] via-[#102a54] to-[#1e3a8a] text-white shadow-xl shadow-blue-950/20 min-h-[360px] sm:min-h-[400px] px-6 py-10 sm:px-10 sm:py-12 lg:px-12 lg:py-14 flex flex-col justify-between">
+        {{-- Tekstur Mikro Dot-Grid Presisi (Tanpa Efek Neon / Orb Blur) --}}
+        <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:20px_20px] opacity-[0.07]"></div>
+        <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sky-400/25 to-transparent"></div>
 
         <div class="relative z-10 max-w-3xl space-y-6">
             {{-- Branding Sekolah: Logo + Nama + Slogan 4B --}}
