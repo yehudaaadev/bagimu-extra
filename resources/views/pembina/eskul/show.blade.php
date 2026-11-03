@@ -315,8 +315,14 @@
                 </div>
             <form method="POST" action="{{ route('pembina.pertemuan.store', $eskul) }}" class="flex flex-wrap items-center gap-2">
                 @csrf
-                <input type="text" name="keterangan" maxlength="200" placeholder="Keterangan (opsional)" class="rounded border px-2 py-1.5 text-sm w-48">
-                <button class="rounded-xl bg-emerald-700 px-4 py-2 text-sm font-bold text-white hover:bg-emerald-800">+ Buat Pertemuan Hari Ini</button>
+                <input type="text" name="keterangan" maxlength="200" placeholder="Keterangan sesi (opsional)" class="rounded-xl border-slate-300 px-3 py-1.5 text-xs sm:text-sm w-44">
+                <div class="flex items-center gap-1.5 text-xs text-slate-600 bg-slate-50 border border-slate-200 px-2.5 py-1 rounded-xl">
+                    <label class="font-medium">Jam:</label>
+                    <input type="time" name="jam_mulai" class="rounded-lg border-slate-300 py-0.5 px-1.5 text-xs">
+                    <span>-</span>
+                    <input type="time" name="jam_selesai" class="rounded-lg border-slate-300 py-0.5 px-1.5 text-xs">
+                </div>
+                <button class="rounded-xl bg-emerald-700 px-4 py-2 text-xs sm:text-sm font-bold text-white hover:bg-emerald-800 transition shadow-xs">+ Buat Pertemuan Hari Ini</button>
             </form>
         </div>
         @error('tanggal')
@@ -336,15 +342,15 @@
                         </span>
                         <div class="min-w-0 flex-1">
                             <p class="text-sm font-bold text-slate-900">Pertemuan {{ $p->nomor }}</p>
-                            <p class="text-[11px] text-slate-500">{{ $p->tanggal->format('l, d M Y') }}{{ $p->keterangan ? ' • '.$p->keterangan : '' }}</p>
+                            <p class="text-[11px] text-slate-500">{{ $p->tanggal->format('l, d M Y') }} • {{ $p->rentangJam() }}{{ $p->keterangan ? ' • '.$p->keterangan : '' }}</p>
                             <p class="text-[11px] {{ $p->isLocked() ? 'text-slate-400' : 'text-emerald-600' }}">
                                 {{ $p->isLocked() ? 'Disahkan' : $p->hadir_count.' hadir' }}
                             </p>
                         </div>
                         <div class="flex shrink-0 flex-col gap-1">
                             @unless ($p->isLocked())
-                                <a href="{{ route('pembina.scan.show', ['eskul' => $eskul->id, 'tanggal' => $p->tanggal->toDateString()]) }}" class="inline-flex items-center gap-1 rounded-lg bg-blue-700 px-2.5 py-1 text-[11px] font-bold text-white hover:bg-blue-800">
-                                    <x-icon name="qr" class="h-3 w-3" /> Scan
+                                <a href="{{ route('pembina.scan.show', ['eskul' => $eskul->id, 'pertemuan_id' => $p->id]) }}" class="inline-flex items-center gap-1 rounded-lg bg-blue-700 px-2.5 py-1 text-[11px] font-bold text-white hover:bg-blue-800">
+                                    <x-icon name="qr" class="h-3 w-3" /> Scan Presensi
                                 </a>
                                 <a href="{{ route('pembina.eskul.show', ['eskul' => $eskul->id, 'tanggal' => $p->tanggal->toDateString()]) }}" class="rounded-lg border px-2.5 py-1 text-center text-[11px] font-semibold hover:bg-slate-50">Absen</a>
                             @endunless

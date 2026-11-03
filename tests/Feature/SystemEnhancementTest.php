@@ -69,7 +69,7 @@ class SystemEnhancementTest extends TestCase
         ]);
     }
 
-    public function test_scan_presensi_otomatis_membuat_sesi_pertemuan_jika_belum_ada(): void
+    public function test_scan_presensi_wajib_memiliki_sesi_pertemuan_dan_mencatat_kehadiran(): void
     {
         $pembina = $this->buatPembina();
         $eskul = $this->buatEskul($pembina, 'Paskibra');
@@ -78,9 +78,29 @@ class SystemEnhancementTest extends TestCase
         $hariIni = today()->toDateString();
         $this->assertEquals(0, $eskul->pertemuans()->count());
 
+        // 1. Scan ditolak jika belum ada sesi pertemuan
+        $resGagal = $this->actingAs($pembina)->postJson(route('pembina.scan.store', $eskul), [
+            'kode' => $reg->card_token,
+            'tanggal' => $hariIni,
+        ]);
+
+        $resGagal->assertStatus(422);
+        $resGagal->assertJson([
+            'ok' => false,
+        ]);
+
+        // 2. Buat sesi pertemuan terlebih dahulu
+        $pertemuan = Pertemuan::create([
+            'eskul_id' => $eskul->id,
+            'nomor' => 1,
+            'tanggal' => $hariIni,
+        ]);
+
+        // 3. Scan sukses setelah pertemuan dibuat
         $res = $this->actingAs($pembina)->postJson(route('pembina.scan.store', $eskul), [
             'kode' => $reg->card_token,
             'tanggal' => $hariIni,
+            'pertemuan_id' => $pertemuan->id,
         ]);
 
         $res->assertOk();
@@ -89,12 +109,6 @@ class SystemEnhancementTest extends TestCase
             'nama' => 'Budi Santoso',
             'pertemuan_nomor' => 1,
         ]);
-
-        // Pastikan Pertemuan otomatis dibuat di database
-        $this->assertEquals(1, $eskul->pertemuans()->count());
-        $pertemuan = $eskul->pertemuans()->first();
-        $this->assertEquals(1, $pertemuan->nomor);
-        $this->assertEquals($hariIni, $pertemuan->tanggal->toDateString());
 
         // Pastikan kehadiran tercatat
         $this->assertDatabaseHas('kehadiran', [

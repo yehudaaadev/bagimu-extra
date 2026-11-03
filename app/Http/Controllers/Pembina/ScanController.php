@@ -32,11 +32,24 @@ class ScanController extends Controller
     {
         $this->pastikanMilik($eskul, $request->user()->id);
 
-        $tanggal = $request->query('tanggal', today()->toDateString());
+        $pertemuan = null;
+        if ($request->filled('pertemuan_id')) {
+            $pertemuan = $eskul->pertemuans()->find($request->query('pertemuan_id'));
+        }
 
-        $pertemuan = $eskul->pertemuans()->whereDate('tanggal', $tanggal)->first();
+        if (! $pertemuan && $request->filled('tanggal')) {
+            $pertemuan = $eskul->pertemuans()->whereDate('tanggal', $request->query('tanggal'))->first();
+        }
 
-        return view('pembina.scan', compact('eskul', 'tanggal', 'pertemuan'));
+        // Jika tidak ditentukan, cari pertemuan hari ini yang belum dikunci
+        if (! $pertemuan) {
+            $pertemuan = $eskul->pertemuans()->whereDate('tanggal', today())->latest('id')->first();
+        }
+
+        $tanggal = $pertemuan?->tanggal?->toDateString() ?? $request->query('tanggal', today()->toDateString());
+        $daftarPertemuan = $eskul->pertemuans()->orderByDesc('tanggal')->orderByDesc('nomor')->get();
+
+        return view('pembina.scan', compact('eskul', 'tanggal', 'pertemuan', 'daftarPertemuan'));
     }
 
     public function store(Request $request, Eskul $eskul)
@@ -46,12 +59,34 @@ class ScanController extends Controller
         $data = $request->validate([
             'kode' => ['required', 'string', 'max:500'],
             'tanggal' => ['required', 'date', 'before_or_equal:today', 'after_or_equal:'.now()->subYear()->toDateString()],
+            'pertemuan_id' => ['nullable', 'integer'],
         ]);
 
+        // 1. Validasi Sesi Pertemuan
+        $pertemuan = null;
+        if (! empty($data['pertemuan_id'])) {
+            $pertemuan = $eskul->pertemuans()->find($data['pertemuan_id']);
+        }
+        if (! $pertemuan) {
+            $pertemuan = $eskul->pertemuans()->whereDate('tanggal', $data['tanggal'])->first();
+        }
+
+        // SYARAT MUTLAK: Presensi hanya bisa dilakukan jika pembina sudah membuat sesi pertemuan
+        if (! $pertemuan) {
+            return $this->gagal($request, 'Sesi pertemuan belum dibuat. Silakan buat Pertemuan terlebih dahulu sebelum memulai presensi.');
+        }
+
+        // SYARAT MUTLAK: Periksa jam latihan dan status penguncian sesi pertemuan
+        $statusWaktu = $pertemuan->statusWaktuPresensi();
+        if (! $statusWaktu['buka']) {
+            return $this->gagal($request, $statusWaktu['pesan']);
+        }
+
+        // 2. Pencarian data siswa berdasarkan kode barcode / QR
         $registration = $this->cari($data['kode'], $eskul);
 
         if (! $registration) {
-            return $this->gagal($request, 'QR/kode tidak dikenal. Pastikan E-Card siswa yang dipindai.');
+            return $this->gagal($request, 'Barcode belum terbaca penuh. Arahkan kamera ke full barcode agar terbaca.');
         }
 
         if ($registration->status !== Status::APPROVED) {
@@ -63,20 +98,10 @@ class ScanController extends Controller
         }
 
         if ($registration->card_revoked_at) {
-            return $this->gagal($request, 'E-Card sudah dicabut (cetak ulang). Minta kartu terbaru kepada siswa.');
+            return $this->gagal($request, 'Kartu pelajar / E-Card sudah dicabut (cetak ulang). Minta kartu terbaru kepada siswa.');
         }
 
-        return DB::transaction(function () use ($request, $eskul, $data, $registration) {
-            $pertemuan = $eskul->pertemuans()->whereDate('tanggal', $data['tanggal'])->first();
-            if (! $pertemuan) {
-                $nomor = ((int) $eskul->pertemuans()->max('nomor')) + 1;
-                $pertemuan = $eskul->pertemuans()->create([
-                    'nomor' => $nomor,
-                    'tanggal' => $data['tanggal'],
-                    'keterangan' => 'Pertemuan reguler (Presensi Cepat QR)',
-                ]);
-            }
-
+        return DB::transaction(function () use ($request, $eskul, $data, $registration, $pertemuan) {
             $baris = Kehadiran::where('eskul_id', $eskul->id)
                 ->where('registration_id', $registration->id)
                 ->whereDate('tanggal', $data['tanggal'])
@@ -138,7 +163,8 @@ class ScanController extends Controller
      */
     private function cari(string $kode, Eskul $eskul): ?Registration
     {
-        $kode = trim($kode);
+        $kode = trim($kode, "* \t\n\r\0\x0B");
+        $kode = preg_replace('/[^\x20-\x7E]/', '', $kode);
 
         // Isi QR berupa URL: ambil segmen terakhir.
         if (preg_match('~/verify/([^/?#]+)~i', $kode, $m)) {

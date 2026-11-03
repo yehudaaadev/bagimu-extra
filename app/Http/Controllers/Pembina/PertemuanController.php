@@ -32,6 +32,8 @@ class PertemuanController extends Controller
 
         $data = $request->validate([
             'keterangan' => ['nullable', 'string', 'max:200'],
+            'jam_mulai' => ['nullable', 'string', 'regex:/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/'],
+            'jam_selesai' => ['nullable', 'string', 'regex:/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/'],
         ]);
 
         $hariIni = today()->toDateString();
@@ -40,11 +42,29 @@ class PertemuanController extends Controller
             return back()->withErrors(['tanggal' => 'Sudah ada pertemuan untuk hari ini.']);
         }
 
+        $mapHari = [
+            1 => 'SENIN',
+            2 => 'SELASA',
+            3 => 'RABU',
+            4 => 'KAMIS',
+            5 => 'JUMAT',
+            6 => 'SABTU',
+            0 => 'MINGGU',
+            7 => 'MINGGU',
+        ];
+        $hariIniNama = $mapHari[today()->dayOfWeek] ?? null;
+        $jadwalHariIni = $hariIniNama ? $eskul->jadwals()->where('hari', $hariIniNama)->first() : null;
+
+        $jamMulai = ! empty($data['jam_mulai']) ? $data['jam_mulai'] : ($jadwalHariIni?->jam_mulai);
+        $jamSelesai = ! empty($data['jam_selesai']) ? $data['jam_selesai'] : ($jadwalHariIni?->jam_selesai);
+
         $nomor = ((int) $eskul->pertemuans()->max('nomor')) + 1;
 
         $pertemuan = $eskul->pertemuans()->create([
             'nomor' => $nomor,
             'tanggal' => $hariIni,
+            'jam_mulai' => $jamMulai,
+            'jam_selesai' => $jamSelesai,
             'keterangan' => $data['keterangan'] ?? null,
         ]);
 

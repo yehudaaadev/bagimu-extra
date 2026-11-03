@@ -35,7 +35,9 @@ Antarmuka dibangun dengan pendekatan minimalis modern menggunakan palet warna fu
 - **Penyederhanaan Modul Kegiatan:** Penghapusan filter eskul redundan (otomatis terarah ke eskul binaan) dan peniadaan opsi klasifikasi jenis kegiatan yang tidak diperlukan.
 - **Antarmuka 4 Tab Modern:** Tata letak responsif ramah layar ponsel yang membagi modul eskul secara rapi ke dalam tab Anggota, Presensi Pertemuan, Nilai Rapor, serta Jadwal & Izin.
 - **Presensi Pertemuan & Pemindai Barcode / QR Handal:**
-  - Auto-create sesi pertemuan otomatis: saat pembina memindai kartu pelajar siswa di lapangan pada tanggal hari ini, sistem otomatis membuat sesi pertemuan baru jika belum ada, tanpa mewajibkan pembina membuat pertemuan manual terlebih dahulu.
+  - Presensi terikat pada sesi pertemuan spesifik: pembina wajib membuka atau membuat sesi pertemuan terlebih dahulu (misal: Pertemuan 1) sebelum pemindaian dapat dilakukan guna mencegah rekapitulasi data liar.
+  - Validasi jam latihan ketat: sistem memvalidasi jam mulai dan jam selesai pertemuan (contoh: jika jadwal mulai pukul 14:00, presensi belum dapat dilakukan sebelum jam tersebut tiba).
+  - Pencegahan pembacaan parsial (*anti-partial scan*): filter cerdas yang mencegah error prematur saat kartu baru diarahkan ke kamera dengan instruksi panduan ramah pengguna.
   - Pemindaian instan kode Barcode 1D (Code 128, Code 39, EAN, Codabar) serta QR Code 2D untuk membaca kartu fisik sekolah baik dalam format horizontal (landscape) maupun format tegak (portrait).
   - Pengenalan cerdas identitas kartu: mendukung input kode NIS murni, nomor NISN, maupun format gabungan NIS/NISN yang otomatis dipetakan ke profil pendaftaran siswa di database.
   - Penanganan fleksibel pergantian lensa kamera depan/belakang, deteksi panduan izin HTTPS, getar haptic, serta opsi pemindaian via unggah foto kartu.

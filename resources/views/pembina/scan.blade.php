@@ -17,17 +17,61 @@
             </span>
         </div>
         <div id="pertemuan-badge-wrapper">
+            @php($statusWaktu = $pertemuan ? $pertemuan->statusWaktuPresensi() : ['buka' => false, 'pesan' => 'Belum ada sesi pertemuan yang dipilih atau dibuat.'])
             @if (! empty($pertemuan))
-                <p class="mt-2 inline-flex items-center gap-1.5 rounded-full bg-blue-100 px-3 py-1 text-xs font-bold text-blue-800">
-                    <x-icon name="calendar-check" class="h-3.5 w-3.5" /> Pertemuan Ke-{{ $pertemuan->nomor }} • {{ $pertemuan->tanggal->format('d/m/Y') }}
-                </p>
+                <div class="mt-2 flex flex-wrap items-center gap-2">
+                    <p class="inline-flex items-center gap-1.5 rounded-full bg-blue-100 px-3 py-1 text-xs font-bold text-blue-800">
+                        <x-icon name="calendar-check" class="h-3.5 w-3.5" /> Pertemuan Ke-{{ $pertemuan->nomor }} • {{ $pertemuan->tanggal->format('d/m/Y') }} • {{ $pertemuan->rentangJam() }}
+                    </p>
+                    @if ($statusWaktu['buka'])
+                        <span class="inline-flex items-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-bold text-emerald-800">
+                            Presensi Sedang Dibuka
+                        </span>
+                    @else
+                        <span class="inline-flex items-center rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-bold text-amber-800">
+                            Presensi Belum / Tidak Aktif
+                        </span>
+                    @endif
+                </div>
+                @if (! $statusWaktu['buka'])
+                    <div class="mt-2 rounded-xl border border-amber-200 bg-amber-50 p-2.5 text-xs font-semibold text-amber-800">
+                        {{ $statusWaktu['pesan'] }}
+                    </div>
+                @endif
             @else
-                <p class="mt-2 inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
-                    <x-icon name="calendar-check" class="h-3.5 w-3.5 text-slate-500" /> Sesi pertemuan otomatis dibuat saat pemindaian pertama
-                </p>
+                <div class="mt-2 rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900">
+                    <p class="font-bold">Perhatian: Sesi pertemuan belum dibuat.</p>
+                    <p class="mt-0.5 text-amber-700">Presensi hanya dapat dilakukan jika Anda telah membuat sesi pertemuan terlebih dahulu di menu <a href="{{ route('pembina.eskul.show', [$eskul, 'tab' => 'presensi']) }}" class="font-bold underline text-blue-700">Eskul Saya (Tab Presensi)</a>.</p>
+                </div>
             @endif
         </div>
     </div>
+
+    {{-- Pemilih Sesi Pertemuan --}}
+    <x-card>
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+                <label for="pilih-pertemuan" class="block text-xs font-bold text-slate-700">Pilih Sesi Pertemuan</label>
+                <p class="text-[11px] text-slate-400">Pilih nomor pertemuan yang sedang berlangsung untuk mencatat kehadiran</p>
+            </div>
+            <div class="flex items-center gap-2">
+                @if ($daftarPertemuan->isNotEmpty())
+                    <select id="pilih-pertemuan" onchange="window.location.href = '{{ route('pembina.scan.show', $eskul) }}?pertemuan_id=' + this.value"
+                            class="rounded-xl border-slate-300 text-xs sm:text-sm font-semibold focus:border-blue-500 focus:ring-blue-500 py-1.5 px-3 bg-white">
+                        <option value="">-- Pilih Sesi Pertemuan --</option>
+                        @foreach ($daftarPertemuan as $dp)
+                            <option value="{{ $dp->id }}" @selected($pertemuan && $pertemuan->id === $dp->id)>
+                                Pertemuan {{ $dp->nomor }} ({{ $dp->tanggal->format('d/m/Y') }} • {{ $dp->rentangJam() }})
+                            </option>
+                        @endforeach
+                    </select>
+                @endif
+                <a href="{{ route('pembina.eskul.show', [$eskul, 'tab' => 'presensi']) }}" class="inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-100 transition shrink-0">
+                    + Buat Sesi Baru
+                </a>
+            </div>
+        </div>
+    </x-card>
 
     {{-- Tanggal Presensi --}}
     <x-card>
@@ -116,6 +160,7 @@
         <form id="scan-manual" method="POST" action="{{ route('pembina.scan.store', $eskul) }}" class="mt-3 flex gap-2">
             @csrf
             <input type="hidden" name="tanggal" id="manual-tanggal" value="{{ $tanggal }}">
+            <input type="hidden" name="pertemuan_id" id="manual-pertemuan-id" value="{{ $pertemuan?->id ?? '' }}">
             <input name="kode" type="text" required placeholder="Ketik NIS atau NISN (cth: 1011914 atau 0091637087)"
                    class="min-w-0 flex-1 rounded-xl border-slate-300 font-mono text-xs sm:text-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2">
             <button class="shrink-0 rounded-xl bg-blue-700 px-4 py-2 text-xs font-bold text-white hover:bg-blue-800 transition shadow-xs cursor-pointer">
@@ -182,6 +227,8 @@
         manualTanggal.value = inputTanggal.value;
     });
 
+    const currentPertemuanId = @json($pertemuan?->id ?? null);
+
     // Suara Beep Sukses + Getar Haptic via Web Audio & Vibration API
     function playBeep() {
         try {
@@ -200,10 +247,15 @@
         } catch (e) {}
     }
 
-    function showFeedback(ok, teks) {
+    function showFeedback(type, teks) {
         const div = document.createElement('div');
-        div.className = 'rounded-2xl border p-3.5 text-xs sm:text-sm font-semibold flex items-center justify-between gap-2 shadow-2xs ' +
-            (ok ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-rose-200 bg-rose-50 text-rose-700');
+        let style = 'border-rose-200 bg-rose-50 text-rose-700';
+        if (type === 'success' || type === true) {
+            style = 'border-emerald-200 bg-emerald-50 text-emerald-800';
+        } else if (type === 'hint') {
+            style = 'border-amber-200 bg-amber-50 text-amber-800';
+        }
+        div.className = 'rounded-2xl border p-3.5 text-xs sm:text-sm font-semibold flex items-center justify-between gap-2 shadow-2xs ' + style;
         div.innerHTML = `<span>${teks}</span><span class="text-[11px] opacity-75">${new Date().toLocaleTimeString()}</span>`;
         hasil.prepend(div);
         while (hasil.children.length > 4) hasil.lastChild.remove();
@@ -227,11 +279,19 @@
 
     async function sendScanData(scannedText) {
         if (!scannedText || isProcessing) return;
+        const cleaned = scannedText.trim().replace(/^\*+|\*+$/g, '');
+
+        // Pencegahan scan parsial prematur: abaikan pembacaan di bawah 4 karakter dan tampilkan hint lembut tanpa merah error
+        if (cleaned.length < 4) {
+            showFeedback('hint', 'Arahkan kamera ke full barcode agar terbaca.');
+            return;
+        }
+
         const now = Date.now();
-        if (scannedText === lastScannedCode && (now - lastScanTime) < 3000) {
+        if (cleaned === lastScannedCode && (now - lastScanTime) < 3000) {
             return; // Debounce scan yang sama dalam 3 detik
         }
-        lastScannedCode = scannedText;
+        lastScannedCode = cleaned;
         lastScanTime = now;
         isProcessing = true;
 
@@ -243,25 +303,31 @@
                     'Accept': 'application/json',
                     'X-CSRF-TOKEN': token,
                 },
-                body: JSON.stringify({ kode: scannedText, tanggal: inputTanggal.value }),
+                body: JSON.stringify({
+                    kode: cleaned,
+                    tanggal: inputTanggal.value,
+                    pertemuan_id: currentPertemuanId
+                }),
             });
             const data = await res.json().catch(() => ({}));
             if (res.ok && data.ok) {
                 playBeep();
-                showFeedback(true, `HADIR: ${data.nama} (${data.kelas || '-'})`);
+                showFeedback('success', `HADIR: ${data.nama} (${data.kelas || '-'})`);
                 if (data.pertemuan_nomor) {
                     const badgeWrapper = document.getElementById('pertemuan-badge-wrapper');
                     if (badgeWrapper) {
                         badgeWrapper.innerHTML = `<p class="mt-2 inline-flex items-center gap-1.5 rounded-full bg-blue-100 px-3 py-1 text-xs font-bold text-blue-800"><span class="h-1.5 w-1.5 rounded-full bg-blue-600"></span> Pertemuan Ke-${data.pertemuan_nomor} • Tercatat</p>`;
                     }
                 }
-                const uniqueKey = scannedText + '|' + inputTanggal.value;
+                const uniqueKey = cleaned + '|' + inputTanggal.value;
                 if (!recordedSet.has(uniqueKey)) {
                     recordedSet.add(uniqueKey);
                     addToList(data.nama, data.kelas);
                 }
             } else {
-                showFeedback(false, data.pesan || 'Kartu pelajar / NIS tidak terdaftar pada eskul ini.');
+                const pesan = data.pesan || 'Kartu pelajar / NIS tidak terdaftar pada eskul ini.';
+                const isHint = pesan.toLowerCase().includes('terbaca penuh') || pesan.toLowerCase().includes('full barcode');
+                showFeedback(isHint ? 'hint' : 'error', pesan);
             }
         } catch (err) {
             showFeedback(false, 'Terjadi gangguan jaringan saat mengirim data presensi.');
