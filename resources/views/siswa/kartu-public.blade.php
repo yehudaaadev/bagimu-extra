@@ -39,10 +39,10 @@
         /* 1. Logo Lingkaran Sekolah */
         .card-logo-circle {
             position: absolute;
-            left: 5.3cqw;
-            top: 1.1cqw;
-            width: 15.3cqw;
-            height: 15.3cqw;
+            left: 5.6cqw;
+            top: 1.4cqw;
+            width: 14.7cqw;
+            height: 14.7cqw;
             border-radius: 50%;
             background: #ffffff;
             padding: 0.5cqw;
@@ -618,7 +618,7 @@ function unduhKartuPng() {
         };
         logo.src = '{{ $cardLogoUrl }}';
     };
-    bg.src = '{{ asset("images/kartu-clean-bg.jpg") }}';
+    bg.src = '{{ asset("images/kartu-clean-bg.jpg") }}?v={{ filemtime(public_path("images/kartu-clean-bg.jpg")) }}';
 }
 </script>
 </body>
