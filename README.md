@@ -163,6 +163,16 @@ Aplikasi dapat diakses melalui peramban pada alamat `http://127.0.0.1:8000`.
 
 ---
 
+## Optimasi Kinerja & Akselerasi Navigasi
+
+Sistem mengadopsi mekanisme optimasi muatan tingkat jaringan dan peramban untuk menjamin perpindahan menu yang sangat ringan dan instan:
+- **Kompresi Respons HTTP (Gzip):** Middleware `CompressResponse` mengompresi payload halaman (HTML, JSON, CSS, SVG) hingga 60–80% lebih kecil sebelum dikirim ke peramban, menghemat pemakaian bandwidth server dan mempercepat transfer data.
+- **Akselerasi Navigasi Instan (Speculation Rules API):** Pemanfaatan standar web modern *Speculation Rules API* dan fallback *smart hover prefetch*. Saat kursor pengguna mendekati tautan menu antarmuka (atau di-tap pada layar sentuh), halaman tujuan otomatis di-prefetch di latar belakang dalam hitungan milidetik sehingga pergantian menu terasa instan seperti aplikasi desktop / SPA.
+- **Proteksi Prefetch Terisolasi:** Prefetching secara otomatis mengabaikan aksi autentikasi (`/logout`), unduhan berkas, ekspor laporan, dan aksi manipulasi data agar tidak memicu eksekusi yang tidak diinginkan.
+- **Optimasi Resolusi Jaringan:** Integrasi header `X-DNS-Prefetch-Control` dan dukungan penuh navigasi bolak-balik instan (*Back-Forward Cache* / *bfcache*).
+
+---
+
 ## Standar Kode & Antarmuka
 
 Proyek ini menerapkan standar teknis ketat untuk menjaga kualitas dan integritas sistem:

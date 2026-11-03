@@ -16,6 +16,7 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @include('layouts.partials.session-guard')
+        @include('layouts.partials.speed-accelerator')
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
