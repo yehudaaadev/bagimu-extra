@@ -320,6 +320,12 @@ class BackendRevisiTest extends TestCase
             'status' => \App\Enums\Status::APPROVED,
         ]);
 
+        \App\Models\Pertemuan::create([
+            'eskul_id' => $eskul->id,
+            'nomor' => 1,
+            'tanggal' => today(),
+        ]);
+
         $this->actingAs($pembina);
 
         $response = $this->postJson(route('pembina.scan.store', $eskul), [

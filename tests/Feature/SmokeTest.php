@@ -287,6 +287,12 @@ class SmokeTest extends TestCase
         // Halaman scan bisa dibuka pembina pemilik.
         $this->actingAs($pembina)->get("/pembina/eskul/{$eskul->id}/scan")->assertOk();
 
+        \App\Models\Pertemuan::create([
+            'eskul_id' => $eskul->id,
+            'nomor' => 1,
+            'tanggal' => today(),
+        ]);
+
         // Scan NIS kartu pelajar tercatat HADIR.
         $this->actingAs($pembina)
             ->postJson("/pembina/eskul/{$eskul->id}/scan", [

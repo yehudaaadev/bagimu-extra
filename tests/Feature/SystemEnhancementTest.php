@@ -83,7 +83,7 @@ class SystemEnhancementTest extends TestCase
 
         // 1. Scan ditolak jika belum ada sesi pertemuan
         $resGagal = $this->actingAs($pembina)->postJson(route('pembina.scan.store', $eskul), [
-            'kode' => $reg->card_token,
+            'kode' => $reg->nis,
             'tanggal' => $hariIni,
         ]);
 
