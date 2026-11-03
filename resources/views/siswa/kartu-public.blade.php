@@ -232,6 +232,7 @@
     $kelasValue = $registration->kelas ?: ($student->kelas ?? '-');
     $eskulValue = $registration->eskul_utama ?? 'Terdaftar';
     $jurusanRaw = $registration->jurusan ?: ($student->jurusan ?? '');
+    $jurusanStr = $jurusanRaw instanceof \BackedEnum ? $jurusanRaw->value : (is_string($jurusanRaw) ? $jurusanRaw : '');
 
     $jurusanMap = [
         'DKV' => 'Desain Komunikasi Visual',
@@ -240,16 +241,17 @@
         'TP' => 'Teknik Pengelasan',
         'TKP' => 'Teknik Konstruksi Perumahan',
     ];
-    $jurusanKey = strtoupper(trim((string) $jurusanRaw));
-    $jurusanDeskripsi = $jurusanMap[$jurusanKey] ?? (str_contains((string) $jurusanRaw, '(') ? '' : $jurusanRaw);
+    $jurusanKey = strtoupper(trim($jurusanStr));
+    $jurusanDeskripsi = $jurusanMap[$jurusanKey] ?? (str_contains($jurusanStr, '(') ? '' : $jurusanStr);
 
     $kelasJurusanDisplay = $kelasValue;
     if ($jurusanDeskripsi && !str_contains($kelasValue, '(') && !str_contains($kelasValue, $jurusanDeskripsi)) {
         $kelasJurusanDisplay .= ' (' . $jurusanDeskripsi . ')';
     }
 
-    $gender = $student->gender?->value ?? ($student->gender ?? ($registration->gender ?? 'LAKI_LAKI'));
-    $isPutri = in_array(strtoupper((string) $gender), ['P', 'PEREMPUAN', 'FEMALE']);
+    $genderRaw = $student->gender ?? ($registration->gender ?? 'LAKI_LAKI');
+    $genderVal = $genderRaw instanceof \BackedEnum ? $genderRaw->value : (is_string($genderRaw) ? $genderRaw : 'LAKI_LAKI');
+    $isPutri = in_array(strtoupper($genderVal), ['P', 'PEREMPUAN', 'FEMALE']);
     $alamatValue = $isPutri ? 'Wisma Remaja Putri SMK Bagimu Negeriku' : 'Wisma Remaja Putra SMK Bagimu Negeriku';
 
     $tahunParts = explode('/', $tahunAjaran);

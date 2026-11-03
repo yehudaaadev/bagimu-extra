@@ -226,6 +226,7 @@
     $kelasValue = $registration?->kelas ?: ($user->student?->kelas ?? '-');
     $eskulValue = $registration?->eskul_utama ?? session('eskul', 'Terdaftar');
     $jurusanRaw = $registration?->jurusan ?: ($user->student?->jurusan ?? '');
+    $jurusanStr = $jurusanRaw instanceof \BackedEnum ? $jurusanRaw->value : (is_string($jurusanRaw) ? $jurusanRaw : '');
 
     // Pemetaan nama jurusan lengkap
     $jurusanMap = [
@@ -235,8 +236,8 @@
         'TP' => 'Teknik Pengelasan',
         'TKP' => 'Teknik Konstruksi Perumahan',
     ];
-    $jurusanKey = strtoupper(trim((string) $jurusanRaw));
-    $jurusanDeskripsi = $jurusanMap[$jurusanKey] ?? (str_contains((string) $jurusanRaw, '(') ? '' : $jurusanRaw);
+    $jurusanKey = strtoupper(trim($jurusanStr));
+    $jurusanDeskripsi = $jurusanMap[$jurusanKey] ?? (str_contains($jurusanStr, '(') ? '' : $jurusanStr);
 
     $kelasJurusanDisplay = $kelasValue;
     if ($jurusanDeskripsi && !str_contains($kelasValue, '(') && !str_contains($kelasValue, $jurusanDeskripsi)) {
@@ -244,8 +245,9 @@
     }
 
     // Alamat Asrama / Wisma SMK Bagimu Negeriku
-    $gender = $user->student?->gender?->value ?? ($user->student?->gender ?? ($registration?->gender ?? 'LAKI_LAKI'));
-    $isPutri = in_array(strtoupper((string) $gender), ['P', 'PEREMPUAN', 'FEMALE']);
+    $genderRaw = $user->student?->gender ?? ($registration?->gender ?? 'LAKI_LAKI');
+    $genderVal = $genderRaw instanceof \BackedEnum ? $genderRaw->value : (is_string($genderRaw) ? $genderRaw : 'LAKI_LAKI');
+    $isPutri = in_array(strtoupper($genderVal), ['P', 'PEREMPUAN', 'FEMALE']);
     $alamatValue = $isPutri ? 'Wisma Remaja Putri SMK Bagimu Negeriku' : 'Wisma Remaja Putra SMK Bagimu Negeriku';
 
     // Tanggal Pengesahan
