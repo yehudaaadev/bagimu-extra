@@ -30,7 +30,6 @@
             background-position: center;
             border-radius: 2.8cqw;
             overflow: hidden;
-            box-shadow: 0 16px 36px -4px rgba(15, 23, 42, 0.28), 0 4px 12px -2px rgba(15, 23, 42, 0.12);
             font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
             color: #0f172a;
             user-select: none;
@@ -47,7 +46,6 @@
             border-radius: 50%;
             background: #ffffff;
             padding: 0.5cqw;
-            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.18);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -69,7 +67,6 @@
             background: #ffffff;
             border-radius: 2.6cqw;
             padding: 0.77cqw;
-            box-shadow: 0 6px 18px rgba(15, 23, 42, 0.15);
             box-sizing: border-box;
         }
         .card-photo-inner {
@@ -96,7 +93,6 @@
             height: 5.88cqw;
             background: #ffffff;
             border-radius: 9999px;
-            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
             display: flex;
             align-items: center;
             justify-content: center;
