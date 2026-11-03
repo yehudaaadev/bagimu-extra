@@ -32,10 +32,10 @@
     /* 1. Logo Lingkaran Sekolah */
     .card-logo-circle {
         position: absolute;
-        left: 3.56cqw;
-        top: 1.55cqw;
-        width: 15.79cqw;
-        height: 15.79cqw;
+        left: 5.3cqw;
+        top: 1.1cqw;
+        width: 15.3cqw;
+        height: 15.3cqw;
         border-radius: 50%;
         background: #ffffff;
         padding: 0.5cqw;
@@ -53,10 +53,10 @@
     /* 2. Bingkai Foto Siswa */
     .card-photo-frame {
         position: absolute;
-        left: 1.86cqw;
-        top: 19.81cqw;
-        width: 20.74cqw;
-        height: 26.63cqw;
+        left: 3.6cqw;
+        top: 21.8cqw;
+        width: 19.6cqw;
+        height: 23.0cqw;
         background: #ffffff;
         border-radius: 2.6cqw;
         padding: 0.77cqw;
@@ -65,7 +65,7 @@
     .card-photo-inner {
         width: 100%;
         height: 100%;
-        background: #e0ecf7;
+        background: #dde6f5;
         border-radius: 2.0cqw;
         display: flex;
         align-items: center;
@@ -80,30 +80,30 @@
     /* 3. Barcode Kapsul NIS */
     .card-barcode-pill {
         position: absolute;
-        left: 1.08cqw;
-        top: 51.08cqw;
-        width: 34.98cqw;
-        height: 5.88cqw;
+        left: 1.5cqw;
+        top: 51.4cqw;
+        width: 37.3cqw;
+        height: 7.6cqw;
         background: #ffffff;
         border-radius: 9999px;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 0.35cqw 1.2cqw;
+        padding: 0.4cqw 1.2cqw;
         box-sizing: border-box;
     }
     .card-barcode-pill svg {
         width: 100%;
         height: 100%;
-        max-height: 4.8cqw;
+        max-height: 6.8cqw;
     }
 
     /* 4. Header Kartu */
     .card-header-block {
         position: absolute;
-        left: 19cqw;
-        right: 2cqw;
-        top: 2.2cqw;
+        left: 20cqw;
+        right: 14cqw;
+        top: 3.5cqw;
         text-align: center;
         line-height: 1.15;
     }
@@ -143,9 +143,9 @@
     /* 5. Biodata Peserta */
     .card-biodata-table {
         position: absolute;
-        left: 30.65cqw;
-        top: 20.5cqw;
-        right: 3cqw;
+        left: 32.2cqw;
+        top: 21.8cqw;
+        right: 2cqw;
         display: flex;
         flex-direction: column;
         gap: 0.85cqw;
@@ -157,7 +157,7 @@
         line-height: 1.25;
     }
     .card-label {
-        width: 18.5cqw;
+        width: 19.5cqw;
         flex-shrink: 0;
         font-weight: 600;
         color: #1e293b;
@@ -190,9 +190,9 @@
     /* 6. Blok Tanda Tangan */
     .card-signature-block {
         position: absolute;
-        left: 68.8cqw;
-        top: 45.8cqw;
-        right: 3cqw;
+        left: 74cqw;
+        top: 46.5cqw;
+        right: 2cqw;
         font-size: 1.4cqw;
         line-height: 1.25;
         color: #0f172a;
@@ -201,7 +201,7 @@
         margin: 0;
     }
     .card-sig-space {
-        height: 5cqw;
+        height: 4.8cqw;
     }
     .card-sig-name {
         font-weight: 700;
@@ -562,59 +562,59 @@ function unduhKartuPng() {
 
         // 2. Gambar Bingkai Foto Siswa (Rounded Putih + Isi Biru Es)
         ctx.fillStyle = '#ffffff';
-        drawRoundedRect(ctx, 36, 384, 402, 516, 51, true, false);
+        drawRoundedRect(ctx, 70, 422, 380, 445, 50, true, false);
 
-        ctx.fillStyle = '#e0ecf7';
-        drawRoundedRect(ctx, 51, 399, 372, 486, 39, true, false);
+        ctx.fillStyle = '#dde6f5';
+        drawRoundedRect(ctx, 88, 440, 344, 409, 39, true, false);
 
         // Avatar SVG Silhouette
         ctx.strokeStyle = '#7190b2';
         ctx.lineWidth = 14;
         ctx.lineCap = 'round';
         ctx.beginPath();
-        ctx.arc(237, 580, 94, 0, Math.PI * 2);
+        ctx.arc(260, 580, 85, 0, Math.PI * 2);
         ctx.stroke();
 
         ctx.beginPath();
-        ctx.arc(237, 860, 156, Math.PI * 1.22, Math.PI * 1.78);
+        ctx.arc(260, 840, 140, Math.PI * 1.22, Math.PI * 1.78);
         ctx.stroke();
 
         // 3. Gambar Wadah Kapsul Barcode NIS
         ctx.fillStyle = '#ffffff';
-        drawRoundedRect(ctx, 21, 990, 678, 114, 57, true, false);
+        drawRoundedRect(ctx, 29, 996, 723, 148, 74, true, false);
 
         // Barcode NIS Code 128
-        drawBarcodeCanvas(ctx, 42, 1005, 636, 84, nis);
+        drawBarcodeCanvas(ctx, 60, 1018, 660, 105, nis);
 
         // 4. Header Instansi & Sekolah
         ctx.textAlign = 'center';
         ctx.fillStyle = '#0f172a';
         ctx.font = 'bold 28px "Plus Jakarta Sans", sans-serif';
         ctx.letterSpacing = '1.5px';
-        ctx.fillText('PEMERINTAH PROVINSI JAWA TENGAH', 1020, 78);
-        ctx.fillText('KOTA SEMARANG', 1020, 117);
+        ctx.fillText('PEMERINTAH PROVINSI JAWA TENGAH', 1025, 95);
+        ctx.fillText('KOTA SEMARANG', 1025, 140);
 
         ctx.font = '900 56px "Plus Jakarta Sans", sans-serif';
         ctx.letterSpacing = '1px';
-        ctx.fillText('{{ $schoolName }}', 1020, 192);
+        ctx.fillText('{{ $schoolName }}', 1025, 230);
 
         ctx.font = 'bold 31px "Plus Jakarta Sans", sans-serif';
         ctx.letterSpacing = '4px';
-        ctx.fillText('KARTU PESERTA EKSTRAKURIKULER', 1020, 270);
+        ctx.fillText('KARTU PESERTA EKSTRAKURIKULER', 1025, 310);
         ctx.letterSpacing = '0px';
 
         // 5. Biodata Terstruktur
         ctx.textAlign = 'left';
-        const startX = 594;
-        const colonX = 984;
-        const valX = 1014;
+        const startX = 624;
+        const colonX = 1005;
+        const valX = 1040;
         const rows = [
-            ['Nama Lengkap', '{{ addslashes($namaValue) }}', '800 40px "Plus Jakarta Sans", sans-serif', 429],
-            ['NIS / NISN', '{{ $nisValue }}{{ $nisnValue ? " / " . $nisnValue : "" }}', 'bold 36px monospace', 516],
-            ['Kelas / Jurusan', '{{ addslashes($kelasJurusanDisplay) }}', 'bold 34px "Plus Jakarta Sans", sans-serif', 603],
-            ['Masa Berlaku', 's/d {{ $berlakuSampai }}', 'bold 34px "Plus Jakarta Sans", sans-serif', 690],
-            ['Alamat', '{{ addslashes($alamatValue) }}', 'bold 33px "Plus Jakarta Sans", sans-serif', 777],
-            ['Ekstrakurikuler', '{{ addslashes($eskulValue) }}', '900 40px "Plus Jakarta Sans", sans-serif', 864],
+            ['Nama Lengkap', '{{ addslashes($namaValue) }}', '800 40px "Plus Jakarta Sans", sans-serif', 444],
+            ['NIS / NISN', '{{ $nisValue }}{{ $nisnValue ? " / " . $nisnValue : "" }}', 'bold 36px monospace', 528],
+            ['Kelas / Jurusan', '{{ addslashes($kelasJurusanDisplay) }}', 'bold 34px "Plus Jakarta Sans", sans-serif', 612],
+            ['Masa Berlaku', 's/d {{ $berlakuSampai }}', 'bold 34px "Plus Jakarta Sans", sans-serif', 684],
+            ['Alamat', '{{ addslashes($alamatValue) }}', 'bold 33px "Plus Jakarta Sans", sans-serif', 780],
+            ['Ekstrakurikuler', '{{ addslashes($eskulValue) }}', '900 40px "Plus Jakarta Sans", sans-serif', 852],
         ];
 
         rows.forEach(([label, val, valFont, curY]) => {
@@ -633,25 +633,25 @@ function unduhKartuPng() {
         // 6. Blok Pengesahan Kepala Sekolah
         ctx.fillStyle = '#0f172a';
         ctx.font = '500 27px "Plus Jakarta Sans", sans-serif';
-        ctx.fillText('Mengetahui,', 1335, 897);
-        ctx.fillText('Kepala Sekolah', 1335, 945);
-        ctx.fillText('Semarang, {{ $tanggalPengesahan }}', 1335, 993);
+        ctx.fillText('Mengetahui,', 1435, 915);
+        ctx.fillText('Kepala Sekolah', 1435, 960);
+        ctx.fillText('Semarang, {{ $tanggalPengesahan }}', 1435, 1005);
 
         ctx.font = 'bold 30px "Plus Jakarta Sans", sans-serif';
-        ctx.fillText('{{ addslashes($kepsekNama) }}', 1335, 1179);
+        ctx.fillText('{{ addslashes($kepsekNama) }}', 1435, 1165);
 
-        // 7. Gambar Logo Lingkaran Sekolah (Pusat cx=222, cy=183, radius=153)
+        // 7. Gambar Logo Lingkaran Sekolah (Pusat cx=251, cy=169, radius=145)
         const logo = new Image();
         logo.crossOrigin = 'anonymous';
         logo.onload = function() {
             // Lingkaran putih logo
             ctx.fillStyle = '#ffffff';
             ctx.beginPath();
-            ctx.arc(222, 183, 153, 0, Math.PI * 2);
+            ctx.arc(251, 169, 145, 0, Math.PI * 2);
             ctx.fill();
 
             // Gambar logo sekolah
-            ctx.drawImage(logo, 84, 45, 276, 276);
+            ctx.drawImage(logo, 115, 33, 272, 272);
 
             // Eksekusi Download
             const link = document.createElement('a');
