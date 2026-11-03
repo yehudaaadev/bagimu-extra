@@ -7,7 +7,7 @@
     /* Kontainer Responsif Kartu Peserta Resmi */
     .card-official-wrapper {
         width: 100%;
-        max-width: 620px;
+        max-width: 650px;
         margin: 0 auto;
         container-type: inline-size;
     }
@@ -15,26 +15,98 @@
     .card-official {
         position: relative;
         width: 100%;
-        aspect-ratio: 770 / 498;
-        background-image: url('{{ asset('images/kartu-peserta-template.jpg') }}?v={{ filemtime(public_path('images/kartu-peserta-template.jpg')) }}');
-        background-size: 100% 100%;
+        aspect-ratio: 953 / 616;
+        background-image: url('{{ asset('images/kartu-clean-bg.jpg') }}?v={{ filemtime(public_path('images/kartu-clean-bg.jpg')) }}');
+        background-size: cover;
         background-repeat: no-repeat;
         background-position: center;
-        border-radius: 2.2cqw;
+        border-radius: 2.5cqw;
         overflow: hidden;
-        box-shadow: 0 14px 35px -5px rgba(15, 23, 42, 0.22), 0 4px 10px -2px rgba(15, 23, 42, 0.1);
+        box-shadow: 0 16px 36px -4px rgba(15, 23, 42, 0.28), 0 4px 12px -2px rgba(15, 23, 42, 0.12);
         font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
         color: #0f172a;
         user-select: none;
         text-align: left;
     }
 
-    /* Header Teks Kartu */
-    .card-official-header {
+    /* 1. Logo Lingkaran Sekolah */
+    .card-logo-circle {
+        position: absolute;
+        left: 4.8cqw;
+        top: 4.8cqw;
+        width: 14.5cqw;
+        height: 14.5cqw;
+        border-radius: 50%;
+        background: #ffffff;
+        padding: 0.5cqw;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.18);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+    .card-logo-circle img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+    /* 2. Bingkai Foto Siswa */
+    .card-photo-frame {
+        position: absolute;
+        left: 5.5cqw;
+        top: 22.8cqw;
+        width: 19.8cqw;
+        height: 46.5cqw;
+        background: #ffffff;
+        border-radius: 2.8cqw;
+        padding: 0.85cqw;
+        box-shadow: 0 6px 18px rgba(15, 23, 42, 0.15);
+        box-sizing: border-box;
+    }
+    .card-photo-inner {
+        width: 100%;
+        height: 100%;
+        background: #e0ecf7;
+        border-radius: 2.1cqw;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+    .card-avatar-svg {
+        width: 62%;
+        height: 62%;
+    }
+
+    /* 3. Barcode Kapsul NIS */
+    .card-barcode-pill {
+        position: absolute;
+        left: 4.8cqw;
+        top: 73.2cqw;
+        width: 33.5cqw;
+        height: 8.8cqw;
+        background: #ffffff;
+        border-radius: 9999px;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.6cqw 1.8cqw;
+        box-sizing: border-box;
+    }
+    .card-barcode-pill svg {
+        width: 100%;
+        height: 100%;
+        max-height: 5.8cqw;
+    }
+
+    /* 4. Header Kartu */
+    .card-header-block {
         position: absolute;
         left: 24.5cqw;
-        right: 4.5cqw;
-        top: 4.93cqw;
+        right: 5cqw;
+        top: 4.8cqw;
         text-align: center;
         line-height: 1.15;
     }
@@ -52,68 +124,31 @@
         color: #0f172a;
         text-transform: uppercase;
         letter-spacing: 0.08cqw;
-        margin: 0.35cqw 0 0 0;
+        margin: 0.3cqw 0 0 0;
     }
     .card-header-school {
-        font-size: 2.85cqw;
+        font-size: 2.9cqw;
         font-weight: 900;
         color: #0f172a;
         text-transform: uppercase;
         letter-spacing: 0.06cqw;
-        margin: 0.65cqw 0 0 0;
+        margin: 0.6cqw 0 0 0;
     }
     .card-header-title {
-        font-size: 1.65cqw;
+        font-size: 1.6cqw;
         font-weight: 700;
         color: #0f172a;
         text-transform: uppercase;
         letter-spacing: 0.22cqw;
-        margin: 0.65cqw 0 0 0;
+        margin: 0.55cqw 0 0 0;
     }
 
-    /* Bingkai Foto / Avatar Siswa */
-    .card-photo-box {
+    /* 5. Biodata Peserta */
+    .card-biodata-table {
         position: absolute;
-        left: 6.36cqw;
-        top: 24.1cqw;
-        width: 18.31cqw;
-        height: 44.38cqw;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-        border-radius: 2.4cqw;
-    }
-    .card-avatar-svg {
-        width: 62%;
-        height: 62%;
-    }
-
-    /* Kotak Barcode NIS */
-    .card-barcode-box {
-        position: absolute;
-        left: 5.58cqw;
-        top: 75.1cqw;
-        width: 31.04cqw;
-        height: 8.03cqw;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0.6cqw 1.8cqw;
-        box-sizing: border-box;
-    }
-    .card-barcode-box svg {
-        width: 100%;
-        height: 100%;
-        max-height: 5.5cqw;
-    }
-
-    /* Biodata Peserta Ekstrakurikuler */
-    .card-biodata {
-        position: absolute;
-        left: 32.21cqw;
-        top: 32.1cqw;
-        width: 63.5cqw;
+        left: 32cqw;
+        top: 31.5cqw;
+        right: 5cqw;
         display: flex;
         flex-direction: column;
         gap: 1.15cqw;
@@ -121,7 +156,7 @@
     .card-row {
         display: flex;
         align-items: baseline;
-        font-size: 1.8cqw;
+        font-size: 1.78cqw;
         line-height: 1.25;
     }
     .card-label {
@@ -155,17 +190,17 @@
         font-size: 2.05cqw;
     }
 
-    /* Blok Pengesahan Kepala Sekolah */
-    .card-signature {
+    /* 6. Blok Tanda Tangan */
+    .card-signature-block {
         position: absolute;
-        left: 65.84cqw;
-        top: 73.8cqw;
+        left: 65.5cqw;
+        top: 73cqw;
         width: 30.5cqw;
-        font-size: 1.48cqw;
+        font-size: 1.45cqw;
         line-height: 1.25;
         color: #0f172a;
     }
-    .card-signature p {
+    .card-signature-block p {
         margin: 0;
     }
     .card-sig-space {
@@ -207,7 +242,7 @@
         }
         .card-official {
             width: 85.6mm !important;
-            height: 53.98mm !important;
+            height: 55.3mm !important;
             border-radius: 4px !important;
             box-shadow: none !important;
             page-break-inside: avoid !important;
@@ -290,32 +325,43 @@
             </p>
         </div>
 
-        {{-- Kartu Peserta Resmi Sesuai Format Mockup Asli --}}
+        {{-- Kartu Peserta Resmi Rekacipta Murni (DITIRU PERSIS DESAIN ASLI) --}}
         <div class="card-official-wrapper">
             <div class="card-official" id="card-official-element">
-                {{-- Header Teks Instansi & Sekolah --}}
-                <div class="card-official-header">
+                {{-- 1. Logo Lingkaran Sekolah --}}
+                <div class="card-logo-circle" title="SMK Bagimu Negeriku">
+                    <img src="{{ $cardLogoUrl }}" alt="Logo {{ $schoolName }}">
+                </div>
+
+                {{-- 2. Bingkai Foto Siswa --}}
+                <div class="card-photo-frame">
+                    <div class="card-photo-inner">
+                        @if ($user->student?->foto_url ?? null)
+                            <img src="{{ asset($user->student->foto_url) }}" alt="{{ $namaValue }}" class="w-full h-full object-cover">
+                        @else
+                            <svg class="card-avatar-svg" viewBox="0 0 100 120" fill="none" stroke="#7190b2" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="50" cy="40" r="22" />
+                                <path d="M14 108c0-22 16-36 36-36s36 14 36 36" />
+                            </svg>
+                        @endif
+                    </div>
+                </div>
+
+                {{-- 3. Wadah Kapsul Barcode NIS Siswa --}}
+                <div class="card-barcode-pill" title="Barcode NIS: {{ $nisValue }}">
+                    {!! $barcodeSvg !!}
+                </div>
+
+                {{-- 4. Header Instansi & Sekolah --}}
+                <div class="card-header-block">
                     <p class="card-header-gov">PEMERINTAH PROVINSI JAWA TENGAH</p>
                     <p class="card-header-city">KOTA SEMARANG</p>
                     <h2 class="card-header-school">{{ $schoolName }}</h2>
                     <p class="card-header-title">KARTU PESERTA EKSTRAKURIKULER</p>
                 </div>
 
-                {{-- Bingkai Foto / Avatar Siswa --}}
-                <div class="card-photo-box">
-                    <svg class="card-avatar-svg" viewBox="0 0 100 120" fill="none" stroke="#7090b0" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="50" cy="40" r="22" />
-                        <path d="M14 108c0-22 16-36 36-36s36 14 36 36" />
-                    </svg>
-                </div>
-
-                {{-- Kotak Barcode NIS Siswa --}}
-                <div class="card-barcode-box" title="Barcode NIS: {{ $nisValue }}">
-                    {!! $barcodeSvg !!}
-                </div>
-
-                {{-- Biodata Peserta Ekstrakurikuler --}}
-                <div class="card-biodata">
+                {{-- 5. Biodata Terstruktur Siswa --}}
+                <div class="card-biodata-table">
                     <div class="card-row">
                         <span class="card-label">Nama Lengkap</span>
                         <span class="card-sep">:</span>
@@ -348,8 +394,8 @@
                     </div>
                 </div>
 
-                {{-- Blok Pengesahan Kepala Sekolah --}}
-                <div class="card-signature">
+                {{-- 6. Blok Pengesahan Kepala Sekolah --}}
+                <div class="card-signature-block">
                     <p>Mengetahui,</p>
                     <p>Kepala Sekolah</p>
                     <p>Semarang, {{ $tanggalPengesahan }}</p>
@@ -423,7 +469,7 @@
 </div>
 
 <script>
-// Fungsi menggambar barcode Code 128 pada canvas
+// Fungsi menggambar barcode Code 128 pada canvas secara presisi
 function drawBarcodeCanvas(ctx, startX, startY, targetWidth, height, text) {
     const patterns = [
         '212222', '222122', '222221', '121223', '121322', '131222', '122213', '122312', '132212', '221213',
@@ -470,98 +516,154 @@ function drawBarcodeCanvas(ctx, startX, startY, targetWidth, height, text) {
     }
 }
 
-// Fungsi unduh PNG resolusi tinggi (1540x996)
+// Fungsi menggambar rounded rectangle pada canvas
+function drawRoundedRect(ctx, x, y, width, height, radius, fill, stroke, strokeColor, lineWidth) {
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.lineTo(x + width - radius, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+    ctx.lineTo(x + width, y + height - radius);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    ctx.lineTo(x + radius, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+    ctx.lineTo(x, y + radius);
+    ctx.quadraticCurveTo(x, y, x + radius, y);
+    ctx.closePath();
+    if (fill) ctx.fill();
+    if (stroke) {
+        ctx.strokeStyle = strokeColor || '#ffffff';
+        ctx.lineWidth = lineWidth || 1;
+        ctx.stroke();
+    }
+}
+
+// Render & Unduh Kartu Resolusi Tinggi (1906 × 1232)
 function unduhKartuPng() {
     const nis = '{{ $nisValue }}';
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
-    const W = 1540;
-    const H = 996;
+    const W = 1906;
+    const H = 1232;
     canvas.width = W;
     canvas.height = H;
 
     const bg = new Image();
     bg.crossOrigin = 'anonymous';
     bg.onload = function() {
+        // 1. Gambar latar belakang kampus bersih
         ctx.drawImage(bg, 0, 0, W, H);
 
-        // Icon Avatar pada Photo Box (Center x=239, y=490)
-        ctx.strokeStyle = '#7090b0';
-        ctx.lineWidth = 7;
+        // 2. Gambar Bingkai Foto Siswa (Rounded Putih + Isi Biru Es)
+        ctx.fillStyle = '#ffffff';
+        drawRoundedRect(ctx, 105, 281, 377, 573, 53, true, false);
+
+        ctx.fillStyle = '#e0ecf7';
+        drawRoundedRect(ctx, 121, 297, 345, 541, 40, true, false);
+
+        // Avatar SVG Silhouette
+        ctx.strokeStyle = '#7190b2';
+        ctx.lineWidth = 14;
         ctx.lineCap = 'round';
         ctx.beginPath();
-        ctx.arc(239, 410, 52, 0, Math.PI * 2);
+        ctx.arc(293, 500, 104, 0, Math.PI * 2);
         ctx.stroke();
 
         ctx.beginPath();
-        ctx.arc(239, 580, 88, Math.PI * 1.22, Math.PI * 1.78);
+        ctx.arc(293, 830, 175, Math.PI * 1.22, Math.PI * 1.78);
         ctx.stroke();
 
-        // Barcode NIS
-        drawBarcodeCanvas(ctx, 130, 762, 390, 50, nis);
+        // 3. Gambar Wadah Kapsul Barcode NIS
+        ctx.fillStyle = '#ffffff';
+        drawRoundedRect(ctx, 92, 902, 638, 108, 54, true, false);
 
-        // Teks Header (Center x=786)
+        // Barcode NIS Code 128
+        drawBarcodeCanvas(ctx, 130, 924, 562, 64, nis);
+
+        // 4. Header Instansi & Sekolah
         ctx.textAlign = 'center';
         ctx.fillStyle = '#0f172a';
-        ctx.font = 'bold 24px "Plus Jakarta Sans", sans-serif';
-        ctx.fillText('PEMERINTAH PROVINSI JAWA TENGAH', 786, 96);
-        ctx.fillText('KOTA SEMARANG', 786, 128);
+        ctx.font = 'bold 30px "Plus Jakarta Sans", sans-serif';
+        ctx.letterSpacing = '1.5px';
+        ctx.fillText('PEMERINTAH PROVINSI JAWA TENGAH', 1190, 98);
+        ctx.fillText('KOTA SEMARANG', 1190, 138);
 
-        ctx.font = '900 44px "Plus Jakarta Sans", sans-serif';
-        ctx.fillText('{{ $schoolName }}', 786, 192);
+        ctx.font = '900 55px "Plus Jakarta Sans", sans-serif';
+        ctx.letterSpacing = '1px';
+        ctx.fillText('{{ $schoolName }}', 1190, 218);
 
-        ctx.font = 'bold 25px "Plus Jakarta Sans", sans-serif';
-        ctx.letterSpacing = '3px';
-        ctx.fillText('KARTU PESERTA EKSTRAKURIKULER', 786, 240);
+        ctx.font = 'bold 31px "Plus Jakarta Sans", sans-serif';
+        ctx.letterSpacing = '4px';
+        ctx.fillText('KARTU PESERTA EKSTRAKURIKULER', 1190, 276);
         ctx.letterSpacing = '0px';
 
-        // Teks Biodata (x labels=496, colon=746, values=772)
+        // 5. Biodata Terstruktur
         ctx.textAlign = 'left';
-        const startX = 496;
-        const colonX = 746;
-        const valX = 772;
+        const startX = 610;
+        const colonX = 924;
+        const valX = 958;
         const rows = [
-            ['Nama Lengkap', '{{ addslashes($namaValue) }}', 'bold 30px "Plus Jakarta Sans", sans-serif'],
-            ['NIS / NISN', '{{ $nisValue }}{{ $nisnValue ? " / " . $nisnValue : "" }}', 'bold 28px monospace'],
-            ['Kelas / Jurusan', '{{ addslashes($kelasJurusanDisplay) }}', 'bold 26px "Plus Jakarta Sans", sans-serif'],
-            ['Masa Berlaku', 's/d {{ $berlakuSampai }}', 'bold 27px "Plus Jakarta Sans", sans-serif'],
-            ['Alamat', '{{ addslashes($alamatValue) }}', 'bold 25px "Plus Jakarta Sans", sans-serif'],
-            ['Ekstrakurikuler', '{{ addslashes($eskulValue) }}', '900 30px "Plus Jakarta Sans", sans-serif'],
+            ['Nama Lengkap', '{{ addslashes($namaValue) }}', 'bold 39px "Plus Jakarta Sans", sans-serif'],
+            ['NIS / NISN', '{{ $nisValue }}{{ $nisnValue ? " / " . $nisnValue : "" }}', 'bold 35px monospace'],
+            ['Kelas / Jurusan', '{{ addslashes($kelasJurusanDisplay) }}', 'bold 34px "Plus Jakarta Sans", sans-serif'],
+            ['Masa Berlaku', 's/d {{ $berlakuSampai }}', 'bold 34px "Plus Jakarta Sans", sans-serif'],
+            ['Alamat', '{{ addslashes($alamatValue) }}', 'bold 32px "Plus Jakarta Sans", sans-serif'],
+            ['Ekstrakurikuler', '{{ addslashes($eskulValue) }}', '900 39px "Plus Jakarta Sans", sans-serif'],
         ];
 
-        let curY = 346;
+        let curY = 412;
         rows.forEach(([label, val, valFont]) => {
             ctx.fillStyle = '#1e293b';
-            ctx.font = '600 27px "Plus Jakarta Sans", sans-serif';
+            ctx.font = '600 34px "Plus Jakarta Sans", sans-serif';
             ctx.fillText(label, startX, curY);
 
-            ctx.font = 'bold 27px "Plus Jakarta Sans", sans-serif';
+            ctx.font = 'bold 34px "Plus Jakarta Sans", sans-serif';
             ctx.fillText(':', colonX, curY);
 
             ctx.fillStyle = '#0f172a';
             ctx.font = valFont;
             ctx.fillText(val, valX, curY);
 
-            curY += 65;
+            curY += 81;
         });
 
-        // Blok Tanda Tangan (startX = 1014)
+        // 6. Blok Pengesahan Kepala Sekolah
         ctx.fillStyle = '#0f172a';
-        ctx.font = '500 23px "Plus Jakarta Sans", sans-serif';
-        ctx.fillText('Mengetahui,', 1014, 738);
-        ctx.fillText('Kepala Sekolah', 1014, 772);
-        ctx.fillText('Semarang, {{ $tanggalPengesahan }}', 1014, 806);
+        ctx.font = '500 28px "Plus Jakarta Sans", sans-serif';
+        ctx.fillText('Mengetahui,', 1248, 902);
+        ctx.fillText('Kepala Sekolah', 1248, 944);
+        ctx.fillText('Semarang, {{ $tanggalPengesahan }}', 1248, 986);
 
-        ctx.font = 'bold 25px "Plus Jakarta Sans", sans-serif';
-        ctx.fillText('{{ addslashes($kepsekNama) }}', 1014, 942);
+        ctx.font = 'bold 30px "Plus Jakarta Sans", sans-serif';
+        ctx.fillText('{{ addslashes($kepsekNama) }}', 1248, 1152);
 
-        // Eksekusi Download
-        const link = document.createElement('a');
-        link.download = `Kartu_Peserta_${nis}.png`;
-        link.href = canvas.toDataURL('image/png');
-        link.click();
+        // 7. Gambar Logo Lingkaran Sekolah
+        const logo = new Image();
+        logo.crossOrigin = 'anonymous';
+        logo.onload = function() {
+            // Lingkaran putih logo
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(230, 150, 138, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Gambar gambar logo sekolah
+            ctx.drawImage(logo, 106, 26, 248, 248);
+
+            // Eksekusi Download
+            const link = document.createElement('a');
+            link.download = `Kartu_Peserta_${nis}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        };
+        logo.onerror = function() {
+            const link = document.createElement('a');
+            link.download = `Kartu_Peserta_${nis}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        };
+        logo.src = '{{ $cardLogoUrl }}';
     };
-    bg.src = '{{ asset("images/kartu-peserta-template.jpg") }}';
+    bg.src = '{{ asset("images/kartu-clean-bg.jpg") }}';
 }
 </script>
 @endsection
