@@ -23,6 +23,7 @@
             position: relative;
             width: 100%;
             aspect-ratio: 85.6 / 53.98;
+            background-color: #5280a4;
             background-image: url('{{ asset('images/kartu-clean-bg.jpg') }}?v={{ filemtime(public_path('images/kartu-clean-bg.jpg')) }}');
             background-size: cover;
             background-repeat: no-repeat;
