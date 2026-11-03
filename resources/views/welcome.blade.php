@@ -23,6 +23,7 @@
         </style>
     </noscript>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @include('layouts.partials.speed-accelerator')
 </head>
 <body class="bg-slate-50 font-sans text-slate-800 antialiased selection:bg-blue-600 selection:text-white" x-data="{
     detailModal: false,
