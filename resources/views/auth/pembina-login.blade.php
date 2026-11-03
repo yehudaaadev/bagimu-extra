@@ -20,11 +20,14 @@
     $motto = \App\Models\AppSetting::get('school.motto', '4B Berbudi • Berkualitas • Berdaya • Berhasil');
 @endphp
 <main class="flex min-h-screen">
-    {{-- Panel Branding Desktop - Pure Deep Navy Monokromatik --}}
-    <div class="relative hidden w-full lg:w-[58%] min-h-screen flex-col justify-between overflow-hidden p-8 xl:p-12 text-white lg:flex bg-gradient-to-b from-[#0b1e3d] via-[#102a54] to-[#1e3a8a]">
-        {{-- Tekstur Mikro Dot-Grid Presisi (Tanpa Efek Neon / Orb Blur) --}}
-        <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:20px_20px] opacity-[0.07]"></div>
-        <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sky-400/25 to-transparent"></div>
+    {{-- Panel Branding Desktop - Sesuai Mockup Desain Resmi (58% Lebar Layar) --}}
+    <div class="relative hidden w-full lg:w-[58%] min-h-screen flex-col justify-between overflow-hidden p-8 xl:p-12 text-white lg:flex"
+         style="background-color: #1a62d8; background: #1a62d8;">
+        
+        {{-- Foto Asli Gedung & Langit SMK Bagimu Negeriku (Bersih Tanpa Teks Bawaan) --}}
+        <img src="{{ asset('images/gedung-backdrop-clean.jpg') }}?v={{ filemtime(public_path('images/gedung-backdrop-clean.jpg')) }}"
+             alt="Gedung {{ $sekolah }}"
+             class="pointer-events-none absolute inset-0 h-full w-full object-cover object-right select-none z-0" />
 
         {{-- Header Sekolah Modern & Elegan --}}
         <div class="relative z-10 flex items-center justify-between gap-4">
