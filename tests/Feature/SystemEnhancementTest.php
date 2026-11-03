@@ -62,10 +62,13 @@ class SystemEnhancementTest extends TestCase
             'user_id' => $user->id,
             'nis' => $nis,
             'kelas' => 'X RPL 1',
+            'jurusan' => 'RPL',
+            'usia' => 16,
+            'gender' => 'LAKI_LAKI',
             'eskul_utama' => $eskul->name,
             'status' => Status::APPROVED,
             'periode' => '2026/2027',
-            'card_token' => 'ecard-token-'.$nis,
+            'verify_token' => bin2hex(random_bytes(16)),
         ]);
     }
 
@@ -98,7 +101,7 @@ class SystemEnhancementTest extends TestCase
 
         // 3. Scan sukses setelah pertemuan dibuat
         $res = $this->actingAs($pembina)->postJson(route('pembina.scan.store', $eskul), [
-            'kode' => $reg->card_token,
+            'kode' => $reg->nis,
             'tanggal' => $hariIni,
             'pertemuan_id' => $pertemuan->id,
         ]);
@@ -114,7 +117,6 @@ class SystemEnhancementTest extends TestCase
         $this->assertDatabaseHas('kehadiran', [
             'eskul_id' => $eskul->id,
             'registration_id' => $reg->id,
-            'tanggal' => $hariIni,
             'status' => KehadiranStatus::HADIR->value,
         ]);
     }

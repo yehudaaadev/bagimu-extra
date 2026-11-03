@@ -4,230 +4,140 @@
 
 @section('content')
 <style>
-    /* Standar fisik kartu internasional ID-1 / CR80 */
-    .id-card-wrapper {
-        display: flex;
-        justify-content: center;
-        padding: 4px 0;
+    /* Kontainer Responsif Kartu Peserta Resmi */
+    .card-official-wrapper {
+        width: 100%;
+        max-width: 620px;
+        margin: 0 auto;
+        container-type: inline-size;
     }
 
-    /* KARTU HORIZONTAL (85.6mm x 54mm) */
-    .id-card-horizontal {
-        width: 85.6mm;
-        height: 54mm;
-        min-width: 85.6mm;
-        min-height: 54mm;
-        max-width: 85.6mm;
-        max-height: 54mm;
-        box-sizing: border-box;
-        background: #ffffff;
-        border: 1.5px solid #1e3a8a;
-        border-radius: 8px;
-        overflow: hidden;
+    .card-official {
         position: relative;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
+        width: 100%;
+        aspect-ratio: 770 / 498;
+        background-image: url('{{ asset('images/kartu-peserta-template.jpg') }}?v={{ filemtime(public_path('images/kartu-peserta-template.jpg')) }}');
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+        background-position: center;
+        border-radius: 2.2cqw;
+        overflow: hidden;
+        box-shadow: 0 14px 35px -5px rgba(15, 23, 42, 0.22), 0 4px 10px -2px rgba(15, 23, 42, 0.1);
         font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-        box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.12), 0 4px 6px -4px rgba(15, 23, 42, 0.08);
-        text-align: left;
+        color: #0f172a;
         user-select: none;
-    }
-
-    /* KARTU VERTIKAL / TEGAK (54mm x 85.6mm) */
-    .id-card-vertical {
-        width: 54mm;
-        height: 85.6mm;
-        min-width: 54mm;
-        min-height: 85.6mm;
-        max-width: 54mm;
-        max-height: 85.6mm;
-        box-sizing: border-box;
-        background: #ffffff;
-        border: 1.5px solid #1e3a8a;
-        border-radius: 8px;
-        overflow: hidden;
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-        box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.12), 0 4px 6px -4px rgba(15, 23, 42, 0.08);
         text-align: left;
-        user-select: none;
     }
 
-    .id-card-header {
-        background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
-        color: #ffffff;
-        padding: 4px 7px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        border-bottom: 1px solid #172554;
-        flex-shrink: 0;
-    }
-    .id-card-header-left {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        min-width: 0;
-    }
-    .id-card-logo-circle {
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        background: #ffffff;
-        padding: 1px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        overflow: hidden;
-    }
-    .id-card-header-text {
-        min-width: 0;
-        line-height: 1.1;
-    }
-    .id-card-header-title {
-        font-size: 7.5px;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 0.2px;
-        color: #ffffff;
-        margin: 0;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-    .id-card-header-sub {
-        font-size: 5.5px;
-        font-weight: 700;
-        color: #93c5fd;
-        text-transform: uppercase;
-        letter-spacing: 0.4px;
-        margin-top: 1px;
-    }
-    .id-card-badge {
-        background: rgba(255, 255, 255, 0.15);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        border-radius: 3px;
-        padding: 1px 4px;
-        font-size: 6px;
-        font-weight: 700;
-        color: #f8fafc;
-        letter-spacing: 0.3px;
-        white-space: nowrap;
-        flex-shrink: 0;
-    }
-
-    .id-card-body-horizontal {
-        padding: 4px 6px;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        background: linear-gradient(180deg, #f8fafc 0%, #ffffff 60%, #f1f5f9 100%);
-        flex: 1;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .id-card-body-vertical {
-        padding: 5px 6px;
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-        background: linear-gradient(180deg, #f8fafc 0%, #ffffff 60%, #f1f5f9 100%);
-        flex: 1;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .id-card-watermark {
+    /* Header Teks Kartu */
+    .card-official-header {
         position: absolute;
-        right: 4px;
-        bottom: 2px;
-        width: 55px;
-        height: 55px;
-        opacity: 0.05;
-        pointer-events: none;
-        z-index: 1;
-        object-fit: contain;
-    }
-
-    .id-card-photo {
-        width: 40px;
-        height: 52px;
-        flex-shrink: 0;
-        border-radius: 4px;
-        border: 1px solid #93c5fd;
-        background: linear-gradient(180deg, #dbeafe 0%, #eff6ff 50%, #bfdbfe 100%);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-        overflow: hidden;
-        box-shadow: inset 0 1px 3px rgba(0,0,0,0.06);
-        z-index: 2;
-    }
-    .id-card-photo-initial {
-        font-size: 16px;
-        font-weight: 900;
-        color: #1e3a8a;
-        line-height: 1;
-    }
-    .id-card-photo-tag {
-        font-size: 5px;
-        font-weight: 700;
-        color: #2563eb;
-        letter-spacing: 0.5px;
-        margin-top: 1px;
-    }
-    .id-card-photo-banner {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: #1e3a8a;
-        color: #ffffff;
-        font-size: 4.8px;
-        font-weight: 800;
+        left: 24.5cqw;
+        right: 4.5cqw;
+        top: 4.93cqw;
         text-align: center;
-        padding: 1px 0;
-        letter-spacing: 0.5px;
+        line-height: 1.15;
+    }
+    .card-header-gov {
+        font-size: 1.55cqw;
+        font-weight: 700;
+        color: #0f172a;
+        text-transform: uppercase;
+        letter-spacing: 0.08cqw;
+        margin: 0;
+    }
+    .card-header-city {
+        font-size: 1.55cqw;
+        font-weight: 700;
+        color: #0f172a;
+        text-transform: uppercase;
+        letter-spacing: 0.08cqw;
+        margin: 0.35cqw 0 0 0;
+    }
+    .card-header-school {
+        font-size: 2.85cqw;
+        font-weight: 900;
+        color: #0f172a;
+        text-transform: uppercase;
+        letter-spacing: 0.06cqw;
+        margin: 0.65cqw 0 0 0;
+    }
+    .card-header-title {
+        font-size: 1.65cqw;
+        font-weight: 700;
+        color: #0f172a;
+        text-transform: uppercase;
+        letter-spacing: 0.22cqw;
+        margin: 0.65cqw 0 0 0;
     }
 
-    .id-card-info {
-        flex: 1;
-        min-width: 0;
+    /* Bingkai Foto / Avatar Siswa */
+    .card-photo-box {
+        position: absolute;
+        left: 6.36cqw;
+        top: 24.1cqw;
+        width: 18.31cqw;
+        height: 44.38cqw;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        border-radius: 2.4cqw;
+    }
+    .card-avatar-svg {
+        width: 62%;
+        height: 62%;
+    }
+
+    /* Kotak Barcode NIS */
+    .card-barcode-box {
+        position: absolute;
+        left: 5.58cqw;
+        top: 75.1cqw;
+        width: 31.04cqw;
+        height: 8.03cqw;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.6cqw 1.8cqw;
+        box-sizing: border-box;
+    }
+    .card-barcode-box svg {
+        width: 100%;
+        height: 100%;
+        max-height: 5.5cqw;
+    }
+
+    /* Biodata Peserta Ekstrakurikuler */
+    .card-biodata {
+        position: absolute;
+        left: 32.21cqw;
+        top: 32.1cqw;
+        width: 63.5cqw;
         display: flex;
         flex-direction: column;
-        gap: 2px;
-        z-index: 2;
+        gap: 1.15cqw;
     }
-    .id-card-row {
+    .card-row {
         display: flex;
         align-items: baseline;
-        font-size: 6.5px;
-        line-height: 1.2;
+        font-size: 1.8cqw;
+        line-height: 1.25;
     }
-    .id-card-label {
-        width: 46px;
+    .card-label {
+        width: 16.5cqw;
         flex-shrink: 0;
-        font-weight: 700;
-        color: #64748b;
-        text-transform: uppercase;
-        font-size: 5.8px;
-        letter-spacing: 0.2px;
+        font-weight: 600;
+        color: #0f172a;
     }
-    .id-card-sep {
-        width: 5px;
+    .card-sep {
+        width: 1.8cqw;
         flex-shrink: 0;
-        color: #94a3b8;
+        text-align: center;
         font-weight: 700;
+        color: #0f172a;
     }
-    .id-card-value {
+    .card-val {
         flex: 1;
         min-width: 0;
         font-weight: 700;
@@ -236,64 +146,34 @@
         overflow: hidden;
         text-overflow: ellipsis;
     }
-    .id-card-value-primary {
+    .card-val-name {
         font-weight: 800;
-        color: #1d4ed8;
-        font-size: 7px;
+        font-size: 2.05cqw;
+    }
+    .card-val-eskul {
+        font-weight: 800;
+        font-size: 2.05cqw;
     }
 
-    /* Kotak QR Code di Kartu */
-    .id-card-qr-box {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        background: #ffffff;
-        border: 1px solid #cbd5e1;
-        border-radius: 4px;
-        padding: 2px;
-        flex-shrink: 0;
-        z-index: 2;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    /* Blok Pengesahan Kepala Sekolah */
+    .card-signature {
+        position: absolute;
+        left: 65.84cqw;
+        top: 73.8cqw;
+        width: 30.5cqw;
+        font-size: 1.48cqw;
+        line-height: 1.25;
+        color: #0f172a;
     }
-    .id-card-qr-box svg, .id-card-qr-box img {
-        width: 44px;
-        height: 44px;
-        display: block;
+    .card-signature p {
+        margin: 0;
     }
-    .id-card-qr-tag {
-        font-size: 4.5px;
-        font-weight: 800;
-        color: #1e3a8a;
-        letter-spacing: 0.3px;
-        margin-top: 1.5px;
-        text-transform: uppercase;
+    .card-sig-space {
+        height: 4.8cqw;
     }
-
-    .id-card-footer {
-        background: #f8fafc;
-        border-top: 1px solid #e2e8f0;
-        padding: 3px 7px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        font-size: 5.8px;
-        flex-shrink: 0;
-        z-index: 2;
-    }
-    .id-card-status {
-        color: #047857;
-        font-weight: 800;
-        display: flex;
-        align-items: center;
-        gap: 3px;
-        letter-spacing: 0.3px;
-    }
-    .id-card-token {
-        color: #64748b;
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-        font-size: 5.8px;
-        font-weight: 600;
+    .card-sig-name {
+        font-weight: 700;
+        color: #0f172a;
     }
 
     @media print {
@@ -319,12 +199,16 @@
             justify-content: center !important;
             align-items: center !important;
         }
-        .id-card-wrapper {
-            padding: 0 !important;
+        .card-official-wrapper {
+            width: 85.6mm !important;
+            max-width: 85.6mm !important;
             margin: 10mm auto !important;
+            container-type: normal !important;
         }
-        .id-card-horizontal, .id-card-vertical {
-            border: 1.5px solid #1e3a8a !important;
+        .card-official {
+            width: 85.6mm !important;
+            height: 53.98mm !important;
+            border-radius: 4px !important;
             box-shadow: none !important;
             page-break-inside: avoid !important;
             -webkit-print-color-adjust: exact !important;
@@ -333,11 +217,53 @@
     }
 </style>
 
-<div class="space-y-6 w-full max-w-xl mx-auto py-4 sm:py-6" x-data="{
-    countdown: 15,
+@php
+    $cardLogo = \App\Models\AppSetting::get('school.logo');
+    $cardLogoUrl = $cardLogo ? (str_starts_with($cardLogo, 'http') ? $cardLogo : asset(ltrim($cardLogo, '/'))) : asset('logo.png');
+    $nisValue = $user->student?->nis ?? ($registration?->nis ?? $user->username);
+    $nisnValue = $user->student?->nisn ?? null;
+    $namaValue = $user->student?->nama ?? $user->name;
+    $kelasValue = $registration?->kelas ?: ($user->student?->kelas ?? '-');
+    $eskulValue = $registration?->eskul_utama ?? session('eskul', 'Terdaftar');
+    $jurusanRaw = $registration?->jurusan ?: ($user->student?->jurusan ?? '');
+
+    // Pemetaan nama jurusan lengkap
+    $jurusanMap = [
+        'DKV' => 'Desain Komunikasi Visual',
+        'RPL' => 'Rekayasa Perangkat Lunak',
+        'KULINER' => 'Kuliner',
+        'TP' => 'Teknik Pengelasan',
+        'TKP' => 'Teknik Konstruksi Perumahan',
+    ];
+    $jurusanKey = strtoupper(trim((string) $jurusanRaw));
+    $jurusanDeskripsi = $jurusanMap[$jurusanKey] ?? (str_contains((string) $jurusanRaw, '(') ? '' : $jurusanRaw);
+
+    $kelasJurusanDisplay = $kelasValue;
+    if ($jurusanDeskripsi && !str_contains($kelasValue, '(') && !str_contains($kelasValue, $jurusanDeskripsi)) {
+        $kelasJurusanDisplay .= ' (' . $jurusanDeskripsi . ')';
+    }
+
+    // Alamat Asrama / Wisma SMK Bagimu Negeriku
+    $gender = $user->student?->gender?->value ?? ($user->student?->gender ?? ($registration?->gender ?? 'LAKI_LAKI'));
+    $isPutri = in_array(strtoupper((string) $gender), ['P', 'PEREMPUAN', 'FEMALE']);
+    $alamatValue = $isPutri ? 'Wisma Remaja Putri SMK Bagimu Negeriku' : 'Wisma Remaja Putra SMK Bagimu Negeriku';
+
+    // Tanggal Pengesahan
+    $tahunParts = explode('/', $tahunAjaran);
+    $tahunSelesai = $tahunParts[1] ?? '2027';
+    $tanggalPengesahan = '14 Juli ' . $tahunSelesai;
+
+    // Nama Kepala Sekolah
+    $kepsekNama = \App\Models\AppSetting::get('school.kepsek', 'Daniel Satyo Wibowo, S.Pd., Gr.');
+
+    // Barcode SVG NIS
+    $barcodeSvg = \App\Support\Barcode::svg($nisValue, 32, 2);
+@endphp
+
+<div class="space-y-6 w-full max-w-2xl mx-auto py-4 sm:py-6" x-data="{
+    countdown: 30,
     timer: null,
-    orientasi: 'horizontal',
-    downloadingPng: false,
+    showQr: false,
     init() {
         this.timer = setInterval(() => {
             if (this.countdown > 1) {
@@ -349,249 +275,136 @@
         }, 1000);
     }
 }">
-    <div class="print-area rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-8 shadow-xl text-center space-y-5">
-        {{-- Success Banner (Disembunyikan saat cetak) --}}
+    <div class="print-area rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-8 shadow-xl text-center space-y-6">
+        {{-- Banner Berhasil (Disembunyikan saat cetak) --}}
         <div class="no-print space-y-2">
-            <span class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
-                <x-icon name="check" class="h-3.5 w-3.5" />
-                Pendaftaran Berhasil / Terverifikasi
+            <span class="inline-flex items-center gap-1.5 rounded-full px-3.5 py-1 text-xs font-bold bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20 shadow-2xs">
+                <x-icon name="check" class="h-3.5 w-3.5 text-emerald-600" />
+                Pendaftaran Berhasil &amp; Terverifikasi
             </span>
-            <h1 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Kartu Tanda Peserta Ekstrakurikuler</h1>
-            <p class="text-xs text-slate-500">Simpan kartu ini dalam format PNG atau PDF sebagai bukti resmi keikutsertaan kegiatan eskul.</p>
+            <h1 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Kartu Peserta Ekstrakurikuler</h1>
+            <p class="text-xs text-slate-500 max-w-md mx-auto">
+                Kartu tanda peserta resmi kegiatan ekstrakurikuler sekolah. Simpan dalam format PNG atau cetak sebagai PDF fisik.
+            </p>
         </div>
 
-        {{-- Switcher Orientasi Kartu (No-Print) --}}
-        <div class="no-print flex items-center justify-center gap-1.5 pt-1">
-            <div class="inline-flex rounded-xl border border-slate-200 bg-slate-100 p-1 shadow-2xs">
-                <button type="button" @click="orientasi = 'horizontal'"
-                        :class="orientasi === 'horizontal' ? 'bg-white text-blue-900 font-bold shadow-xs' : 'text-slate-600 hover:text-slate-900 font-semibold'"
-                        class="px-3.5 py-1.5 rounded-lg text-xs transition-all cursor-pointer">
-                    Horizontal (8,5 x 5,4 cm)
-                </button>
-                <button type="button" @click="orientasi = 'vertical'"
-                        :class="orientasi === 'vertical' ? 'bg-white text-blue-900 font-bold shadow-xs' : 'text-slate-600 hover:text-slate-900 font-semibold'"
-                        class="px-3.5 py-1.5 rounded-lg text-xs transition-all cursor-pointer">
-                    Vertikal / Tegak (5,4 x 8,5 cm)
-                </button>
-            </div>
-        </div>
-
-        @php
-            $cardLogo = \App\Models\AppSetting::get('school.logo');
-            $cardLogoUrl = $cardLogo ? (str_starts_with($cardLogo, 'http') ? $cardLogo : asset(ltrim($cardLogo, '/'))) : asset('logo.png');
-            $nisValue = $user->student?->nis ?? ($registration?->nis ?? $user->username);
-            $namaValue = $user->name;
-            $kelasValue = $registration?->kelas ?? ($user->student?->kelas ?? '-');
-            $eskulValue = $registration?->eskul_utama ?? session('eskul', 'Terdaftar');
-            $tokenId = substr($registration?->verify_token ?? md5($user->id . $tahunAjaran), 0, 10);
-        @endphp
-
-        {{-- KARTU VERSI HORIZONTAL (85.6mm x 54mm) --}}
-        <div class="id-card-wrapper" x-show="orientasi === 'horizontal'" id="card-horizontal-wrapper">
-            <div class="id-card-horizontal" id="card-element-horizontal">
-                {{-- Header Kartu --}}
-                <div class="id-card-header">
-                    <div class="id-card-header-left">
-                        <span class="id-card-logo-circle">
-                            <img src="{{ $cardLogoUrl }}" alt="Logo" style="width: 100%; height: 100%; object-fit: contain; display: none;" onload="this.style.display='block'; if(this.nextElementSibling) this.nextElementSibling.style.display='none';" onerror="this.style.display='none';">
-                            <svg style="width: 13px; height: 13px; color: #1e3a8a;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg>
-                        </span>
-                        <div class="id-card-header-text">
-                            <h3 class="id-card-header-title">{{ $schoolName }}</h3>
-                            <p class="id-card-header-sub">KARTU PESERTA EKSTRAKURIKULER</p>
-                        </div>
-                    </div>
-                    <span class="id-card-badge">
-                        TA {{ $tahunAjaran }}
-                    </span>
+        {{-- Kartu Peserta Resmi Sesuai Format Mockup Asli --}}
+        <div class="card-official-wrapper">
+            <div class="card-official" id="card-official-element">
+                {{-- Header Teks Instansi & Sekolah --}}
+                <div class="card-official-header">
+                    <p class="card-header-gov">PEMERINTAH PROVINSI JAWA TENGAH</p>
+                    <p class="card-header-city">KOTA SEMARANG</p>
+                    <h2 class="card-header-school">{{ $schoolName }}</h2>
+                    <p class="card-header-title">KARTU PESERTA EKSTRAKURIKULER</p>
                 </div>
 
-                {{-- Badan Kartu Horizontal --}}
-                <div class="id-card-body-horizontal">
-                    <img src="{{ $cardLogoUrl }}" alt="" class="id-card-watermark" onerror="this.style.display='none';">
+                {{-- Bingkai Foto / Avatar Siswa --}}
+                <div class="card-photo-box">
+                    <svg class="card-avatar-svg" viewBox="0 0 100 120" fill="none" stroke="#7090b0" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="50" cy="40" r="22" />
+                        <path d="M14 108c0-22 16-36 36-36s36 14 36 36" />
+                    </svg>
+                </div>
 
-                    {{-- Foto Avatar Siswa --}}
-                    <div class="id-card-photo">
-                        <span class="id-card-photo-initial">{{ strtoupper(substr($namaValue, 0, 1)) }}</span>
-                        <span class="id-card-photo-tag">FOTO</span>
-                        <div class="id-card-photo-banner">SISWA</div>
+                {{-- Kotak Barcode NIS Siswa --}}
+                <div class="card-barcode-box" title="Barcode NIS: {{ $nisValue }}">
+                    {!! $barcodeSvg !!}
+                </div>
+
+                {{-- Biodata Peserta Ekstrakurikuler --}}
+                <div class="card-biodata">
+                    <div class="card-row">
+                        <span class="card-label">Nama Lengkap</span>
+                        <span class="card-sep">:</span>
+                        <span class="card-val card-val-name">{{ $namaValue }}</span>
                     </div>
-
-                    {{-- Data Isian Siswa --}}
-                    <div class="id-card-info">
-                        <div class="id-card-row">
-                            <span class="id-card-label">Nama</span>
-                            <span class="id-card-sep">:</span>
-                            <span class="id-card-value" style="font-weight: 800;">{{ $namaValue }}</span>
-                        </div>
-                        <div class="id-card-row">
-                            <span class="id-card-label">NIS</span>
-                            <span class="id-card-sep">:</span>
-                            <span class="id-card-value font-mono">{{ $nisValue }}</span>
-                        </div>
-                        <div class="id-card-row">
-                            <span class="id-card-label">Kelas</span>
-                            <span class="id-card-sep">:</span>
-                            <span class="id-card-value">{{ $kelasValue }}</span>
-                        </div>
-                        <div class="id-card-row">
-                            <span class="id-card-label">Eskul</span>
-                            <span class="id-card-sep">:</span>
-                            <span class="id-card-value id-card-value-primary">{{ $eskulValue }}</span>
-                        </div>
-                        <div class="id-card-row">
-                            <span class="id-card-label">Thn Ajaran</span>
-                            <span class="id-card-sep">:</span>
-                            <span class="id-card-value">
-                                {{ $tahunAjaran }} <span style="font-style: italic; font-weight: normal; color: #64748b; font-size: 5.5px;">(Kode: {{ $periode?->periode ?? $tahunAjaran }})</span>
-                            </span>
-                        </div>
-                        <div class="id-card-row">
-                            <span class="id-card-label">Berlaku s/d</span>
-                            <span class="id-card-sep">:</span>
-                            <span class="id-card-value" style="color: #047857; font-weight: 800;">{{ $berlakuSampai }}</span>
-                        </div>
+                    <div class="card-row">
+                        <span class="card-label">NIS / NISN</span>
+                        <span class="card-sep">:</span>
+                        <span class="card-val font-mono">{{ $nisValue }}{{ $nisnValue ? ' / ' . $nisnValue : '' }}</span>
                     </div>
-
-                    {{-- QR Code Presensi Resmi --}}
-                    <div class="id-card-qr-box">
-                        @if ($qrSvg)
-                            {!! $qrSvg !!}
-                        @else
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data={{ urlencode($qrCodeData ?? $nisValue) }}" alt="QR Presensi" style="width: 44px; height: 44px;">
-                        @endif
-                        <span class="id-card-qr-tag">SCAN PRESENSI</span>
+                    <div class="card-row">
+                        <span class="card-label">Kelas / Jurusan</span>
+                        <span class="card-sep">:</span>
+                        <span class="card-val">{{ $kelasJurusanDisplay }}</span>
+                    </div>
+                    <div class="card-row">
+                        <span class="card-label">Masa Berlaku</span>
+                        <span class="card-sep">:</span>
+                        <span class="card-val">s/d {{ $berlakuSampai }}</span>
+                    </div>
+                    <div class="card-row">
+                        <span class="card-label">Alamat</span>
+                        <span class="card-sep">:</span>
+                        <span class="card-val">{{ $alamatValue }}</span>
+                    </div>
+                    <div class="card-row">
+                        <span class="card-label">Ekstrakurikuler</span>
+                        <span class="card-sep">:</span>
+                        <span class="card-val card-val-eskul">{{ $eskulValue }}</span>
                     </div>
                 </div>
 
-                {{-- Footer Kartu --}}
-                <div class="id-card-footer">
-                    <span class="id-card-status">
-                        <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle;"><polyline points="20 6 9 17 4 12"/></svg>
-                        TERDAFTAR RESMI
-                    </span>
-                    <span class="id-card-token">
-                        ID: {{ $tokenId }}
-                    </span>
+                {{-- Blok Pengesahan Kepala Sekolah --}}
+                <div class="card-signature">
+                    <p>Mengetahui,</p>
+                    <p>Kepala Sekolah</p>
+                    <p>Semarang, {{ $tanggalPengesahan }}</p>
+                    <div class="card-sig-space"></div>
+                    <p class="card-sig-name">{{ $kepsekNama }}</p>
                 </div>
             </div>
         </div>
 
-        {{-- KARTU VERSI VERTIKAL / TEGAK (54mm x 85.6mm) --}}
-        <div class="id-card-wrapper" x-show="orientasi === 'vertical'" id="card-vertical-wrapper" style="display: none;">
-            <div class="id-card-vertical" id="card-element-vertical">
-                {{-- Header Kartu Vertikal --}}
-                <div class="id-card-header">
-                    <div class="id-card-header-left">
-                        <span class="id-card-logo-circle">
-                            <img src="{{ $cardLogoUrl }}" alt="Logo" style="width: 100%; height: 100%; object-fit: contain; display: none;" onload="this.style.display='block'; if(this.nextElementSibling) this.nextElementSibling.style.display='none';" onerror="this.style.display='none';">
-                            <svg style="width: 13px; height: 13px; color: #1e3a8a;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg>
-                        </span>
-                        <div class="id-card-header-text">
-                            <h3 class="id-card-header-title" style="max-width: 110px;">{{ $schoolName }}</h3>
-                            <p class="id-card-header-sub">KARTU PESERTA</p>
-                        </div>
-                    </div>
-                    <span class="id-card-badge">
-                        TA {{ $tahunAjaran }}
-                    </span>
+        {{-- QR Code Presensi Kamera HP (Opsional / Dropdown) --}}
+        <div class="no-print pt-2">
+            <button type="button" @click="showQr = !showQr"
+                    class="inline-flex items-center gap-2 text-xs font-bold text-blue-700 hover:text-blue-800 transition py-1 px-3 rounded-lg hover:bg-blue-50">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 7h.01"/><path d="M17 7h.01"/><path d="M7 17h.01"/><path d="M17 17h.01"/></svg>
+                <span x-text="showQr ? 'Sembunyikan QR Presensi Kamera' : 'Tampilkan QR Presensi Kamera HP'"></span>
+            </button>
+
+            <div x-show="showQr" x-collapse class="mt-3 p-4 rounded-2xl border border-slate-200 bg-slate-50/80 max-w-sm mx-auto space-y-2">
+                <p class="text-[11px] font-semibold text-slate-600">Scan QR Presensi menggunakan Kamera HP Pembina:</p>
+                <div class="flex justify-center p-2 bg-white rounded-xl border border-slate-200 shadow-2xs w-fit mx-auto">
+                    @if ($qrSvg)
+                        {!! $qrSvg !!}
+                    @else
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data={{ urlencode($qrCodeData ?? $nisValue) }}" alt="QR Presensi" style="width: 100px; height: 100px;">
+                    @endif
                 </div>
-
-                {{-- Badan Kartu Vertikal --}}
-                <div class="id-card-body-vertical">
-                    <img src="{{ $cardLogoUrl }}" alt="" class="id-card-watermark" onerror="this.style.display='none';">
-
-                    {{-- Baris Atas: Foto Siswa & Badge Eskul --}}
-                    <div class="flex items-center gap-3 z-10">
-                        <div class="id-card-photo" style="width: 36px; height: 46px;">
-                            <span class="id-card-photo-initial" style="font-size: 14px;">{{ strtoupper(substr($namaValue, 0, 1)) }}</span>
-                            <span class="id-card-photo-tag" style="font-size: 4.5px;">FOTO</span>
-                            <div class="id-card-photo-banner" style="font-size: 4px;">SISWA</div>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <span class="text-[5.5px] font-bold text-slate-400 uppercase tracking-wider block">Ekstrakurikuler</span>
-                            <span class="text-[9px] font-black text-blue-700 truncate block">{{ $eskulValue }}</span>
-                            <span class="text-[6px] font-semibold text-slate-500 block mt-0.5">T.A. {{ $tahunAjaran }}</span>
-                        </div>
-                    </div>
-
-                    {{-- Data Isian Siswa --}}
-                    <div class="id-card-info" style="gap: 1.5px;">
-                        <div class="id-card-row">
-                            <span class="id-card-label" style="width: 34px;">Nama</span>
-                            <span class="id-card-sep">:</span>
-                            <span class="id-card-value" style="font-weight: 800;">{{ $namaValue }}</span>
-                        </div>
-                        <div class="id-card-row">
-                            <span class="id-card-label" style="width: 34px;">NIS</span>
-                            <span class="id-card-sep">:</span>
-                            <span class="id-card-value font-mono">{{ $nisValue }}</span>
-                        </div>
-                        <div class="id-card-row">
-                            <span class="id-card-label" style="width: 34px;">Kelas</span>
-                            <span class="id-card-sep">:</span>
-                            <span class="id-card-value">{{ $kelasValue }}</span>
-                        </div>
-                        <div class="id-card-row">
-                            <span class="id-card-label" style="width: 34px;">Berlaku</span>
-                            <span class="id-card-sep">:</span>
-                            <span class="id-card-value" style="color: #047857; font-weight: 800;">{{ $berlakuSampai }}</span>
-                        </div>
-                    </div>
-
-                    {{-- QR Code Presensi Resmi di Tengah/Bawah --}}
-                    <div class="flex flex-col items-center justify-center pt-1 z-10">
-                        <div class="id-card-qr-box" style="padding: 2.5px;">
-                            @if ($qrSvg)
-                                {!! $qrSvg !!}
-                            @else
-                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data={{ urlencode($qrCodeData ?? $nisValue) }}" alt="QR Presensi" style="width: 44px; height: 44px;">
-                            @endif
-                            <span class="id-card-qr-tag">SCAN PRESENSI</span>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Footer Kartu Vertikal --}}
-                <div class="id-card-footer">
-                    <span class="id-card-status">
-                        <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle;"><polyline points="20 6 9 17 4 12"/></svg>
-                        TERDAFTAR RESMI
-                    </span>
-                    <span class="id-card-token">
-                        ID: {{ $tokenId }}
-                    </span>
-                </div>
+                <p class="text-[10px] text-slate-500 font-mono">NIS: {{ $nisValue }}</p>
             </div>
         </div>
 
         {{-- Countdown Auto Logout (No-Print) --}}
         <div class="no-print rounded-2xl border border-blue-200 bg-blue-50/60 p-4 text-center space-y-2">
             <p class="text-xs font-semibold text-blue-900">
-                Token login telah dihanguskan demi keamanan. Sistem akan otomatis keluar dalam:
+                Token pendaftaran telah tuntas digunakan. Sesi otomatis berakhir dalam:
             </p>
             <div class="flex items-center justify-center gap-1.5 font-black text-blue-700 text-2xl font-mono">
-                <span x-text="countdown">15</span>
+                <span x-text="countdown">30</span>
                 <span class="text-xs uppercase font-sans font-bold text-blue-600">detik</span>
             </div>
             <p class="text-[11px] font-semibold text-blue-800">
-                Segera unduh kartu (PNG) atau simpan (PDF) sebelum waktu habis.
+                Segera unduh kartu (PNG) atau simpan (PDF) sebelum sesi keluar otomatis.
             </p>
         </div>
 
-        {{-- Action Buttons (No-Print) --}}
-        <div class="no-print space-y-2 pt-1">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        {{-- Tombol Aksi (No-Print) --}}
+        <div class="no-print space-y-2.5 pt-1">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {{-- Tombol Unduh Gambar PNG --}}
                 <button type="button" onclick="unduhKartuPng()"
-                        class="w-full inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-600 bg-emerald-600 px-4 py-2.5 text-xs sm:text-sm font-bold text-white hover:bg-emerald-700 transition shadow-xs cursor-pointer">
+                        class="w-full inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-600 bg-emerald-600 px-5 py-3 text-xs sm:text-sm font-bold text-white hover:bg-emerald-700 transition shadow-xs cursor-pointer active:scale-[0.98]">
                     <x-icon name="download" class="h-4 w-4 text-white" />
                     <span>Unduh Gambar (PNG)</span>
                 </button>
 
                 {{-- Tombol Cetak / Simpan PDF --}}
                 <button type="button" onclick="window.print()"
-                        class="w-full inline-flex items-center justify-center gap-2 rounded-xl border border-blue-600 bg-blue-600 px-4 py-2.5 text-xs sm:text-sm font-bold text-white hover:bg-blue-700 transition shadow-xs cursor-pointer">
+                        class="w-full inline-flex items-center justify-center gap-2 rounded-xl border border-blue-600 bg-blue-600 px-5 py-3 text-xs sm:text-sm font-bold text-white hover:bg-blue-700 transition shadow-xs cursor-pointer active:scale-[0.98]">
                     <x-icon name="printer" class="h-4 w-4 text-white" />
                     <span>Cetak / Simpan PDF</span>
                 </button>
@@ -608,263 +421,145 @@
 </div>
 
 <script>
-function unduhKartuPng() {
-    const isVertical = document.querySelector('[x-data]').__x.$data.orientasi === 'vertical';
-    const targetElement = isVertical ? document.getElementById('card-element-vertical') : document.getElementById('card-element-horizontal');
-    const nis = '{{ $nisValue }}';
+// Fungsi menggambar barcode Code 128 pada canvas
+function drawBarcodeCanvas(ctx, startX, startY, targetWidth, height, text) {
+    const patterns = [
+        '212222', '222122', '222221', '121223', '121322', '131222', '122213', '122312', '132212', '221213',
+        '221312', '231212', '112232', '122132', '122231', '113222', '123122', '123221', '223211', '221132',
+        '221231', '213212', '223112', '312131', '311222', '321122', '321221', '312212', '322112', '322211',
+        '212123', '212321', '232121', '111323', '131123', '131321', '112313', '132113', '132311', '211313',
+        '231113', '231311', '112133', '112331', '132131', '113123', '113321', '133121', '313121', '211331',
+        '231131', '213113', '213311', '213131', '311123', '311321', '331121', '312113', '312311', '332111',
+        '314111', '221411', '431111', '111224', '111422', '121124', '121421', '141122', '141221', '112214',
+        '112412', '122114', '122411', '142112', '142211', '241211', '221114', '413111', '241112', '134111',
+        '111242', '121142', '121241', '114212', '124112', '124211', '411212', '421112', '421211', '212141',
+        '214121', '412121', '111143', '111341', '131141', '114113', '114311', '411113', '411311', '113141',
+        '114131', '311141', '411131', '211412', '211214', '211232', '2331112'
+    ];
+    let codes = [104];
+    let checksum = 104;
+    for (let i = 0; i < text.length; i++) {
+        let val = text.charCodeAt(i) - 32;
+        if (val < 0 || val > 95) val = 0;
+        codes.push(val);
+        checksum += val * (i + 1);
+    }
+    codes.push(checksum % 103);
+    codes.push(106);
 
-    // Buat Canvas resolusi tinggi (300 DPI)
+    let modules = '';
+    codes.forEach(c => {
+        let pat = patterns[c];
+        let bar = true;
+        for (let p = 0; p < pat.length; p++) {
+            let w = parseInt(pat[p]);
+            modules += (bar ? '1' : '0').repeat(w);
+            bar = !bar;
+        }
+    });
+    modules += '11';
+
+    let barW = targetWidth / modules.length;
+    ctx.fillStyle = '#0f172a';
+    for (let i = 0; i < modules.length; i++) {
+        if (modules[i] === '1') {
+            ctx.fillRect(startX + i * barW, startY, Math.ceil(barW), height);
+        }
+    }
+}
+
+// Fungsi unduh PNG resolusi tinggi (1540x996)
+function unduhKartuPng() {
+    const nis = '{{ $nisValue }}';
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
+    const W = 1540;
+    const H = 996;
+    canvas.width = W;
+    canvas.height = H;
 
-    const width = isVertical ? 638 : 1011;
-    const height = isVertical ? 1011 : 638;
+    const bg = new Image();
+    bg.crossOrigin = 'anonymous';
+    bg.onload = function() {
+        ctx.drawImage(bg, 0, 0, W, H);
 
-    canvas.width = width;
-    canvas.height = height;
-
-    // Background kartu putih dengan border navy
-    ctx.fillStyle = '#ffffff';
-    roundRect(ctx, 0, 0, width, height, 20);
-    ctx.fill();
-
-    // Header gradient navy
-    const headerHeight = isVertical ? 110 : 85;
-    const grad = ctx.createLinearGradient(0, 0, width, 0);
-    grad.addColorStop(0, '#0f172a');
-    grad.addColorStop(1, '#1e3a8a');
-    ctx.fillStyle = grad;
-    roundRectTop(ctx, 0, 0, width, headerHeight, 20);
-    ctx.fill();
-
-    // Teks Header
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 24px sans-serif';
-    ctx.fillText('{{ $schoolName }}', 40, isVertical ? 50 : 45);
-
-    ctx.fillStyle = '#93c5fd';
-    ctx.font = 'bold 15px sans-serif';
-    ctx.fillText(isVertical ? 'KARTU PESERTA' : 'KARTU PESERTA EKSTRAKURIKULER', 40, isVertical ? 80 : 70);
-
-    // Badge TA Header
-    ctx.fillStyle = 'rgba(255,255,255,0.2)';
-    roundRect(ctx, width - 180, 25, 150, 40, 8);
-    ctx.fill();
-    ctx.strokeStyle = 'rgba(255,255,255,0.4)';
-    ctx.stroke();
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 16px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('TA {{ $tahunAjaran }}', width - 105, 51);
-    ctx.textAlign = 'left';
-
-    // Badan Kartu
-    if (!isVertical) {
-        // HORIZONTAL
-        // Avatar Siswa
-        ctx.fillStyle = '#dbeafe';
-        roundRect(ctx, 40, 120, 150, 200, 12);
-        ctx.fill();
-        ctx.strokeStyle = '#93c5fd';
-        ctx.lineWidth = 3;
+        // Icon Avatar pada Photo Box (Center x=239, y=490)
+        ctx.strokeStyle = '#7090b0';
+        ctx.lineWidth = 7;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.arc(239, 410, 52, 0, Math.PI * 2);
         ctx.stroke();
 
-        ctx.fillStyle = '#1e3a8a';
-        ctx.font = '900 60px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('{{ strtoupper(substr($namaValue, 0, 1)) }}', 115, 230);
-
-        ctx.fillStyle = '#1e3a8a';
-        ctx.fillRect(40, 285, 150, 35);
-        ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 16px sans-serif';
-        ctx.fillText('SISWA', 115, 308);
-        ctx.textAlign = 'left';
-
-        // Teks Informasi
-        const startX = 220;
-        let startY = 145;
-        const lineSpacing = 32;
-
-        const info = [
-            ['NAMA', '{{ $namaValue }}', true],
-            ['NIS', '{{ $nisValue }}', false],
-            ['KELAS', '{{ $kelasValue }}', false],
-            ['ESKUL', '{{ $eskulValue }}', true, '#1d4ed8'],
-            ['THN AJARAN', '{{ $tahunAjaran }} (Kode: {{ $periode?->periode ?? $tahunAjaran }})', false],
-            ['BERLAKU S/D', '{{ $berlakuSampai }}', true, '#047857']
-        ];
-
-        info.forEach(([label, val, bold, color]) => {
-            ctx.fillStyle = '#64748b';
-            ctx.font = 'bold 17px sans-serif';
-            ctx.fillText(label, startX, startY);
-
-            ctx.fillStyle = '#94a3b8';
-            ctx.fillText(':', startX + 150, startY);
-
-            ctx.fillStyle = color || (bold ? '#0f172a' : '#334155');
-            ctx.font = bold ? 'bold 19px sans-serif' : '18px sans-serif';
-            ctx.fillText(val, startX + 175, startY);
-
-            startY += lineSpacing;
-        });
-
-        // QR Code Box (Kanan)
-        drawQrOnCanvas(ctx, width - 210, 135, 170, 170, isVertical, nis);
-    } else {
-        // VERTIKAL
-        // Avatar + Info Eskul
-        ctx.fillStyle = '#dbeafe';
-        roundRect(ctx, 40, 135, 120, 160, 12);
-        ctx.fill();
-        ctx.strokeStyle = '#93c5fd';
-        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(239, 580, 88, Math.PI * 1.22, Math.PI * 1.78);
         ctx.stroke();
 
-        ctx.fillStyle = '#1e3a8a';
-        ctx.font = '900 50px sans-serif';
+        // Barcode NIS
+        drawBarcodeCanvas(ctx, 130, 762, 390, 50, nis);
+
+        // Teks Header (Center x=786)
         ctx.textAlign = 'center';
-        ctx.fillText('{{ strtoupper(substr($namaValue, 0, 1)) }}', 100, 225);
+        ctx.fillStyle = '#0f172a';
+        ctx.font = 'bold 24px "Plus Jakarta Sans", sans-serif';
+        ctx.fillText('PEMERINTAH PROVINSI JAWA TENGAH', 786, 96);
+        ctx.fillText('KOTA SEMARANG', 786, 128);
 
-        ctx.fillStyle = '#1e3a8a';
-        ctx.fillRect(40, 260, 120, 35);
-        ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 14px sans-serif';
-        ctx.fillText('SISWA', 100, 283);
+        ctx.font = '900 44px "Plus Jakarta Sans", sans-serif';
+        ctx.fillText('{{ $schoolName }}', 786, 192);
+
+        ctx.font = 'bold 25px "Plus Jakarta Sans", sans-serif';
+        ctx.letterSpacing = '3px';
+        ctx.fillText('KARTU PESERTA EKSTRAKURIKULER', 786, 240);
+        ctx.letterSpacing = '0px';
+
+        // Teks Biodata (x labels=496, colon=746, values=772)
         ctx.textAlign = 'left';
-
-        // Eskul Info Box
-        ctx.fillStyle = '#64748b';
-        ctx.font = 'bold 15px sans-serif';
-        ctx.fillText('EKSTRAKURIKULER', 180, 165);
-
-        ctx.fillStyle = '#1d4ed8';
-        ctx.font = 'bold 26px sans-serif';
-        ctx.fillText('{{ $eskulValue }}', 180, 205);
-
-        ctx.fillStyle = '#64748b';
-        ctx.font = '16px sans-serif';
-        ctx.fillText('T.A. {{ $tahunAjaran }}', 180, 240);
-
-        // Informasi Teks Baris
-        const startX = 40;
-        let startY = 345;
-        const lineSpacing = 36;
-
-        const info = [
-            ['NAMA', '{{ $namaValue }}', true],
-            ['NIS', '{{ $nisValue }}', false],
-            ['KELAS', '{{ $kelasValue }}', false],
-            ['BERLAKU', '{{ $berlakuSampai }}', true, '#047857']
+        const startX = 496;
+        const colonX = 746;
+        const valX = 772;
+        const rows = [
+            ['Nama Lengkap', '{{ addslashes($namaValue) }}', 'bold 30px "Plus Jakarta Sans", sans-serif'],
+            ['NIS / NISN', '{{ $nisValue }}{{ $nisnValue ? " / " . $nisnValue : "" }}', 'bold 28px monospace'],
+            ['Kelas / Jurusan', '{{ addslashes($kelasJurusanDisplay) }}', 'bold 26px "Plus Jakarta Sans", sans-serif'],
+            ['Masa Berlaku', 's/d {{ $berlakuSampai }}', 'bold 27px "Plus Jakarta Sans", sans-serif'],
+            ['Alamat', '{{ addslashes($alamatValue) }}', 'bold 25px "Plus Jakarta Sans", sans-serif'],
+            ['Ekstrakurikuler', '{{ addslashes($eskulValue) }}', '900 30px "Plus Jakarta Sans", sans-serif'],
         ];
 
-        info.forEach(([label, val, bold, color]) => {
-            ctx.fillStyle = '#64748b';
-            ctx.font = 'bold 18px sans-serif';
-            ctx.fillText(label, startX, startY);
+        let curY = 346;
+        rows.forEach(([label, val, valFont]) => {
+            ctx.fillStyle = '#1e293b';
+            ctx.font = '600 27px "Plus Jakarta Sans", sans-serif';
+            ctx.fillText(label, startX, curY);
 
-            ctx.fillStyle = '#94a3b8';
-            ctx.fillText(':', startX + 110, startY);
+            ctx.font = 'bold 27px "Plus Jakarta Sans", sans-serif';
+            ctx.fillText(':', colonX, curY);
 
-            ctx.fillStyle = color || (bold ? '#0f172a' : '#334155');
-            ctx.font = bold ? 'bold 20px sans-serif' : '18px sans-serif';
-            ctx.fillText(val, startX + 135, startY);
+            ctx.fillStyle = '#0f172a';
+            ctx.font = valFont;
+            ctx.fillText(val, valX, curY);
 
-            startY += lineSpacing;
+            curY += 65;
         });
 
-        // QR Code Box (Tengah Bawah)
-        drawQrOnCanvas(ctx, (width - 250) / 2, 510, 250, 250, isVertical, nis);
-    }
+        // Blok Tanda Tangan (startX = 1014)
+        ctx.fillStyle = '#0f172a';
+        ctx.font = '500 23px "Plus Jakarta Sans", sans-serif';
+        ctx.fillText('Mengetahui,', 1014, 738);
+        ctx.fillText('Kepala Sekolah', 1014, 772);
+        ctx.fillText('Semarang, {{ $tanggalPengesahan }}', 1014, 806);
 
-    // Footer
-    const footerY = height - 60;
-    ctx.fillStyle = '#f8fafc';
-    ctx.fillRect(0, footerY, width, 60);
-    ctx.fillStyle = '#e2e8f0';
-    ctx.fillRect(0, footerY, width, 2);
+        ctx.font = 'bold 25px "Plus Jakarta Sans", sans-serif';
+        ctx.fillText('{{ addslashes($kepsekNama) }}', 1014, 942);
 
-    ctx.fillStyle = '#047857';
-    ctx.font = 'bold 18px sans-serif';
-    ctx.fillText('✓ TERDAFTAR RESMI', 40, footerY + 38);
-
-    ctx.fillStyle = '#64748b';
-    ctx.font = 'bold 18px monospace';
-    ctx.textAlign = 'right';
-    ctx.fillText('ID: {{ $tokenId }}', width - 40, footerY + 38);
-    ctx.textAlign = 'left';
-
-    // Border Luar
-    ctx.strokeStyle = '#1e3a8a';
-    ctx.lineWidth = 6;
-    roundRect(ctx, 0, 0, width, height, 20);
-    ctx.stroke();
-
-    // Trigger download
-    setTimeout(() => {
+        // Eksekusi Download
         const link = document.createElement('a');
-        link.download = `Kartu_Peserta_${nis}_${isVertical ? 'Vertikal' : 'Horizontal'}.png`;
+        link.download = `Kartu_Peserta_${nis}.png`;
         link.href = canvas.toDataURL('image/png');
         link.click();
-    }, 200);
-}
-
-function drawQrOnCanvas(ctx, x, y, w, h, isVertical, nis) {
-    // Background QR Box
-    ctx.fillStyle = '#ffffff';
-    roundRect(ctx, x, y, w, h, 10);
-    ctx.fill();
-    ctx.strokeStyle = '#cbd5e1';
-    ctx.lineWidth = 2;
-    ctx.stroke();
-
-    // Render QR Code Image
-    const qrImg = new Image();
-    qrImg.crossOrigin = 'anonymous';
-    qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent('{{ $qrCodeData ?? $nisValue }}')}`;
-    qrImg.onload = function() {
-        ctx.drawImage(qrImg, x + 10, y + 10, w - 20, h - 35);
-
-        ctx.fillStyle = '#1e3a8a';
-        ctx.font = 'bold 13px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('SCAN PRESENSI', x + (w / 2), y + h - 10);
-        ctx.textAlign = 'left';
     };
-    qrImg.onerror = function() {
-        ctx.fillStyle = '#1e3a8a';
-        ctx.font = 'bold 14px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('QR: ' + nis, x + (w / 2), y + (h / 2));
-        ctx.textAlign = 'left';
-    };
-}
-
-function roundRect(ctx, x, y, width, height, radius) {
-    ctx.beginPath();
-    ctx.moveTo(x + radius, y);
-    ctx.lineTo(x + width - radius, y);
-    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-    ctx.lineTo(x + width, y + height - radius);
-    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-    ctx.lineTo(x + radius, y + height);
-    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-    ctx.lineTo(x, y + radius);
-    ctx.quadraticCurveTo(x, y, x + radius, y);
-    ctx.closePath();
-}
-
-function roundRectTop(ctx, x, y, width, height, radius) {
-    ctx.beginPath();
-    ctx.moveTo(x + radius, y);
-    ctx.lineTo(x + width - radius, y);
-    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-    ctx.lineTo(x + width, y + height);
-    ctx.lineTo(x, y + height);
-    ctx.lineTo(x, y + radius);
-    ctx.quadraticCurveTo(x, y, x + radius, y);
-    ctx.closePath();
+    bg.src = '{{ asset("images/kartu-peserta-template.jpg") }}';
 }
 </script>
 @endsection
