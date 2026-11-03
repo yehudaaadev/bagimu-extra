@@ -108,7 +108,7 @@
 
         <div class="flex flex-wrap items-center justify-between gap-2">
             <div class="flex flex-wrap gap-2">
-                @if (auth()->user()->hasRole(\App\Enums\Role::ADMIN, \App\Enums\Role::OPERATOR, \App\Enums\Role::KEPALA_SEKOLAH))
+                @if (auth()->user()->hasRole(\App\Enums\Role::ADMIN, \App\Enums\Role::OPERATOR))
                     @if (! $locked)
                         <form method="POST" action="{{ route('admin.kehadiran.lock') }}">
                             @csrf
@@ -139,7 +139,6 @@
             <div id="scan-feedback" class="text-xs font-bold text-emerald-700 hidden"></div>
         </div>
 
-        @if (!auth()->user()->hasRole(\App\Enums\Role::KEPALA_SEKOLAH))
         <form method="POST" action="{{ route('admin.kehadiran.store') }}" id="form-presensi" class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
             @csrf
             <input type="hidden" name="eskul_id" value="{{ $eskul->id }}">
@@ -236,7 +235,6 @@
                 </div>
             @endif
         </form>
-        @endif
     @endif
 </div>
 

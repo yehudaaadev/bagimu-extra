@@ -63,7 +63,6 @@ class AuthenticatedSessionController extends Controller
             \App\Enums\Role::ADMIN,
             \App\Enums\Role::OPERATOR,
             \App\Enums\Role::PEMBINA,
-            \App\Enums\Role::KEPALA_SEKOLAH,
         ], true);
 
         Auth::guard('web')->logout();

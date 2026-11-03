@@ -36,7 +36,7 @@
                                     @csrf
                                     @method('PUT')
                                     <select name="role" class="rounded-lg border-slate-300 py-1 text-xs">
-                                        @foreach (['ADMIN' => 'Admin', 'OPERATOR' => 'Operator', 'KEPALA_SEKOLAH' => 'Kepala Sekolah'] as $val => $label)
+                                        @foreach (['ADMIN' => 'Admin', 'OPERATOR' => 'Operator'] as $val => $label)
                                             <option value="{{ $val }}" @selected($u->role->value === $val)>{{ $label }}</option>
                                         @endforeach
                                     </select>
@@ -72,7 +72,6 @@
             <select name="role" class="w-full border-slate-300 rounded-xl">
                 <option value="ADMIN">Admin</option>
                 <option value="OPERATOR">Operator</option>
-                <option value="KEPALA_SEKOLAH">Kepala Sekolah</option>
             </select>
         </div>
         <div class="flex items-end"><button class="px-4 py-2 rounded-xl bg-blue-700 text-white font-bold hover:bg-blue-800">Buat Akun</button></div>

@@ -10,6 +10,7 @@ use App\Models\Eskul;
 use App\Models\Kehadiran;
 use App\Models\Pertemuan;
 use App\Models\Registration;
+use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -133,7 +134,7 @@ class ScanController extends Controller
     }
 
     /**
-     * Terima isi QR E-Card (URL verify / token hex / NIS) atau ketik manual.
+     * Terima isi Barcode / QR E-Card (URL verify / token hex / NIS / NISN / NIS/NISN) atau ketik manual.
      */
     private function cari(string $kode, Eskul $eskul): ?Registration
     {
@@ -147,60 +148,89 @@ class ScanController extends Controller
             $kode = trim(end($parts));
         }
 
-        // 1. Prioritas: Cari pendaftaran di eskul ini berdasarkan NIS
-        $byNisInEskul = Registration::with('user')
-            ->where('nis', $kode)
-            ->where('eskul_utama', $eskul->name)
-            ->latest('id')
-            ->first();
-        if ($byNisInEskul) {
-            return $byNisInEskul;
-        }
-
-        // 2. Prioritas: Cari pendaftaran di eskul ini berdasarkan username akun siswa
-        $byUserInEskul = Registration::with('user')
-            ->whereHas('user', fn ($q) => $q->where('username', $kode))
-            ->where('eskul_utama', $eskul->name)
-            ->latest('id')
-            ->first();
-        if ($byUserInEskul) {
-            return $byUserInEskul;
-        }
-
-        // 3. Fallback: Cari di eskul ini via verify_token hex E-Card
-        if (preg_match('/^[0-9a-fA-F]{32,64}$/', $kode)) {
-            $byTokenInEskul = Registration::with('user')
-                ->where('verify_token', strtolower($kode))
-                ->where('eskul_utama', $eskul->name)
-                ->first();
-            if ($byTokenInEskul) {
-                return $byTokenInEskul;
+        // Siapkan kandidat token/kode (mendukung format barcode gabungan NIS/NISN pada kartu fisik)
+        $candidates = [$kode];
+        if (str_contains($kode, '/')) {
+            foreach (explode('/', $kode) as $part) {
+                $cleanPart = trim($part);
+                if ($cleanPart !== '' && ! in_array($cleanPart, $candidates, true)) {
+                    $candidates[] = $cleanPart;
+                }
             }
         }
 
-        // 4. Jika tidak ada di eskul ini, cari global untuk mendeteksi apakah siswa terdaftar di eskul lain
-        $byNisGlobal = Registration::with('user')
-            ->where('nis', $kode)
-            ->latest('id')
-            ->first();
-        if ($byNisGlobal) {
-            return $byNisGlobal;
+        // Tambahkan pemetaan NIS jika salah satu kode merupakan NISN dari tabel students
+        foreach ($candidates as $c) {
+            $nisFromNisn = Student::where('nisn', $c)->value('nis');
+            if ($nisFromNisn && ! in_array($nisFromNisn, $candidates, true)) {
+                $candidates[] = $nisFromNisn;
+            }
         }
 
-        $byUserGlobal = Registration::with('user')
-            ->whereHas('user', fn ($q) => $q->where('username', $kode))
-            ->latest('id')
-            ->first();
-        if ($byUserGlobal) {
-            return $byUserGlobal;
-        }
-
-        if (preg_match('/^[0-9a-fA-F]{32,64}$/', $kode)) {
-            return Registration::with('user')
-                ->where('verify_token', strtolower($kode))
+        // 1. Prioritas: Cari pendaftaran di eskul ini berdasarkan seluruh kandidat NIS/Username/Token
+        foreach ($candidates as $c) {
+            $byNisInEskul = Registration::with('user')
+                ->where('nis', $c)
+                ->where('eskul_utama', $eskul->name)
+                ->latest('id')
                 ->first();
+            if ($byNisInEskul) {
+                return $byNisInEskul;
+            }
+
+            $byUserInEskul = Registration::with('user')
+                ->whereHas('user', fn ($q) => $q->where('username', $c))
+                ->where('eskul_utama', $eskul->name)
+                ->latest('id')
+                ->first();
+            if ($byUserInEskul) {
+                return $byUserInEskul;
+            }
+
+            if (preg_match('/^[0-9a-fA-F]{32,64}$/', $c)) {
+                $byTokenInEskul = Registration::with('user')
+                    ->where('verify_token', strtolower($c))
+                    ->where('eskul_utama', $eskul->name)
+                    ->first();
+                if ($byTokenInEskul) {
+                    return $byTokenInEskul;
+                }
+            }
         }
 
-        return Registration::dariKode($kode)?->load('user');
+        // 2. Jika tidak ada di eskul ini, cari global untuk mendeteksi apakah siswa terdaftar di eskul lain
+        foreach ($candidates as $c) {
+            $byNisGlobal = Registration::with('user')
+                ->where('nis', $c)
+                ->latest('id')
+                ->first();
+            if ($byNisGlobal) {
+                return $byNisGlobal;
+            }
+
+            $byUserGlobal = Registration::with('user')
+                ->whereHas('user', fn ($q) => $q->where('username', $c))
+                ->latest('id')
+                ->first();
+            if ($byUserGlobal) {
+                return $byUserGlobal;
+            }
+
+            if (preg_match('/^[0-9a-fA-F]{32,64}$/', $c)) {
+                $byTokenGlobal = Registration::with('user')
+                    ->where('verify_token', strtolower($c))
+                    ->first();
+                if ($byTokenGlobal) {
+                    return $byTokenGlobal;
+                }
+            }
+
+            $fromKode = Registration::dariKode($c);
+            if ($fromKode) {
+                return $fromKode->load('user');
+            }
+        }
+
+        return null;
     }
 }

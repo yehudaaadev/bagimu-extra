@@ -8,6 +8,14 @@
         <a href="{{ route('pembina.dashboard') }}" class="text-xs font-semibold text-blue-600 hover:text-blue-700">← Kembali ke Dashboard Pembina</a>
         <h1 class="mt-1 text-xl font-bold text-slate-900">Scan Presensi Siswa (Kamera HP)</h1>
         <p class="text-xs sm:text-sm text-slate-500">{{ $eskul->name }} • Hasil pemindaian langsung mencatat kehadiran siswa dan tersimpan ke daftar hadir.</p>
+        <div class="mt-2 flex flex-wrap gap-2">
+            <span class="inline-flex items-center gap-1 rounded-md bg-blue-50 px-2.5 py-0.5 text-[11px] font-semibold text-blue-700">
+                Format Kartu: Barcode Garis 1D (Landscape / Portrait) & QR Code
+            </span>
+            <span class="inline-flex items-center gap-1 rounded-md bg-slate-100 px-2.5 py-0.5 text-[11px] font-semibold text-slate-600">
+                Identifikasi: NIS / NISN Otomatis
+            </span>
+        </div>
         <div id="pertemuan-badge-wrapper">
             @if (! empty($pertemuan))
                 <p class="mt-2 inline-flex items-center gap-1.5 rounded-full bg-blue-100 px-3 py-1 text-xs font-bold text-blue-800">
@@ -100,15 +108,15 @@
     {{-- Alternatif Ketik Manual NIS --}}
     <x-card>
         <h2 class="flex items-center gap-2 font-bold text-slate-900 text-sm">
-            <x-icon name="pencil" class="h-4 w-4 text-blue-700" /> Input Cepat Manual (NIS Siswa)
+            <x-icon name="pencil" class="h-4 w-4 text-blue-700" /> Input Cepat Manual (NIS / NISN Siswa)
         </h2>
         <p class="mt-1 text-xs text-slate-500">
-            Jika kartu pelajar buram atau kamera tidak dapat digunakan, Anda dapat mengetik NIS siswa di bawah ini:
+            Jika kartu pelajar buram atau kamera tidak dapat digunakan, Anda dapat mengetik NIS atau NISN siswa di bawah ini:
         </p>
         <form id="scan-manual" method="POST" action="{{ route('pembina.scan.store', $eskul) }}" class="mt-3 flex gap-2">
             @csrf
             <input type="hidden" name="tanggal" id="manual-tanggal" value="{{ $tanggal }}">
-            <input name="kode" type="text" required placeholder="Ketik NIS siswa (cth: 10001)"
+            <input name="kode" type="text" required placeholder="Ketik NIS atau NISN (cth: 1011914 atau 0091637087)"
                    class="min-w-0 flex-1 rounded-xl border-slate-300 font-mono text-xs sm:text-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2">
             <button class="shrink-0 rounded-xl bg-blue-700 px-4 py-2 text-xs font-bold text-white hover:bg-blue-800 transition shadow-xs cursor-pointer">
                 Catat Hadir
@@ -262,6 +270,27 @@
         }
     }
 
+    const barcodeFormats = [
+        'qr_code', 'code_128', 'code_39', 'code_93',
+        'codabar', 'ean_13', 'ean_8', 'itf', 'upc_a', 'upc_e'
+    ];
+
+    function getHtml5Formats() {
+        if (typeof Html5QrcodeSupportedFormats === 'undefined') return undefined;
+        return [
+            Html5QrcodeSupportedFormats.QR_CODE,
+            Html5QrcodeSupportedFormats.CODE_128,
+            Html5QrcodeSupportedFormats.CODE_39,
+            Html5QrcodeSupportedFormats.CODE_93,
+            Html5QrcodeSupportedFormats.CODABAR,
+            Html5QrcodeSupportedFormats.EAN_13,
+            Html5QrcodeSupportedFormats.EAN_8,
+            Html5QrcodeSupportedFormats.UPC_A,
+            Html5QrcodeSupportedFormats.UPC_E,
+            Html5QrcodeSupportedFormats.ITF,
+        ];
+    }
+
     async function startScanner() {
         cameraPlaceholder.classList.add('hidden');
         activeControls.classList.remove('hidden');
@@ -272,11 +301,20 @@
                 if (html5QrCode) {
                     try { await html5QrCode.stop(); html5QrCode.clear(); } catch (e) {}
                 }
-                html5QrCode = new Html5Qrcode('reader');
+                const supportedFormats = getHtml5Formats();
+                html5QrCode = new Html5Qrcode('reader', supportedFormats ? { formatsToSupport: supportedFormats, verbose: false } : false);
                 const config = {
-                    fps: 12,
-                    qrbox: { width: 250, height: 250 },
+                    fps: 15,
+                    qrbox: function(viewfinderWidth, viewfinderHeight) {
+                        return {
+                            width: Math.max(220, Math.floor(viewfinderWidth * 0.88)),
+                            height: Math.max(160, Math.floor(viewfinderHeight * 0.78))
+                        };
+                    },
                     aspectRatio: 1.0,
+                    experimentalFeatures: {
+                        useBarCodeDetectorIfSupported: true
+                    }
                 };
 
                 await html5QrCode.start(
@@ -308,7 +346,7 @@
                 nativeVideo.classList.remove('hidden');
                 await nativeVideo.play();
 
-                const detector = new BarcodeDetector({ formats: ['qr_code', 'code_128', 'ean_13'] });
+                const detector = new BarcodeDetector({ formats: barcodeFormats });
                 nativeInterval = setInterval(async () => {
                     if (nativeVideo.readyState === nativeVideo.HAVE_ENOUGH_DATA) {
                         try {
@@ -368,16 +406,17 @@
             showFeedback(true, 'Memindai berkas foto kartu...');
             
             if (typeof Html5Qrcode !== 'undefined') {
-                const tempScanner = new Html5Qrcode('reader');
+                const supportedFormats = getHtml5Formats();
+                const tempScanner = new Html5Qrcode('reader', supportedFormats ? { formatsToSupport: supportedFormats, verbose: false } : false);
                 try {
                     const decoded = await tempScanner.scanFile(file, true);
                     sendScanData(decoded);
                 } catch (err) {
-                    showFeedback(false, 'QR code tidak terdeteksi pada foto. Pastikan foto tegak dan jelas.');
+                    showFeedback(false, 'Barcode atau QR code tidak terdeteksi pada foto. Pastikan foto kartu jelas.');
                 }
             } else if ('BarcodeDetector' in window) {
                 try {
-                    const detector = new BarcodeDetector({ formats: ['qr_code', 'code_128', 'ean_13'] });
+                    const detector = new BarcodeDetector({ formats: barcodeFormats });
                     const img = new Image();
                     img.src = URL.createObjectURL(file);
                     await img.decode();
@@ -385,7 +424,7 @@
                     if (barcodes.length > 0) {
                         sendScanData(barcodes[0].rawValue);
                     } else {
-                        showFeedback(false, 'QR code tidak terdeteksi pada foto.');
+                        showFeedback(false, 'Barcode atau QR code tidak terdeteksi pada foto.');
                     }
                 } catch (err) {
                     showFeedback(false, 'Gagal memproses foto kartu.');

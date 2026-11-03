@@ -18,7 +18,7 @@ use App\Http\Controllers\Admin\WaliKelasAdminController;
 use App\Http\Controllers\Admin\WindowController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['auth', 'role:admin,operator,kepala_sekolah', \App\Http\Middleware\BlockKepsekMutations::class])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'role:admin,operator'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::resource('eskuls', EskulController::class);

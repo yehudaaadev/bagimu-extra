@@ -21,7 +21,7 @@ use Illuminate\View\View;
 class AdminLoginController extends Controller
 {
     /** Role yang diizinkan masuk ke portal Administrator */
-    private const ALLOWED_ROLES = [Role::ADMIN, Role::OPERATOR, Role::KEPALA_SEKOLAH];
+    private const ALLOWED_ROLES = [Role::ADMIN, Role::OPERATOR];
 
     public function create(): View
     {

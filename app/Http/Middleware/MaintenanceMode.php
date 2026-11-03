@@ -20,8 +20,8 @@ class MaintenanceMode
         if (AppSetting::get('app.maintenance', '0') === '1') {
             $user = $request->user();
 
-            // Admin, operator, dan kepala sekolah bebas mengakses sistem
-            if ($user && in_array($user->role, [Role::ADMIN, Role::OPERATOR, Role::KEPALA_SEKOLAH], true)) {
+            // Admin dan operator bebas mengakses sistem
+            if ($user && in_array($user->role, [Role::ADMIN, Role::OPERATOR], true)) {
                 return $next($request);
             }
 

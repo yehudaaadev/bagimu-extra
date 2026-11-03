@@ -22,7 +22,6 @@
             <option value="PEMBINA">Pembina Ekstrakurikuler</option>
             <option value="OPERATOR">Operator Sistem</option>
             <option value="ADMIN">Administrator Penuh</option>
-            <option value="KEPALA_SEKOLAH">Kepala Sekolah (Read-only)</option>
         </select>
     </div>
     <div x-show="peran === 'PEMBINA'">

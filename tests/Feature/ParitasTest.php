@@ -28,12 +28,6 @@ class ParitasTest extends TestCase
         return User::factory()->create(['role' => Role::ADMIN]);
     }
 
-    private function kepsek(): User
-    {
-        /** @var User */
-        return User::factory()->create(['role' => Role::KEPALA_SEKOLAH]);
-    }
-
     private function pembina(): User
     {
         /** @var User */
@@ -199,25 +193,6 @@ class ParitasTest extends TestCase
         }
     }
 
-    public function test_kepala_sekolah_baca_saja(): void
-    {
-        [$siswa, $eskul] = $this->siapkan();
-        $kepsek = $this->kepsek();
-
-        $this->actingAs($kepsek)->get('/admin/registrations')->assertOk();
-        $this->actingAs($kepsek)->get('/admin/laporan')->assertOk();
-
-        $reg = Registration::create([
-            'user_id' => $siswa->id, 'periode' => '2026/2027', 'kelas' => '10 RPL 1',
-            'nis' => '10001', 'jurusan' => 'RPL', 'usia' => 16, 'gender' => 'LAKI_LAKI',
-            'eskul_utama' => 'Futsal', 'status' => 'APPROVED',
-        ]);
-
-        $this->actingAs($kepsek)->delete("/admin/registrations/{$reg->id}")
-            ->assertForbidden();
-        $this->assertDatabaseHas('registrations', ['id' => $reg->id]);
-    }
-
     public function test_maintenance_memblokir_mutasi_siswa(): void
     {
         [$siswa] = $this->siapkan();
@@ -324,12 +299,6 @@ class ParitasTest extends TestCase
         $res->assertOk();
         $this->assertStringContainsString('ms-excel', $res->headers->get('Content-Type'));
         $this->assertStringContainsString('Token Login', $res->streamedContent());
-
-        $kepsek = $this->kepsek();
-        $res = $this->actingAs($kepsek)
-            ->get('/admin/registrations/export?periode=2026/2027');
-        $res->assertOk();
-        $this->assertStringNotContainsString('Token Login', $res->streamedContent());
     }
 
     public function test_nisn_tersimpan_dan_unik(): void

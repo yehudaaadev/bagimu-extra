@@ -73,7 +73,7 @@ class PembinaLoginController extends Controller
         }
 
         // Pengecekan ketat: Admin DILARANG login di portal pembina
-        if (in_array($user->role, [Role::ADMIN, Role::OPERATOR, Role::KEPALA_SEKOLAH], true)) {
+        if (in_array($user->role, [Role::ADMIN, Role::OPERATOR], true)) {
             $this->logFailure($request, $throttleKey, $user->id, $user->email, 'Admin mencoba login ke portal Pembina');
 
             throw ValidationException::withMessages([

@@ -51,10 +51,10 @@
                             <td class="px-4 py-2">{{ $daftar->user?->name ?? '-' }}</td>
                             <td class="px-4 py-2 text-gray-600">{{ $daftar->nis ?? '-' }} / {{ $daftar->kelas }}</td>
                             <td class="px-4 py-2">
-                                <input type="number" name="nilai[{{ $daftar->id }}]" value="{{ old('nilai.'.$daftar->id, $daftar->nilai) }}" min="0" max="100" class="border rounded px-2 py-1 text-sm w-24" @disabled(auth()->user()->hasRole(\App\Enums\Role::KEPALA_SEKOLAH))>
+                                <input type="number" name="nilai[{{ $daftar->id }}]" value="{{ old('nilai.'.$daftar->id, $daftar->nilai) }}" min="0" max="100" class="border rounded px-2 py-1 text-sm w-24">
                             </td>
                             <td class="px-4 py-2">
-                                <input type="text" name="predikat[{{ $daftar->id }}]" value="{{ old('predikat.'.$daftar->id, $daftar->predikat) }}" maxlength="2" placeholder="Otomatis" class="border rounded px-2 py-1 text-sm w-20" @disabled(auth()->user()->hasRole(\App\Enums\Role::KEPALA_SEKOLAH))>
+                                <input type="text" name="predikat[{{ $daftar->id }}]" value="{{ old('predikat.'.$daftar->id, $daftar->predikat) }}" maxlength="2" placeholder="Otomatis" class="border rounded px-2 py-1 text-sm w-20">
                             </td>
                             <td class="px-4 py-2">
                                 <input type="text" name="catatan[{{ $daftar->id }}]" value="{{ old('catatan.'.$daftar->id, $daftar->catatan_nilai) }}" maxlength="1000" placeholder="Opsional" class="border rounded px-2 py-1 text-sm w-56">
@@ -66,7 +66,7 @@
                 </tbody>
             </table>
         </div>
-        @if ($pendaftar->isNotEmpty() && !auth()->user()->hasRole(\App\Enums\Role::KEPALA_SEKOLAH))
+        @if ($pendaftar->isNotEmpty())
             <div class="p-4 border-t flex items-center gap-3 no-print">
                 <button class="px-4 py-2 rounded bg-gray-900 text-white text-sm">Simpan Nilai</button>
                 <span class="text-xs text-gray-500">Predikat otomatis bila kosong: ≥85 A, ≥70 B, ≥55 C, lainnya D.</span>

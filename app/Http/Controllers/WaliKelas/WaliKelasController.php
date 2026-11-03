@@ -24,8 +24,8 @@ class WaliKelasController extends Controller
     {
         $user = $request->user();
 
-        // 1. Admin, Operator, atau Kepala Sekolah: dapat meninjau semua kelas dan berpindah kelas
-        if ($user->isAdmin() || $user->hasRole(Role::OPERATOR, Role::KEPALA_SEKOLAH)) {
+        // 1. Admin atau Operator: dapat meninjau semua kelas dan berpindah kelas
+        if ($user->isAdmin() || $user->hasRole(Role::OPERATOR)) {
             $allClasses = SchoolClass::orderBy('tingkat')->orderBy('nama')->get();
             $kelas = null;
 

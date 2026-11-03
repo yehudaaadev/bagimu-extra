@@ -39,7 +39,7 @@ class UserController extends Controller
             'email' => ['required', 'email', 'max:191', 'unique:users,email'],
             'username' => ['nullable', 'string', 'max:30', 'unique:users,username'],
             'password' => ['required', 'string', 'min:8', 'max:100'],
-            'role' => ['nullable', Rule::in([Role::PEMBINA->value, Role::OPERATOR->value, Role::ADMIN->value, Role::KEPALA_SEKOLAH->value])],
+            'role' => ['nullable', Rule::in([Role::PEMBINA->value, Role::OPERATOR->value, Role::ADMIN->value])],
             'eskul_id' => ['nullable', 'integer', 'exists:eskuls,id'],
             'eskul_ids' => ['nullable', 'array'],
             'eskul_ids.*' => ['integer', 'exists:eskuls,id'],
@@ -81,7 +81,7 @@ class UserController extends Controller
     public function updateRole(Request $request, User $user)
     {
         $data = $request->validate([
-            'role' => ['required', Rule::in([Role::ADMIN->value, Role::OPERATOR->value, Role::PEMBINA->value, Role::KEPALA_SEKOLAH->value])],
+            'role' => ['required', Rule::in([Role::ADMIN->value, Role::OPERATOR->value, Role::PEMBINA->value])],
         ]);
 
         if ($user->id === auth()->id()) {

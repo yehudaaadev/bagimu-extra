@@ -29,7 +29,7 @@ class InvitationController extends Controller
             'email' => ['required', 'email', 'max:191', 'unique:users,email'],
             'role' => ['required', Rule::in([
                 Role::ADMIN->value, Role::OPERATOR->value,
-                Role::PEMBINA->value, Role::KEPALA_SEKOLAH->value,
+                Role::PEMBINA->value,
             ])],
             'eskul_ids' => ['nullable', 'array'],
             'eskul_ids.*' => ['integer', 'exists:eskuls,id'],

@@ -8,7 +8,7 @@ use App\Http\Controllers\Admin\SettingController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
-    Route::middleware(['role:admin,operator,kepala_sekolah', \App\Http\Middleware\BlockKepsekMutations::class, \App\Http\Middleware\MaintenanceMode::class])->group(function () {
+    Route::middleware(['role:admin,operator', \App\Http\Middleware\MaintenanceMode::class])->group(function () {
         // Kehadiran
         Route::get('kehadiran', [KehadiranController::class, 'index'])->name('kehadiran.index');
         Route::post('kehadiran', [KehadiranController::class, 'store'])->name('kehadiran.store');
@@ -21,12 +21,12 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
         Route::post('nilai', [NilaiController::class, 'store'])->name('nilai.store');
     });
 
-    Route::middleware('role:admin,operator,kepala_sekolah')->group(function () {
+    Route::middleware('role:admin,operator')->group(function () {
         Route::get('laporan', [LaporanController::class, 'index'])->name('laporan.index');
         Route::get('laporan/export', [LaporanController::class, 'export'])->name('laporan.export');
     });
 
-    Route::middleware('role:admin,kepala_sekolah')->group(function () {
+    Route::middleware('role:admin')->group(function () {
         Route::get('logs', [LogController::class, 'index'])->name('logs.index');
     });
 

@@ -36,7 +36,6 @@ class CheckSessionVersion
                 \App\Enums\Role::ADMIN,
                 \App\Enums\Role::OPERATOR,
                 \App\Enums\Role::PEMBINA,
-                \App\Enums\Role::KEPALA_SEKOLAH,
                 \App\Enums\Role::WALI_KELAS,
             ], true) ? 'admin.login' : 'login';
 

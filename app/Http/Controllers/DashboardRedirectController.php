@@ -14,7 +14,6 @@ class DashboardRedirectController extends Controller
             Role::ADMIN, Role::OPERATOR => redirect()->route('admin.dashboard'),
             Role::PEMBINA => redirect()->route('pembina.dashboard'),
             Role::WALI_KELAS => redirect()->route('wali-kelas.dashboard'),
-            Role::KEPALA_SEKOLAH => redirect()->route('admin.laporan.index'),
             default => redirect()->route('siswa.aturan'),
         };
     }

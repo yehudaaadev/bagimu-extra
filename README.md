@@ -34,11 +34,12 @@ Antarmuka dibangun dengan pendekatan minimalis modern menggunakan palet warna fu
 - **Banner Pure Deep Navy Monokromatik:** Seluruh banner utama (beranda, dashboard admin, dashboard pembina, dan layar masuk) menerapkan tema warna Deep Navy murni (#0b1e3d ke #1e3a8a) dengan pola mikro dot-grid presisi bebas gradasi ungu/indigo dan bebas efek neon AI slop.
 - **Penyederhanaan Modul Kegiatan:** Penghapusan filter eskul redundan (otomatis terarah ke eskul binaan) dan peniadaan opsi klasifikasi jenis kegiatan yang tidak diperlukan.
 - **Antarmuka 4 Tab Modern:** Tata letak responsif ramah layar ponsel yang membagi modul eskul secara rapi ke dalam tab Anggota, Presensi Pertemuan, Nilai Rapor, serta Jadwal & Izin.
-- **Presensi Pertemuan & Pemindai QR Handal:**
-  - Auto-create sesi pertemuan otomatis: saat pembina memindai E-Card siswa di lapangan pada tanggal hari ini, sistem otomatis membuat sesi pertemuan baru jika belum ada, tanpa mewajibkan pembina membuat pertemuan manual terlebih dahulu.
-  - Pemindaian instan kode QR kartu pelajar multi-mesin (dukungan pustaka Html5-QRCode serta fallback native `BarcodeDetector` API peramban).
+- **Presensi Pertemuan & Pemindai Barcode / QR Handal:**
+  - Auto-create sesi pertemuan otomatis: saat pembina memindai kartu pelajar siswa di lapangan pada tanggal hari ini, sistem otomatis membuat sesi pertemuan baru jika belum ada, tanpa mewajibkan pembina membuat pertemuan manual terlebih dahulu.
+  - Pemindaian instan kode Barcode 1D (Code 128, Code 39, EAN, Codabar) serta QR Code 2D untuk membaca kartu fisik sekolah baik dalam format horizontal (landscape) maupun format tegak (portrait).
+  - Pengenalan cerdas identitas kartu: mendukung input kode NIS murni, nomor NISN, maupun format gabungan NIS/NISN yang otomatis dipetakan ke profil pendaftaran siswa di database.
   - Penanganan fleksibel pergantian lensa kamera depan/belakang, deteksi panduan izin HTTPS, getar haptic, serta opsi pemindaian via unggah foto kartu.
-  - Pencarian pendaftaran berbasis NIS terisolasi khusus eskul pembina dan input cepat manual NIS berbasis AJAX tanpa reload halaman.
+  - Pencarian pendaftaran berbasis NIS/NISN terisolasi khusus eskul pembina dan input cepat manual NIS/NISN berbasis AJAX tanpa reload halaman.
   - Fitur sekali klik "Tandai Semua Hadir" untuk kecepatan presensi lapangan tanpa klik satu per satu.
   - Pengisian presensi manual yang dikelompokkan teratur berdasarkan rombel kelas (Hadir, Izin, Sakit, Alpa).
 - **Pengesahan Sesi:** Fitur penguncian data absensi per tanggal pertemuan untuk menjamin validitas rekapitulasi.
@@ -56,7 +57,7 @@ Antarmuka dibangun dengan pendekatan minimalis modern menggunakan palet warna fu
 - **Rekapitulasi & Super-Export 4-in-1 Excel:** Pemantauan data historis lintas tahun ajaran yang menyajikan informasi nama pembina pengampu, jumlah pendaftar per eskul, sebaran asal rombel kelas siswa, serta fasilitas Super-Export Excel multi-sheet (.xls) berkinerja tinggi yang menggabungkan 4 sheet utama (Ringkasan Kesiswaan, Data Pendaftar Lengkap, Rekap Presensi & Kehadiran, serta Rekap Nilai Rapor & Predikat) dalam sekali unduh.
 - **Direktori Siswa & Pelacakan Status:** Pelacakan status pemilihan eskul beserta penanda visual siklus hidup token login (Aktif, Sudah Dipakai, Dicabut, Belum Diterbitkan), filter instan tanpa reload, serta ekspor data multi-format.
 - **Distribusi Kredensial WhatsApp:** Integrasi gateway WhatsApp (Fonnte) untuk penerbitan dan pengiriman kredensial login (NIS dan Token) secara mandiri tanpa tautan otomatis yang berisiko.
-- **Pengelolaan Akses Pengguna:** Tata kelola akun staf, pembina eskul, wali kelas, operator, dan pimpinan sekolah.
+- **Pengelolaan Akses Pengguna:** Tata kelola akun staf, pembina eskul, wali kelas, dan operator kesiswaan. Peran sistem disederhanakan secara konsisten menjadi 4 pilar utama: Administrator, Operator, Pembina, dan Wali Kelas.
 
 ---
 

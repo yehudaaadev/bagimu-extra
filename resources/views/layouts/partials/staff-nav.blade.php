@@ -6,7 +6,7 @@
             Bagian Utama
         </div>
         <div class="space-y-0.5">
-            @if ($isAdmin || $isKepsek)
+            @if ($isAdmin)
                 <a href="{{ route('admin.dashboard') }}" class="{{ $link(Route::is('admin.dashboard')) }}">
                     <x-icon name="home" class="h-4 w-4 shrink-0" />
                     <span>Dashboard</span>
@@ -40,13 +40,13 @@
     </div>
 
     {{-- 2. Eskul & Kegiatan --}}
-    @if ($isAdmin || $isKepsek || $isPembina)
+    @if ($isAdmin || $isPembina)
         <div class="pt-3 border-t border-slate-100">
             <div class="px-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 select-none">
                 Eskul / Kegiatan
             </div>
             <div class="space-y-0.5">
-                @if ($isAdmin || $isKepsek)
+                @if ($isAdmin)
                     <a href="{{ route('admin.registrations.index') }}" class="{{ $link(Route::is('admin.registrations.*')) }}">
                         <x-icon name="clipboard" class="h-4 w-4 shrink-0" />
                         <span>Data Pendaftar</span>
@@ -70,7 +70,7 @@
                         <span>Undang Pembina</span>
                     </a>
                 @endif
-                @if ($isAdmin || $isKepsek)
+                @if ($isAdmin)
                     <a href="{{ route('admin.rekap.index') }}" class="{{ $link(Route::is('admin.rekap.*')) }}">
                         <x-icon name="trophy" class="h-4 w-4 shrink-0" />
                         <span>Rekap Eskul</span>
@@ -114,7 +114,7 @@
     @endif
 
     {{-- 3. Data Kesiswaan --}}
-    @if ($isAdmin || $isKepsek)
+    @if ($isAdmin)
         <div class="pt-3 border-t border-slate-100">
             <div class="px-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 select-none">
                 Data Kesiswaan
@@ -132,7 +132,7 @@
                     <x-icon name="grad" class="h-4 w-4 shrink-0" />
                     <span>Kelas</span>
                 </a>
-                @if ($isAdmin || $isKepsek)
+                @if ($isAdmin)
                     <a href="{{ route('admin.kenaikan.index') }}" class="{{ $link(Route::is('admin.kenaikan.*')) }}">
                         <x-icon name="trending-up" class="h-4 w-4 shrink-0" />
                         <span>Kenaikan Kelas</span>
@@ -149,13 +149,13 @@
     @endif
 
     {{-- 4. Informasi & Laporan --}}
-    @if ($isAdmin || $isKepsek)
+    @if ($isAdmin)
         <div class="pt-3 border-t border-slate-100">
             <div class="px-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 select-none">
                 Informasi / Laporan
             </div>
             <div class="space-y-0.5">
-                @if ($isAdmin || $isKepsek)
+                @if ($isAdmin)
                     <a href="{{ route('admin.notifikasi.index') }}" class="{{ $link(Route::is('admin.notifikasi.*')) }}">
                         <x-icon name="bell" class="h-4 w-4 shrink-0" />
                         <span class="flex-1">Notifikasi</span>
@@ -171,7 +171,7 @@
                     <x-icon name="chart" class="h-4 w-4 shrink-0" />
                     <span>Laporan</span>
                 </a>
-                @if ($isAdmin || $isKepsek)
+                @if ($isAdmin)
                     <a href="{{ route('admin.cetak.index') }}" class="{{ $link(Route::is('admin.cetak.*')) }}">
                         <x-icon name="printer" class="h-4 w-4 shrink-0" />
                         <span>Cetak</span>
@@ -182,19 +182,19 @@
     @endif
 
     {{-- 5. Sistem & Admin --}}
-    @if ($isAdmin || $isKepsek)
+    @if ($isAdmin)
         <div class="pt-3 border-t border-slate-100">
             <div class="px-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 select-none">
                 Sistem / Admin
             </div>
             <div class="space-y-0.5">
-                @if ($isAdmin || $isKepsek)
+                @if ($isAdmin)
                     <a href="{{ route('admin.periodes.index') }}" class="{{ $link(Route::is('admin.periodes.*') || Route::is('admin.windows.*')) }}">
                         <x-icon name="calendar" class="h-4 w-4 shrink-0" />
                         <span>Periode / Jendela</span>
                     </a>
                 @endif
-                @if ($isAdminOnly || $isKepsek)
+                @if ($isAdminOnly)
                     <a href="{{ route('admin.logs.index') }}" class="{{ $link(Route::is('admin.logs.*')) }}">
                         <x-icon name="history" class="h-4 w-4 shrink-0" />
                         <span>Riwayat</span>

@@ -89,7 +89,7 @@ class RegistrationController extends Controller
 
         $headers = ['No', 'Kode Pendaftaran', 'Nama', 'Email', 'NIS', 'Kelas', 'No Absen', 'Wali Kelas', 'Jurusan', 'Jenis Kelamin', 'Usia', 'No WhatsApp', 'Periode', 'Eskul Pilihan', 'Alasan', 'Nilai', 'Predikat', 'Tanggal Daftar'];
 
-        $tampilkanToken = ! auth()->user()->hasRole(\App\Enums\Role::KEPALA_SEKOLAH);
+        $tampilkanToken = true;
 
         if ($tampilkanToken) {
             $headers[] = 'Token Login';

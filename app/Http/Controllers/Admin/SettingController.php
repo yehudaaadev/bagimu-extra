@@ -41,7 +41,6 @@ class SettingController extends Controller
         $users = \App\Models\User::whereIn('role', [
             \App\Enums\Role::ADMIN,
             \App\Enums\Role::OPERATOR,
-            \App\Enums\Role::KEPALA_SEKOLAH,
         ])->orderBy('name')->paginate(20);
 
         return view('admin.settings.index', [
