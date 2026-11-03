@@ -277,8 +277,12 @@
     $jurusanKey = strtoupper(trim($jurusanStr));
     $jurusanDeskripsi = $jurusanMap[$jurusanKey] ?? (str_contains($jurusanStr, '(') ? '' : $jurusanStr);
 
-    $kelasJurusanDisplay = $kelasValue;
-    if ($jurusanDeskripsi && !str_contains($kelasValue, '(') && !str_contains($kelasValue, $jurusanDeskripsi)) {
+    $kelasNormalized = preg_replace('/^10\b/', 'X', $kelasValue);
+    $kelasNormalized = preg_replace('/^11\b/', 'XI', $kelasNormalized);
+    $kelasNormalized = preg_replace('/^12\b/', 'XII', $kelasNormalized);
+
+    $kelasJurusanDisplay = $kelasNormalized;
+    if ($jurusanDeskripsi && !str_contains($kelasNormalized, '(') && !str_contains($kelasNormalized, $jurusanDeskripsi)) {
         $kelasJurusanDisplay .= ' (' . $jurusanDeskripsi . ')';
     }
 
