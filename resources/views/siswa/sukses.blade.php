@@ -448,6 +448,5 @@ function unduhKartuPng() {
     };
     bg.src = '{{ asset("images/kartu-clean-bg.jpg") }}?v={{ filemtime(public_path("images/kartu-clean-bg.jpg")) }}';
 }
-}
 </script>
 @endsection
