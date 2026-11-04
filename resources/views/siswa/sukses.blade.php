@@ -29,26 +29,6 @@
         text-align: left;
     }
 
-    /* 1. Logo Lingkaran Sekolah */
-    .card-logo-circle {
-        position: absolute;
-        left: 9.55cqw;
-        top: 1.63cqw;
-        width: 14.57cqw;
-        height: 14.57cqw;
-        border-radius: 50%;
-        background: #ffffff;
-        padding: 0.5cqw;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-    }
-    .card-logo-circle img {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-    }
 
     /* 2. Bingkai Foto Siswa */
     .card-photo-frame {
@@ -218,10 +198,6 @@
         {{-- Kartu Peserta Resmi Rekacipta Murni (DITIRU PERSIS DESAIN ASLI) --}}
         <div class="card-official-wrapper">
             <div class="card-official" id="card-official-element">
-                {{-- 1. Logo Lingkaran Sekolah --}}
-                <div class="card-logo-circle" title="SMK Bagimu Negeriku">
-                    <img src="{{ $cardLogoUrl }}" alt="Logo {{ $schoolName }}">
-                </div>
 
                 {{-- 2. Bingkai Foto Siswa --}}
                 <div class="card-photo-frame">
@@ -419,32 +395,11 @@ function unduhKartuPng() {
 
 
 
-        // 7. Gambar Logo Lingkaran Sekolah (Pusat cx=268, cy=141, radius=115)
-        const logo = new Image();
-        logo.crossOrigin = 'anonymous';
-        logo.onload = function() {
-            // Lingkaran putih logo
-            ctx.fillStyle = '#ffffff';
-            ctx.beginPath();
-            ctx.arc(268, 141, 115, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Gambar logo sekolah
-            ctx.drawImage(logo, 168, 41, 200, 200);
-
-            // Eksekusi Download
-            const link = document.createElement('a');
-            link.download = `Kartu_Peserta_${nis}.png`;
-            link.href = canvas.toDataURL('image/png');
-            link.click();
-        };
-        logo.onerror = function() {
-            const link = document.createElement('a');
-            link.download = `Kartu_Peserta_${nis}.png`;
-            link.href = canvas.toDataURL('image/png');
-            link.click();
-        };
-        logo.src = '{{ $cardLogoUrl }}';
+        // Eksekusi Download Langsung (karena logo dan teks sudah sempurna di kartu-clean-bg.jpg)
+        const link = document.createElement('a');
+        link.download = `Kartu_Peserta_${nis}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
     };
     bg.src = '{{ asset("images/kartu-clean-bg.jpg") }}?v={{ filemtime(public_path("images/kartu-clean-bg.jpg")) }}';
 }
