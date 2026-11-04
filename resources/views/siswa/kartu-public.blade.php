@@ -28,7 +28,7 @@
             aspect-ratio: 796 / 449;
             background-color: #ffffff;
             background-image: url('{{ asset('images/kartu-clean-bg.jpg') }}?v={{ filemtime(public_path('images/kartu-clean-bg.jpg')) }}');
-            background-size: cover;
+            background-size: 100% 100%;
             background-repeat: no-repeat;
             background-position: center;
             border-radius: 2.2cqw;
@@ -37,6 +37,10 @@
             color: #0f172a;
             user-select: none;
             text-align: left;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: high-quality;
+            transform: translateZ(0);
+            -webkit-backface-visibility: hidden;
         }
 
 
