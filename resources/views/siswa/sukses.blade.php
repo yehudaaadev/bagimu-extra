@@ -30,7 +30,7 @@
     }
 
 
-    /* 2. Bingkai Foto Siswa */
+    /* 2. Bingkai Foto Siswa (Bila diunggah) */
     .card-photo-frame {
         position: absolute;
         left: 8.04cqw;
@@ -54,32 +54,6 @@
         align-items: center;
         justify-content: center;
         overflow: hidden;
-    }
-    .card-avatar-svg {
-        width: 62%;
-        height: 62%;
-        color: #8e9fbb;
-    }
-
-    /* 3. Barcode Kapsul NIS */
-    .card-barcode-pill {
-        position: absolute;
-        left: 6.03cqw;
-        top: 46.36cqw;
-        width: 33.79cqw;
-        height: 6.91cqw;
-        background: #ffffff;
-        border-radius: 9999px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0.35cqw 1cqw;
-        box-sizing: border-box;
-    }
-    .card-barcode-pill svg {
-        width: 100%;
-        height: 100%;
-        max-height: 5.8cqw;
     }
 
 
@@ -199,24 +173,14 @@
         <div class="card-official-wrapper">
             <div class="card-official" id="card-official-element">
 
-                {{-- 2. Bingkai Foto Siswa --}}
-                <div class="card-photo-frame">
-                    <div class="card-photo-inner">
-                        @if ($user->student?->foto_url ?? null)
+                {{-- Bingkai Foto Siswa (Hanya jika siswa memiliki foto khusus yang diunggah) --}}
+                @if ($user->student?->foto_url ?? null)
+                    <div class="card-photo-frame">
+                        <div class="card-photo-inner">
                             <img src="{{ asset($user->student->foto_url) }}" alt="{{ $namaValue }}" class="w-full h-full object-cover">
-                        @else
-                            <svg class="card-avatar-svg" viewBox="0 0 100 120" fill="none" stroke="#8e9fbb" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="50" cy="40" r="22" />
-                                <path d="M14 108c0-22 16-36 36-36s36 14 36 36" />
-                            </svg>
-                        @endif
+                        </div>
                     </div>
-                </div>
-
-                {{-- 3. Wadah Kapsul Barcode NIS Siswa --}}
-                <div class="card-barcode-pill" title="Barcode NIS: {{ $nisValue }}">
-                    {!! $barcodeSvg !!}
-                </div>
+                @endif
 
 
             </div>
@@ -367,35 +331,31 @@ function unduhKartuPng() {
     const bg = new Image();
     bg.crossOrigin = 'anonymous';
     bg.onload = function() {
-        // 1. Gambar latar belakang kampus bersih
+        // 1. Gambar latar belakang kartu resmi (sudah mencakup logo, avatar default, biodata, barcode, dan tanda tangan)
         ctx.drawImage(bg, 0, 0, W, H);
 
-        // 2. Gambar Bingkai Foto Siswa (Rounded Soft Ice-Blue)
-        ctx.fillStyle = '#dee5f5';
-        drawRoundedRect(ctx, 128, 312, 282, 330, 24, true, false);
+        @if ($user->student?->foto_url ?? null)
+        // Gambar foto siswa asli jika ada foto khusus yang diunggah
+        const foto = new Image();
+        foto.crossOrigin = 'anonymous';
+        foto.onload = function() {
+            ctx.drawImage(foto, 128, 312, 282, 330);
+            const link = document.createElement('a');
+            link.download = `Kartu_Peserta_${nis}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        };
+        foto.onerror = function() {
+            const link = document.createElement('a');
+            link.download = `Kartu_Peserta_${nis}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        };
+        foto.src = '{{ asset($user->student->foto_url) }}';
+        return;
+        @endif
 
-        // Avatar SVG Silhouette
-        ctx.strokeStyle = '#8e9fbb';
-        ctx.lineWidth = 12;
-        ctx.lineCap = 'round';
-        ctx.beginPath();
-        ctx.arc(269, 435, 55, 0, Math.PI * 2);
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.arc(269, 580, 95, Math.PI * 1.2, Math.PI * 1.8);
-        ctx.stroke();
-
-        // 3. Gambar Wadah Kapsul Barcode NIS
-        ctx.fillStyle = '#ffffff';
-        drawRoundedRect(ctx, 96, 738, 538, 110, 55, true, false);
-
-        // Barcode NIS Code 128
-        drawBarcodeCanvas(ctx, 126, 754, 478, 78, nis);
-
-
-
-        // Eksekusi Download Langsung (karena logo dan teks sudah sempurna di kartu-clean-bg.jpg)
+        // Eksekusi Download Langsung (karena seluruh elemen sudah sempurna di kartu-clean-bg.jpg)
         const link = document.createElement('a');
         link.download = `Kartu_Peserta_${nis}.png`;
         link.href = canvas.toDataURL('image/png');
