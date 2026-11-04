@@ -102,53 +102,6 @@
         max-height: 5.8cqw;
     }
 
-    /* 4. Biodata Peserta */
-    .card-biodata-table {
-        position: absolute;
-        left: 33.92cqw;
-        top: 20.48cqw;
-        right: 3cqw;
-        display: flex;
-        flex-direction: column;
-        gap: 0.75cqw;
-    }
-    .card-row {
-        display: flex;
-        align-items: baseline;
-        font-size: 1.51cqw;
-        line-height: 1.25;
-    }
-    .card-label {
-        width: 18.59cqw;
-        flex-shrink: 0;
-        font-weight: 600;
-        color: #1e293b;
-    }
-    .card-sep {
-        width: 2cqw;
-        flex-shrink: 0;
-        text-align: center;
-        font-weight: 700;
-        color: #0f172a;
-    }
-    .card-val {
-        flex: 1;
-        min-width: 0;
-        font-weight: 700;
-        color: #0f172a;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        font-size: 1.63cqw;
-    }
-    .card-val-name {
-        font-weight: 800;
-        font-size: 1.76cqw;
-    }
-    .card-val-eskul {
-        font-weight: 900;
-        font-size: 1.76cqw;
-    }
 
     /* 6. Blok Tanda Tangan */
     .card-signature-block {
@@ -310,39 +263,6 @@
                     {!! $barcodeSvg !!}
                 </div>
 
-                {{-- 4. Biodata Terstruktur Siswa --}}
-                <div class="card-biodata-table">
-                    <div class="card-row">
-                        <span class="card-label">Nama Lengkap</span>
-                        <span class="card-sep">:</span>
-                        <span class="card-val card-val-name">{{ $namaValue }}</span>
-                    </div>
-                    <div class="card-row">
-                        <span class="card-label">NIS / NISN</span>
-                        <span class="card-sep">:</span>
-                        <span class="card-val font-mono">{{ $nisValue }}{{ $nisnValue ? ' / ' . $nisnValue : '' }}</span>
-                    </div>
-                    <div class="card-row">
-                        <span class="card-label">Kelas / Jurusan</span>
-                        <span class="card-sep">:</span>
-                        <span class="card-val">{{ $kelasJurusanDisplay }}</span>
-                    </div>
-                    <div class="card-row">
-                        <span class="card-label">Masa Berlaku</span>
-                        <span class="card-sep">:</span>
-                        <span class="card-val">s/d {{ $berlakuSampai }}</span>
-                    </div>
-                    <div class="card-row">
-                        <span class="card-label">Alamat</span>
-                        <span class="card-sep">:</span>
-                        <span class="card-val">{{ $alamatValue }}</span>
-                    </div>
-                    <div class="card-row">
-                        <span class="card-label">Ekstrakurikuler</span>
-                        <span class="card-sep">:</span>
-                        <span class="card-val card-val-eskul">{{ $eskulValue }}</span>
-                    </div>
-                </div>
 
                 {{-- 6. Blok Pengesahan Kepala Sekolah --}}
                 <div class="card-signature-block">
@@ -526,32 +446,6 @@ function unduhKartuPng() {
         // Barcode NIS Code 128
         drawBarcodeCanvas(ctx, 126, 754, 478, 78, nis);
 
-        // 4. Biodata Terstruktur
-        ctx.textAlign = 'left';
-        const startX = 540;
-        const colonX = 836;
-        const valX = 868;
-        const rows = [
-            ['Nama Lengkap', '{{ addslashes($namaValue) }}', '800 28px "Plus Jakarta Sans", sans-serif', 326],
-            ['NIS / NISN', '{{ $nisValue }}{{ $nisnValue ? " / " . $nisnValue : "" }}', 'bold 26px monospace', 394],
-            ['Kelas / Jurusan', '{{ addslashes($kelasJurusanDisplay) }}', 'bold 26px "Plus Jakarta Sans", sans-serif', 450],
-            ['Masa Berlaku', 's/d {{ $berlakuSampai }}', 'bold 26px "Plus Jakarta Sans", sans-serif', 510],
-            ['Alamat', '{{ addslashes($alamatValue) }}', 'bold 26px "Plus Jakarta Sans", sans-serif', 572],
-            ['Ekstrakurikuler', '{{ addslashes($eskulValue) }}', '900 28px "Plus Jakarta Sans", sans-serif', 634],
-        ];
-
-        rows.forEach(([label, val, valFont, curY]) => {
-            ctx.fillStyle = '#1e293b';
-            ctx.font = '600 24px "Plus Jakarta Sans", sans-serif';
-            ctx.fillText(label, startX, curY);
-
-            ctx.font = 'bold 24px "Plus Jakarta Sans", sans-serif';
-            ctx.fillText(':', colonX, curY);
-
-            ctx.fillStyle = '#0f172a';
-            ctx.font = valFont;
-            ctx.fillText(val, valX, curY);
-        });
 
         // 6. Blok Pengesahan Kepala Sekolah
         ctx.fillStyle = '#0f172a';
