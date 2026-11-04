@@ -109,49 +109,7 @@
             max-height: 5.8cqw;
         }
 
-        /* 4. Header Kartu */
-        .card-header-block {
-            position: absolute;
-            left: 27cqw;
-            right: 5cqw;
-            top: 3.2cqw;
-            text-align: center;
-            line-height: 1.15;
-        }
-        .card-header-gov {
-            font-size: 1.38cqw;
-            font-weight: 700;
-            color: #0f172a;
-            text-transform: uppercase;
-            letter-spacing: 0.08cqw;
-            margin: 0;
-        }
-        .card-header-city {
-            font-size: 1.38cqw;
-            font-weight: 700;
-            color: #0f172a;
-            text-transform: uppercase;
-            letter-spacing: 0.08cqw;
-            margin: 0.2cqw 0 0 0;
-        }
-        .card-header-school {
-            font-size: 2.89cqw;
-            font-weight: 900;
-            color: #0f172a;
-            text-transform: uppercase;
-            letter-spacing: 0.04cqw;
-            margin: 0.35cqw 0 0 0;
-        }
-        .card-header-title {
-            font-size: 1.51cqw;
-            font-weight: 700;
-            color: #0f172a;
-            text-transform: uppercase;
-            letter-spacing: 0.18cqw;
-            margin: 0.35cqw 0 0 0;
-        }
-
-        /* 5. Biodata Peserta */
+        /* 4. Biodata Peserta */
         .card-biodata-table {
             position: absolute;
             left: 33.92cqw;
@@ -366,15 +324,7 @@
                     {!! $barcodeSvg !!}
                 </div>
 
-                {{-- 4. Header Instansi & Sekolah --}}
-                <div class="card-header-block">
-                    <p class="card-header-gov">PEMERINTAH PROVINSI JAWA TENGAH</p>
-                    <p class="card-header-city">KOTA SEMARANG</p>
-                    <h2 class="card-header-school">{{ $schoolName }}</h2>
-                    <p class="card-header-title">KARTU PESERTA EKSTRAKURIKULER</p>
-                </div>
-
-                {{-- 5. Biodata Terstruktur Siswa --}}
+                {{-- 4. Biodata Terstruktur Siswa --}}
                 <div class="card-biodata-table">
                     <div class="card-row">
                         <span class="card-label">Nama Lengkap</span>
@@ -539,24 +489,7 @@ function unduhKartuPng() {
         // Barcode NIS Code 128
         drawBarcodeCanvas(ctx, 126, 754, 478, 78, nis);
 
-        // 4. Header Instansi & Sekolah
-        ctx.textAlign = 'center';
-        ctx.fillStyle = '#0f172a';
-        ctx.font = 'bold 22px "Plus Jakarta Sans", sans-serif';
-        ctx.letterSpacing = '1.2px';
-        ctx.fillText('PEMERINTAH PROVINSI JAWA TENGAH', 840, 70);
-        ctx.fillText('KOTA SEMARANG', 840, 106);
-
-        ctx.font = '900 46px "Plus Jakarta Sans", sans-serif';
-        ctx.letterSpacing = '0.8px';
-        ctx.fillText('{{ $schoolName }}', 840, 178);
-
-        ctx.font = 'bold 24px "Plus Jakarta Sans", sans-serif';
-        ctx.letterSpacing = '3px';
-        ctx.fillText('KARTU PESERTA EKSTRAKURIKULER', 840, 236);
-        ctx.letterSpacing = '0px';
-
-        // 5. Biodata Terstruktur
+        // 4. Biodata Terstruktur
         ctx.textAlign = 'left';
         const startX = 540;
         const colonX = 836;
