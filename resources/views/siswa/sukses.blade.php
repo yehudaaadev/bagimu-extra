@@ -282,19 +282,7 @@
         }, 1000);
     }
 }">
-    <div class="print-area rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-8 shadow-xl text-center space-y-6">
-        {{-- Banner Berhasil (Disembunyikan saat cetak) --}}
-        <div class="no-print space-y-2">
-            <span class="inline-flex items-center gap-1.5 rounded-full px-3.5 py-1 text-xs font-bold bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20 shadow-2xs">
-                <x-icon name="check" class="h-3.5 w-3.5 text-emerald-600" />
-                Pendaftaran Berhasil &amp; Terverifikasi
-            </span>
-            <h1 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Kartu Peserta Ekstrakurikuler</h1>
-            <p class="text-xs text-slate-500 max-w-md mx-auto">
-                Kartu tanda peserta resmi kegiatan ekstrakurikuler sekolah. Simpan dalam format PNG atau cetak sebagai PDF fisik.
-            </p>
-        </div>
-
+    <div class="print-area rounded-3xl border border-slate-200/90 bg-white p-4 sm:p-6 shadow-xl text-center space-y-4">
         {{-- Kartu Peserta Resmi Rekacipta Murni (DITIRU PERSIS DESAIN ASLI) --}}
         <div class="card-official-wrapper">
             <div class="card-official" id="card-official-element">

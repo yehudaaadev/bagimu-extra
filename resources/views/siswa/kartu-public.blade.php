@@ -291,12 +291,7 @@
     </div>
 
     {{-- Kartu Peserta ID-1 Standar Fisik --}}
-    <div class="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 shadow-md text-center space-y-6 print-area">
-        <div class="no-print space-y-1">
-            <h1 class="text-xl font-black text-slate-900">Kartu Resmi Peserta Ekstrakurikuler</h1>
-            <p class="text-xs text-slate-500">Bukti sah keikutsertaan kegiatan ekstrakurikuler sekolah. Simpan atau cetak kartu ini.</p>
-        </div>
-
+    <div class="rounded-3xl border border-slate-200 bg-white p-4 sm:p-6 shadow-md text-center space-y-4 print-area">
         {{-- Kartu Peserta Resmi Rekacipta Murni (DITIRU PERSIS DESAIN ASLI) --}}
         <div class="card-official-wrapper">
             <div class="card-official" id="card-official-element">
