@@ -110,27 +110,6 @@
         }
 
 
-        /* 6. Blok Tanda Tangan */
-        .card-signature-block {
-            position: absolute;
-            left: 74.62cqw;
-            top: 43.59cqw;
-            right: 2cqw;
-            font-size: 1.26cqw;
-            line-height: 1.25;
-            color: #0f172a;
-        }
-        .card-signature-block p {
-            margin: 0;
-        }
-        .card-sig-space {
-            height: 4.5cqw;
-        }
-        .card-sig-name {
-            font-weight: 700;
-            font-size: 1.38cqw;
-            color: #0f172a;
-        }
 
         @media print {
             @page {
@@ -273,14 +252,6 @@
                 </div>
 
 
-                {{-- 6. Blok Pengesahan Kepala Sekolah --}}
-                <div class="card-signature-block">
-                    <p>Mengetahui,</p>
-                    <p>Kepala Sekolah</p>
-                    <p>Semarang, {{ $tanggalPengesahan }}</p>
-                    <div class="card-sig-space"></div>
-                    <p class="card-sig-name">{{ $kepsekNama }}</p>
-                </div>
             </div>
         </div>
 
@@ -405,16 +376,6 @@ function unduhKartuPng() {
         drawBarcodeCanvas(ctx, 126, 754, 478, 78, nis);
 
 
-        // 6. Blok Pengesahan Kepala Sekolah
-        ctx.fillStyle = '#0f172a';
-        ctx.font = '500 20px "Plus Jakarta Sans", sans-serif';
-        const sigX = 1188;
-        ctx.fillText('Mengetahui,', sigX, 694);
-        ctx.fillText('Kepala Sekolah', sigX, 728);
-        ctx.fillText('Semarang, {{ $tanggalPengesahan }}', sigX, 764);
-
-        ctx.font = 'bold 22px "Plus Jakarta Sans", sans-serif';
-        ctx.fillText('{{ addslashes($kepsekNama) }}', sigX, 878);
 
         // 7. Gambar Logo Lingkaran Sekolah (Pusat cx=268, cy=141, radius=115)
         const logo = new Image();
