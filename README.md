@@ -19,6 +19,7 @@ Antarmuka dibangun dengan pendekatan minimalis modern menggunakan palet warna fu
 - **Pemilihan Ekstrakurikuler Dinamis:** Pemantauan kuota berjalan (*real-time*), deskripsi kegiatan, dan jadwal latihan mingguan sebelum menetapkan pilihan langsung tanpa proses seleksi manual yang berbelit.
 - **Portal Cek Status & Cetak Ulang Mandiri:** Siswa yang telah mendaftar dan tokennya telah terpakai dapat memeriksa status kepesertaan resmi, informasi pembina pengampu, jadwal mingguan, serta mencetak atau menyimpan ulang Kartu ID-1 langsung melalui NIS tanpa kendala sesi keluar otomatis.
 - **Kartu Peserta Dual-Orientasi & QR Code Presensi:** Penerbitan kartu tanda anggota resmi berdimensi presisi standar internasional ID-1 (CR80) dengan pilihan tata letak Horizontal (85,6 mm x 54 mm) dan Vertikal / Tegak (54 mm x 85,6 mm), lengkap dengan kode QR resmi berbasis NIS untuk pemindaian presensi, tombol Unduh Gambar (PNG) tajam, serta Cetak / Simpan PDF terisolasi.
+- **Proteksi Keterbacaan & Kontras Visual:** Panel autentikasi desktop dilengkapi lapisan *gradient scrim* pelindung kontras pada area bawah gambar latar serta bayangan teks presisi untuk menjamin teks hak cipta dan status sistem terbaca tajam dan jelas di atas foto gedung instansi.
 - **Proteksi Data Final:** Pilihan langsung terkunci setelah konfirmasi untuk mencegah manipulasi data pendaftaran.
 
 ### 2. Panel Wali Kelas
@@ -163,6 +164,16 @@ bagimu-extra-laravel/
    ```
 
 Aplikasi dapat diakses melalui peramban pada alamat `http://127.0.0.1:8000`.
+
+---
+
+## Arsitektur Keamanan & Pengerasan Sistem (Security Hardening)
+
+Sistem menerapkan prinsip *defense-in-depth* komprehensif untuk memitigasi risiko keamanan siber:
+- **Header Keamanan Standar OWASP:** Middleware `SecurityHeaders` menyuntikkan header perlindungan esensial pada seluruh respons HTTP (`X-Content-Type-Options: nosniff`, `X-Frame-Options: SAMEORIGIN`, `Referrer-Policy: strict-origin-when-cross-origin`, `X-XSS-Protection: 0`, `Permissions-Policy: camera=(self), microphone=(), geolocation=()`, `Cross-Origin-Opener-Policy: same-origin-allow-popups`, serta injeksi otomatis HSTS `Strict-Transport-Security` saat koneksi menggunakan HTTPS).
+- **Hardening Sesi & Cookie:** Konfigurasi cookie sesi di `config/session.php` diperketat dengan `http_only: true` (mencegah pencurian token via skrip klien/XSS), `same_site: lax` (mitigasi serangan CSRF), serta penetapan otomatis flag `secure` pada lingkungan produksi.
+- **Proteksi Brute-Force & Rate Limiting:** Pembatasan laju ketat pada pintu masuk autentikasi publik (login admin, staf, dan siswa), verifikasi dua langkah (MFA TOTP 5 percobaan/menit), serta throttle pendaftaran eskul siswa (10 permintaan/menit) untuk mencegah *race condition* dan pengiriman berulang.
+- **Isolasi Berkas Unggahan (Upload Shield):** Modul pengaturan identitas memvalidasi MIME type berkas logo secara ketat hanya pada citra raster (`image/png`, `image/jpeg`, `image/webp`), menolak format SVG bebas eksekusi skrip, mengacak nama berkas dengan entropi kriptografis (`bin2hex(random_bytes(8))`), serta menyertakan konfigurasi `.htaccess` pada direktori `public/uploads/` guna melarang eksekusi segala jenis skrip server-side (PHP/CGI).
 
 ---
 

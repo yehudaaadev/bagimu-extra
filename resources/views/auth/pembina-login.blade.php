@@ -29,6 +29,9 @@
              alt="Gedung {{ $sekolah }}"
              class="pointer-events-none absolute inset-0 h-full w-full object-cover object-right select-none z-0" />
 
+        {{-- Gradient Scrim Pelindung Kontras Teks Footer --}}
+        <div class="pointer-events-none absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-[#0a1931]/95 via-[#0a1931]/60 to-transparent z-0"></div>
+
         {{-- Header Sekolah Modern & Elegan --}}
         <div class="relative z-10 flex items-center justify-between gap-4">
             <div class="flex items-center gap-3.5">
@@ -63,7 +66,7 @@
             <h1 class="text-3xl sm:text-4xl xl:text-5xl font-black leading-[1.12] tracking-tight text-white drop-shadow-md">
                 Pengelolaan<br>
                 Ekstrakurikuler<br>
-                Terpadu /<br>
+                Terpadu &amp;<br>
                 Profesional.
             </h1>
 
@@ -103,9 +106,9 @@
         </div>
 
         {{-- Footer Sisi Kiri --}}
-        <div class="relative z-10 pt-4 border-t border-white/20 flex items-center justify-between text-xs text-blue-100">
-            <p>&copy; {{ date('Y') }} {{ config('app.name', 'Bagimu Extra') }} &mdash; {{ $sekolah }}</p>
-            <span class="text-white/80 font-medium">Sistem Ekstrakurikuler Resmi</span>
+        <div class="relative z-10 pt-4 border-t border-white/20 flex items-center justify-between text-xs text-white">
+            <p class="font-medium text-white/95 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">&copy; {{ date('Y') }} {{ config('app.name', 'Bagimu Extra') }} &mdash; {{ $sekolah }}</p>
+            <span class="font-semibold text-white/95 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">Sistem Ekstrakurikuler Resmi</span>
         </div>
     </div>
 

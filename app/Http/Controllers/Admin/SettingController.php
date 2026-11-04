@@ -70,7 +70,7 @@ class SettingController extends Controller
             'school_address' => ['nullable', 'string', 'max:1000'],
             'school_motto' => ['nullable', 'string', 'max:255'],
             'school_logo' => ['nullable', 'string', 'max:255'],
-            'school_logo_file' => ['nullable', 'image', 'mimes:png,jpg,jpeg,webp,svg', 'max:2048'],
+            'school_logo_file' => ['nullable', 'image', 'mimes:png,jpg,jpeg,webp', 'max:2048'],
             'reset_logo' => ['nullable', 'boolean'],
         ]);
 
@@ -89,7 +89,11 @@ class SettingController extends Controller
             AppSetting::set('school.logo', '');
         } elseif ($request->hasFile('school_logo_file')) {
             $file = $request->file('school_logo_file');
-            $filename = 'logo_' . time() . '.' . $file->getClientOriginalExtension();
+            $ext = strtolower($file->guessExtension() ?: 'png');
+            if (! in_array($ext, ['png', 'jpg', 'jpeg', 'webp'], true)) {
+                return back()->withErrors(['school_logo_file' => 'Ekstensi berkas tidak didukung demi keamanan.']);
+            }
+            $filename = 'logo_' . bin2hex(random_bytes(8)) . '.' . $ext;
             $destDir = public_path('uploads');
             if (! file_exists($destDir)) {
                 mkdir($destDir, 0755, true);

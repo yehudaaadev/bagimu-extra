@@ -39,7 +39,7 @@ Route::middleware('guest')->group(function () {
         ->name('admin.mfa');
 
     Route::post('admin/mfa', [MfaController::class, 'store'])
-        ->middleware('throttle:10,1');
+        ->middleware('throttle:5,1');
 
     // Pintu siswa: NIS + token 8 digit.
     Route::get('siswa/login', [SiswaLoginController::class, 'create'])

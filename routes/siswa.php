@@ -14,7 +14,9 @@ Route::middleware(['auth', 'role:student', \App\Http\Middleware\MaintenanceMode:
 
         // 2. Pilih Eskul
         Route::get('/daftar', [PendaftaranController::class, 'create'])->name('daftar');
-        Route::post('/daftar', [PendaftaranController::class, 'store'])->name('daftar.store');
+        Route::post('/daftar', [PendaftaranController::class, 'store'])
+            ->middleware('throttle:10,1')
+            ->name('daftar.store');
 
         // 3. Konfirmasi Sukses + 5 detik auto-logout
         Route::get('/sukses', [PendaftaranController::class, 'sukses'])->name('sukses');

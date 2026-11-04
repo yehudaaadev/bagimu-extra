@@ -21,6 +21,13 @@ class SecurityHeaders
         $response->headers->set('X-Frame-Options', 'SAMEORIGIN');
         $response->headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');
         $response->headers->set('X-DNS-Prefetch-Control', 'on');
+        $response->headers->set('X-XSS-Protection', '0');
+        $response->headers->set('Permissions-Policy', 'camera=(self), microphone=(), geolocation=()');
+        $response->headers->set('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+
+        if ($request->isSecure()) {
+            $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+        }
 
         return $response;
     }
