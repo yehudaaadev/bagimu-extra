@@ -6,6 +6,17 @@
 <h1 class="text-xl font-bold text-slate-900 mb-1">Undang Pembina Baru</h1>
 <p class="text-sm text-slate-500 mb-4">Buat akun untuk pembina ekstrakurikuler atau pengelola sistem. Kredensial login (username & password) akan langsung ditampilkan dan dikirimkan ke email yang dituju.</p>
 
+@if ($errors->any())
+    <div class="mb-5 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-xs font-semibold text-rose-800 space-y-1">
+        @foreach ($errors->all() as $err)
+            <div class="flex items-center gap-2">
+                <x-icon name="alert-triangle" class="h-4 w-4 text-rose-600 shrink-0" />
+                <span>{{ $err }}</span>
+            </div>
+        @endforeach
+    </div>
+@endif
+
 <form method="POST" action="{{ route('admin.invitations.store') }}" class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm w-full space-y-4" x-data="{ peran: '{{ old('role', 'PEMBINA') }}' }">
     @csrf
     <div>
@@ -25,14 +36,14 @@
         </select>
     </div>
     <div x-show="peran === 'PEMBINA'">
-        <span class="block text-sm font-medium text-slate-700 mb-1">Eskul yang Diampu <span class="font-normal text-slate-400">(langsung tugaskan ke pembina ini)</span></span>
+        <span class="block text-sm font-medium text-slate-700 mb-1">Eskul yang Diampu <span class="font-normal text-slate-400">(1 eskul = 1 akun bersama)</span></span>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 rounded-xl border border-slate-200 bg-slate-50 p-3">
             @forelse ($eskuls as $e)
-                <label class="flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-slate-700 hover:bg-white">
-                    <input type="checkbox" name="eskul_ids[]" value="{{ $e->id }}" @checked(in_array($e->id, old('eskul_ids', []))) class="rounded border-slate-300 text-blue-700 focus:ring-blue-500">
+                <label class="flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm {{ $e->pembina_id ? 'opacity-60 cursor-not-allowed' : 'hover:bg-white cursor-pointer' }}">
+                    <input type="checkbox" name="eskul_ids[]" value="{{ $e->id }}" @checked(in_array($e->id, old('eskul_ids', []))) {{ $e->pembina_id ? 'disabled' : '' }} class="rounded border-slate-300 text-blue-700 focus:ring-blue-500">
                     <span>{{ $e->name }}</span>
                     @if ($e->pembina_id)
-                        <span class="text-[10px] text-amber-600">(ada pembina — akan diganti)</span>
+                        <span class="text-[10px] text-amber-700 font-medium">(sudah memiliki akun pembina)</span>
                     @endif
                 </label>
             @empty

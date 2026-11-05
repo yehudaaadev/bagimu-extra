@@ -55,6 +55,16 @@ class InvitationController extends Controller
 
         $loginUrl = route('admin.login');
 
+        // Validasi Anti-Duplikat Pembina Eskul
+        if ($data['role'] === Role::PEMBINA->value && ! empty($data['eskul_ids'])) {
+            $eskulSudahAda = \App\Models\Eskul::whereIn('id', $data['eskul_ids'])->whereNotNull('pembina_id')->first();
+            if ($eskulSudahAda) {
+                return back()->withInput()->withErrors([
+                    'eskul_ids' => "Eskul {$eskulSudahAda->name} sudah memiliki akun pembina terdaftar. Setiap eskul hanya memiliki 1 akun pembina bersama.",
+                ]);
+            }
+        }
+
         $ditugaskan = [];
         if ($data['role'] === Role::PEMBINA->value && ! empty($data['eskul_ids'])) {
             $ditugaskan = UserController::tugaskanEskul($user, $data['eskul_ids']);

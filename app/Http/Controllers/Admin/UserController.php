@@ -47,6 +47,20 @@ class UserController extends Controller
 
         $role = $data['role'] ?? Role::PEMBINA->value;
 
+        $eskulNama = null;
+        // Penugasan 1 eskul untuk Pembina
+        $eskulId = $data['eskul_id'] ?? (! empty($data['eskul_ids']) ? $data['eskul_ids'][0] : null);
+
+        // Validasi Anti-Duplikat: 1 eskul = 1 akun pembina
+        if ($role === Role::PEMBINA->value && $eskulId) {
+            $eskulSudahAda = Eskul::where('id', $eskulId)->whereNotNull('pembina_id')->first();
+            if ($eskulSudahAda) {
+                return back()->withInput()->withErrors([
+                    'eskul_id' => "Eskul {$eskulSudahAda->name} sudah memiliki akun pembina terdaftar. Setiap eskul hanya memiliki 1 akun pembina bersama (jika terdapat 2 pembina di lapangan, tetap gunakan 1 akun ini).",
+                ]);
+            }
+        }
+
         $user = User::create([
             'name' => $data['name'],
             'email' => strtolower($data['email']),
@@ -55,14 +69,9 @@ class UserController extends Controller
             'role' => $role,
         ]);
 
-        $eskulNama = null;
-        // Penugasan 1 eskul untuk Pembina
-        $eskulId = $data['eskul_id'] ?? (! empty($data['eskul_ids']) ? $data['eskul_ids'][0] : null);
-
         if ($role === Role::PEMBINA->value && $eskulId) {
             $eskul = Eskul::find($eskulId);
             if ($eskul) {
-                // Lepaskan penugasan lama eskul ini jika ada
                 $eskul->update(['pembina_id' => $user->id]);
                 $eskulNama = $eskul->name;
             }
@@ -76,6 +85,86 @@ class UserController extends Controller
         }
 
         return back()->with('status', $pesan);
+    }
+
+    /**
+     * Perbarui data akun Pembina atau ganti eskul binaan.
+     */
+    public function update(Request $request, User $user)
+    {
+        if ($user->role !== Role::PEMBINA) {
+            return back()->withErrors(['error' => 'Pengguna ini bukan akun Pembina.']);
+        }
+
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:100'],
+            'email' => ['required', 'email', 'max:191', Rule::unique('users', 'email')->ignore($user->id)],
+            'username' => ['nullable', 'string', 'max:30', Rule::unique('users', 'username')->ignore($user->id)],
+            'eskul_id' => ['nullable', 'integer', 'exists:eskuls,id'],
+        ]);
+
+        $eskulId = $data['eskul_id'] ?? null;
+
+        // Cegah penetapan eskul yang sudah memiliki pembina lain
+        if ($eskulId) {
+            $eskulSudahAda = Eskul::where('id', $eskulId)
+                ->whereNotNull('pembina_id')
+                ->where('pembina_id', '!=', $user->id)
+                ->first();
+
+            if ($eskulSudahAda) {
+                return back()->withInput()->withErrors([
+                    'eskul_id' => "Eskul {$eskulSudahAda->name} sudah memiliki akun pembina lain. Setiap eskul hanya memiliki 1 akun pembina.",
+                ]);
+            }
+        }
+
+        $user->update([
+            'name' => $data['name'],
+            'email' => strtolower($data['email']),
+            'username' => $data['username'] ? strtolower($data['username']) : null,
+        ]);
+
+        // Lepas eskul lama yang pernah diampu user ini jika berbeda
+        Eskul::where('pembina_id', $user->id)
+            ->when($eskulId, fn ($q) => $q->where('id', '!=', $eskulId))
+            ->update(['pembina_id' => null]);
+
+        $eskulNama = null;
+        if ($eskulId) {
+            $eskul = Eskul::find($eskulId);
+            if ($eskul) {
+                $eskul->update(['pembina_id' => $user->id]);
+                $eskulNama = $eskul->name;
+            }
+        }
+
+        AdminLog::record('user.update', 'User', $user->id, "Memperbarui data akun pembina {$user->name} ({$user->email}).");
+
+        $pesan = "Data akun pembina {$user->name} berhasil diperbarui.";
+        if ($eskulNama) {
+            $pesan .= " Eskul binaan: {$eskulNama}.";
+        }
+
+        return back()->with('status', $pesan);
+    }
+
+    /**
+     * Tautkan eskul ke pembina baru secara aman (anti-duplikat).
+     */
+    public static function tugaskanEskul(User $user, array $eskulIds): array
+    {
+        $ditugaskan = [];
+        foreach ($eskulIds as $id) {
+            $eskul = Eskul::find($id);
+            if ($eskul && ! $eskul->pembina_id) {
+                $eskul->update(['pembina_id' => $user->id]);
+                $ditugaskan[] = $eskul->name;
+                break; // 1 pembina = 1 eskul
+            }
+        }
+
+        return $ditugaskan;
     }
 
     public function updateRole(Request $request, User $user)

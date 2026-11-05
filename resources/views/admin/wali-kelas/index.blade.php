@@ -19,7 +19,7 @@
             <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
                 <div>
                     <h2 class="text-base font-bold text-slate-900">Tambah Akun Wali Kelas Baru</h2>
-                    <p class="text-xs text-slate-500">Buat akun login guru dan langsung tautkan ke rombel kelas yang diampu.</p>
+                    <p class="text-xs text-slate-500">Buat akun login guru dan langsung tautkan ke rombel kelas yang diampu (1 rombel = 1 akun bersama).</p>
                 </div>
             </div>
             <form method="POST" action="{{ route('admin.wali-kelas.store') }}" class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
@@ -27,8 +27,9 @@
 
                 <div>
                     <label class="block font-bold text-slate-700 mb-1">Nama Lengkap &amp; Gelar <span class="text-rose-500">*</span></label>
-                    <input type="text" name="name" value="{{ old('name') }}" placeholder="Contoh: Budi Hartono, S.Pd." required
+                    <input type="text" name="name" value="{{ old('name') }}" placeholder="Contoh: Budi Hartono, S.Pd. / Ani Wijaya, S.Pd." required
                            class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-xs font-semibold focus:border-blue-600 focus:outline-hidden focus:ring-2 focus:ring-blue-600/20">
+                    <p class="text-[11px] text-slate-400 mt-1">Jika terdapat 2 wali kelas di rombel, cantumkan kedua nama di kolom ini.</p>
                 </div>
 
                 <div>
@@ -44,12 +45,12 @@
                 </div>
 
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">Rombel Kelas Binaan <span class="text-rose-500">*</span></label>
+                    <label class="block font-bold text-slate-700 mb-1">Rombel Kelas Binaan (1 Rombel = 1 Akun) <span class="text-rose-500">*</span></label>
                     <select name="school_class_id" required class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-xs font-semibold focus:border-blue-600 focus:outline-hidden focus:ring-2 focus:ring-blue-600/20">
                         <option value="">-- Pilih Rombel Kelas Binaan --</option>
                         @foreach ($classes as $c)
-                            <option value="{{ $c->id }}" {{ old('school_class_id') == $c->id ? 'selected' : '' }}>
-                                {{ $c->nama }} (Tingkat {{ $c->tingkat ?? '-' }}) {{ $c->waliKelas ? '— [Sudah diampu: ' . $c->waliKelas->name . ']' : '— [Tersedia]' }}
+                            <option value="{{ $c->id }}" {{ $c->waliKelas ? 'disabled' : '' }} {{ old('school_class_id') == $c->id ? 'selected' : '' }}>
+                                {{ $c->nama }} (Tingkat {{ $c->tingkat ?? '-' }}) {{ $c->waliKelas ? '— [Sudah Ada Akun: ' . $c->waliKelas->name . ']' : '— [Tersedia]' }}
                             </option>
                         @endforeach
                     </select>
@@ -185,6 +186,7 @@
                                         <div>
                                             <label class="block font-bold text-slate-700 mb-1">Nama Lengkap &amp; Gelar</label>
                                             <input type="text" name="name" value="{{ $wk->name }}" required class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-xs font-semibold focus:border-blue-600 focus:outline-hidden">
+                                            <p class="text-[11px] text-slate-400 mt-0.5">Jika rombel memiliki 2 wali kelas di sekolah, cantumkan kedua nama di sini.</p>
                                         </div>
                                         <div>
                                             <label class="block font-bold text-slate-700 mb-1">Email Resmi</label>
@@ -195,12 +197,16 @@
                                             <input type="text" name="username" value="{{ $wk->username }}" class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-xs font-medium focus:border-blue-600 focus:outline-hidden">
                                         </div>
                                         <div>
-                                            <label class="block font-bold text-slate-700 mb-1">Rombel Kelas Binaan <span class="text-rose-500">*</span></label>
+                                            <label class="block font-bold text-slate-700 mb-1">Rombel Kelas Binaan (1 Rombel = 1 Akun) <span class="text-rose-500">*</span></label>
                                             <select name="school_class_id" required class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-xs font-semibold focus:border-blue-600 focus:outline-hidden">
                                                 <option value="">-- Pilih Rombel Kelas Binaan --</option>
                                                 @foreach ($classes as $c)
-                                                    <option value="{{ $c->id }}" {{ $wk->managedClass?->id === $c->id ? 'selected' : '' }}>
-                                                        {{ $c->nama }} (Tingkat {{ $c->tingkat ?? '-' }}) {{ $c->waliKelas && $c->waliKelas->id !== $wk->id ? '— [Sudah diampu: ' . $c->waliKelas->name . ']' : ($wk->managedClass?->id === $c->id ? '— [Kelas Saat Ini]' : '— [Tersedia]') }}
+                                                    @php
+                                                        $isCurrent = $wk->managedClass?->id === $c->id;
+                                                        $isTaken = $c->waliKelas && ! $isCurrent;
+                                                    @endphp
+                                                    <option value="{{ $c->id }}" {{ $isTaken ? 'disabled' : '' }} {{ $isCurrent ? 'selected' : '' }}>
+                                                        {{ $c->nama }} (Tingkat {{ $c->tingkat ?? '-' }}) {{ $isTaken ? '— [Sudah Ada Akun: ' . $c->waliKelas->name . ']' : ($isCurrent ? '— [Kelas Saat Ini]' : '— [Tersedia]') }}
                                                     </option>
                                                 @endforeach
                                             </select>

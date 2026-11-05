@@ -75,6 +75,14 @@ class WaliKelasAdminController extends Controller
             'school_class_id.required' => 'Rombel kelas binaan wajib dipilih agar akun wali kelas langsung terhubung ke kelasnya.',
         ]);
 
+        // Validasi Anti-Duplikat: 1 rombel = 1 akun wali kelas
+        $kelasSudahAda = SchoolClass::where('id', $data['school_class_id'])->whereNotNull('wali_kelas_id')->first();
+        if ($kelasSudahAda) {
+            return back()->withInput()->withErrors([
+                'school_class_id' => "Rombel {$kelasSudahAda->nama} sudah memiliki akun Wali Kelas ({$kelasSudahAda->wali_kelas_nama}). Setiap rombel kelas hanya memiliki 1 akun wali kelas resmi (jika ada 2 wali kelas di lapangan, tetap gunakan 1 akun bersama).",
+            ]);
+        }
+
         $user = User::create([
             'name' => $data['name'],
             'email' => strtolower($data['email']),
@@ -127,6 +135,17 @@ class WaliKelasAdminController extends Controller
         ], [
             'school_class_id.required' => 'Rombel kelas binaan wajib dipilih.',
         ]);
+
+        // Cegah penugasan ke rombel yang sudah memiliki akun wali kelas lain
+        $kelasSudahAda = SchoolClass::where('id', $data['school_class_id'])
+            ->whereNotNull('wali_kelas_id')
+            ->where('wali_kelas_id', '!=', $user->id)
+            ->first();
+        if ($kelasSudahAda) {
+            return back()->withInput()->withErrors([
+                'school_class_id' => "Rombel {$kelasSudahAda->nama} sudah memiliki akun Wali Kelas ({$kelasSudahAda->wali_kelas_nama}). Setiap rombel kelas hanya memiliki 1 akun wali kelas.",
+            ]);
+        }
 
         $user->update([
             'name' => $data['name'],

@@ -35,6 +35,7 @@ Route::middleware(['auth', 'role:admin,operator'])->prefix('admin')->name('admin
 
     Route::get('users', [UserController::class, 'index'])->name('users.index');
     Route::post('users', [UserController::class, 'store'])->name('users.store');
+    Route::put('users/{user}', [UserController::class, 'update'])->name('users.update');
     Route::put('users/{user}/role', [UserController::class, 'updateRole'])->name('users.role');
     Route::put('users/{user}/password', [UserController::class, 'resetPassword'])->name('users.password');
     Route::delete('users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
