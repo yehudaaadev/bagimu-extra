@@ -34,7 +34,9 @@ class WaBlastWaliKelasTest extends TestCase
             'jurusan' => 'RPL',
         ]);
 
-        $response = $this->actingAs($admin)->post(route('admin.wali-kelas.store'), [
+        $response = $this->actingAs($admin)
+            ->from(route('admin.wali-kelas.index'))
+            ->post(route('admin.wali-kelas.store'), [
             'name' => 'Budi Santoso, S.Pd',
             'email' => 'budi.wali@sekolah.sch.id',
             'username' => 'wali_budi',

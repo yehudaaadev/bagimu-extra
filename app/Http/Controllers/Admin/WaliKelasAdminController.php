@@ -121,7 +121,7 @@ class WaliKelasAdminController extends Controller
             $pesan .= " Ditugaskan mengampu rombel {$namaKelas}.";
         }
 
-        return back()->with('status', $pesan);
+        return redirect()->route('admin.wali-kelas.index')->with('status', $pesan);
     }
 
     /**
