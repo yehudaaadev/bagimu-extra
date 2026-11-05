@@ -243,11 +243,19 @@ class StudentController extends Controller
     public function destroy(Student $student)
     {
         $nis = $student->nis;
-        $student->delete();
+        $nama = $student->nama;
 
-        AdminLog::record('student.delete', 'student', $student->id, "Menghapus siswa NIS {$nis}");
+        DB::transaction(function () use ($student) {
+            $user = $student->user;
+            $student->delete();
+            if ($user && $user->role === Role::STUDENT) {
+                $user->delete();
+            }
+        });
 
-        return redirect()->route('admin.students.index')->with('status', 'Data siswa berhasil dihapus.');
+        AdminLog::record('student.delete', 'student', $student->id, "Menghapus siswa {$nama} (NIS: {$nis}) beserta akun login terkait");
+
+        return redirect()->route('admin.students.index')->with('status', "Data siswa {$nama} (NIS: {$nis}) beserta akun terkait berhasil dihapus.");
     }
 
     public function bulkToken(Request $request)
