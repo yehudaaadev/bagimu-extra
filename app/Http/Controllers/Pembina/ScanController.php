@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Pembina;
 
 use App\Enums\KehadiranStatus;
+use App\Enums\PeriodeStatus;
 use App\Enums\Status;
 use App\Http\Controllers\Controller;
 use App\Models\AdminLog;
 use App\Models\Eskul;
 use App\Models\Kehadiran;
+use App\Models\Periode;
 use App\Models\Pertemuan;
 use App\Models\Registration;
 use App\Models\Student;
@@ -188,31 +190,49 @@ class ScanController extends Controller
             }
         }
 
-        // 1. Prioritas: Cari pendaftaran di eskul ini berdasarkan seluruh kandidat NIS/Username/Token
+        $periodeAktif = Periode::where('status', PeriodeStatus::DIBUKA)->first()?->periode;
+
+        // 1. Prioritas: Cari pendaftaran di eskul ini berdasarkan seluruh kandidat NIS/Username/Token (utamakan periode aktif)
         foreach ($candidates as $c) {
-            $byNisInEskul = Registration::with('user')
+            $q = Registration::with('user')
                 ->where('nis', $c)
-                ->where('eskul_utama', $eskul->name)
-                ->latest('id')
-                ->first();
+                ->where('eskul_utama', $eskul->name);
+            if ($periodeAktif) {
+                $match = (clone $q)->where('periode', $periodeAktif)->latest('id')->first();
+                if ($match) {
+                    return $match;
+                }
+            }
+            $byNisInEskul = $q->latest('id')->first();
             if ($byNisInEskul) {
                 return $byNisInEskul;
             }
 
-            $byUserInEskul = Registration::with('user')
-                ->whereHas('user', fn ($q) => $q->where('username', $c))
-                ->where('eskul_utama', $eskul->name)
-                ->latest('id')
-                ->first();
+            $uq = Registration::with('user')
+                ->whereHas('user', fn ($subQ) => $subQ->where('username', $c))
+                ->where('eskul_utama', $eskul->name);
+            if ($periodeAktif) {
+                $matchUser = (clone $uq)->where('periode', $periodeAktif)->latest('id')->first();
+                if ($matchUser) {
+                    return $matchUser;
+                }
+            }
+            $byUserInEskul = $uq->latest('id')->first();
             if ($byUserInEskul) {
                 return $byUserInEskul;
             }
 
             if (preg_match('/^[0-9a-fA-F]{32,64}$/', $c)) {
-                $byTokenInEskul = Registration::with('user')
+                $tq = Registration::with('user')
                     ->where('verify_token', strtolower($c))
-                    ->where('eskul_utama', $eskul->name)
-                    ->first();
+                    ->where('eskul_utama', $eskul->name);
+                if ($periodeAktif) {
+                    $matchToken = (clone $tq)->where('periode', $periodeAktif)->first();
+                    if ($matchToken) {
+                        return $matchToken;
+                    }
+                }
+                $byTokenInEskul = $tq->first();
                 if ($byTokenInEskul) {
                     return $byTokenInEskul;
                 }
@@ -221,26 +241,39 @@ class ScanController extends Controller
 
         // 2. Jika tidak ada di eskul ini, cari global untuk mendeteksi apakah siswa terdaftar di eskul lain
         foreach ($candidates as $c) {
-            $byNisGlobal = Registration::with('user')
-                ->where('nis', $c)
-                ->latest('id')
-                ->first();
+            $gq = Registration::with('user')->where('nis', $c);
+            if ($periodeAktif) {
+                $matchG = (clone $gq)->where('periode', $periodeAktif)->latest('id')->first();
+                if ($matchG) {
+                    return $matchG;
+                }
+            }
+            $byNisGlobal = $gq->latest('id')->first();
             if ($byNisGlobal) {
                 return $byNisGlobal;
             }
 
-            $byUserGlobal = Registration::with('user')
-                ->whereHas('user', fn ($q) => $q->where('username', $c))
-                ->latest('id')
-                ->first();
+            $ugq = Registration::with('user')->whereHas('user', fn ($subQ) => $subQ->where('username', $c));
+            if ($periodeAktif) {
+                $matchUG = (clone $ugq)->where('periode', $periodeAktif)->latest('id')->first();
+                if ($matchUG) {
+                    return $matchUG;
+                }
+            }
+            $byUserGlobal = $ugq->latest('id')->first();
             if ($byUserGlobal) {
                 return $byUserGlobal;
             }
 
             if (preg_match('/^[0-9a-fA-F]{32,64}$/', $c)) {
-                $byTokenGlobal = Registration::with('user')
-                    ->where('verify_token', strtolower($c))
-                    ->first();
+                $gtq = Registration::with('user')->where('verify_token', strtolower($c));
+                if ($periodeAktif) {
+                    $matchGT = (clone $gtq)->where('periode', $periodeAktif)->first();
+                    if ($matchGT) {
+                        return $matchGT;
+                    }
+                }
+                $byTokenGlobal = $gtq->first();
                 if ($byTokenGlobal) {
                     return $byTokenGlobal;
                 }
