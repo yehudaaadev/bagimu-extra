@@ -98,10 +98,15 @@ class KelasController extends Controller
 
         if (! empty($data['wali_kelas_id'])) {
             $user = User::find($data['wali_kelas_id']);
-            if ($user && $user->role === Role::STUDENT) {
-                $user->update(['role' => Role::WALI_KELAS]);
-            }
-            if (empty($data['wali_kelas_nama']) && $user) {
+            if ($user) {
+                if ($user->role === Role::STUDENT) {
+                    return back()->withInput()->withErrors(['wali_kelas_id' => 'Akun siswa tidak dapat ditugaskan sebagai wali kelas.']);
+                }
+                // Jaga integritas 1 Rombel = 1 Wali Kelas: lepaskan dari rombel lama
+                SchoolClass::where('wali_kelas_id', $user->id)->update([
+                    'wali_kelas_id' => null,
+                    'wali_kelas_nama' => null,
+                ]);
                 $data['wali_kelas_nama'] = $user->name;
             }
         }
@@ -128,12 +133,21 @@ class KelasController extends Controller
 
         if (! empty($data['wali_kelas_id'])) {
             $user = User::find($data['wali_kelas_id']);
-            if ($user && ! in_array($user->role, [Role::ADMIN, Role::OPERATOR], true)) {
-                $user->update(['role' => Role::WALI_KELAS]);
-            }
-            if (empty($data['wali_kelas_nama']) && $user) {
+            if ($user) {
+                if ($user->role === Role::STUDENT) {
+                    return back()->withInput()->withErrors(['wali_kelas_id' => 'Akun siswa tidak dapat ditugaskan sebagai wali kelas.']);
+                }
+                // Jaga integritas 1 Rombel = 1 Wali Kelas: lepaskan dari rombel lama selain rombel ini
+                SchoolClass::where('wali_kelas_id', $user->id)
+                    ->where('id', '!=', $schoolClass->id)
+                    ->update([
+                        'wali_kelas_id' => null,
+                        'wali_kelas_nama' => null,
+                    ]);
                 $data['wali_kelas_nama'] = $user->name;
             }
+        } else {
+            $data['wali_kelas_nama'] = null;
         }
 
         $schoolClass->update($data);
