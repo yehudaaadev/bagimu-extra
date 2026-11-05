@@ -41,14 +41,6 @@
                     <p class="text-xs font-semibold text-white/90 tracking-wide mt-0.5">{{ $motto }}</p>
                 </div>
             </div>
-
-            {{-- Badge Slogan 4B Glassmorphic --}}
-            <div class="hidden sm:flex items-center">
-                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/20 border border-white/30 backdrop-blur-md text-xs font-semibold text-white shadow-sm">
-                    <x-icon name="sparkles" class="h-3.5 w-3.5 text-sky-200 shrink-0" />
-                    <span>{{ $motto }}</span>
-                </div>
-            </div>
         </div>
 
         {{-- Konten Utama Sesuai Mockup --}}
