@@ -280,7 +280,7 @@
     {{-- Bantuan & FAQ (Rapi dan Tidak Terlihat Kosong) --}}
     <section class="rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-8 shadow-xs">
         <div class="flex items-center gap-3 mb-6">
-            <span class="flex h-10 w-10 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600">
+            <span class="flex h-10 w-10 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
                 <x-icon name="help-circle" class="h-5 w-5" />
             </span>
             <div>

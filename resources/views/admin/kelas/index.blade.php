@@ -28,7 +28,7 @@
     <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs">
         <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
             <div class="flex items-center gap-2">
-                <div class="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-50 text-indigo-700">
+                <div class="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-50 text-blue-700">
                     <x-icon name="academic-cap" class="h-4 w-4" />
                 </div>
                 <div>

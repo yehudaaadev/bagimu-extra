@@ -121,7 +121,7 @@
         <div class="rounded-3xl border border-slate-200/90 bg-white p-5 shadow-xs hover:border-slate-300 transition-all">
             <div class="flex items-center justify-between">
                 <span class="text-xs font-bold text-slate-500">Ekstrakurikuler Aktif</span>
-                <x-icon name="trophy" class="h-5 w-5 text-purple-600" />
+                <x-icon name="trophy" class="h-5 w-5 text-blue-600" />
             </div>
             <div class="mt-3 text-3xl font-black text-slate-900 tracking-tight">{{ $distEskul->where('eskul.aktif', true)->count() }}</div>
             <div class="mt-1 text-xs text-slate-500 font-medium">

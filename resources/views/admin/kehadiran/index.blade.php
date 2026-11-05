@@ -58,7 +58,7 @@
             <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs space-y-3">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
                     <div class="flex items-center gap-2">
-                        <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-50 text-indigo-700">
+                        <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50 text-blue-700">
                             <x-icon name="chart-bar" class="h-4 w-4" />
                         </span>
                         <div>

@@ -157,9 +157,9 @@
                 <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-2xs">
                     <div class="flex items-center justify-between text-slate-500 mb-1">
                         <span class="text-xs font-semibold">Partisipasi Siswa</span>
-                        <x-icon name="chart" class="h-4 w-4 text-indigo-600" />
+                        <x-icon name="chart" class="h-4 w-4 text-blue-600" />
                     </div>
-                    <p class="text-xl sm:text-2xl font-black text-indigo-700">{{ $rasioPartisipasi }}%</p>
+                    <p class="text-xl sm:text-2xl font-black text-blue-700">{{ $rasioPartisipasi }}%</p>
                     <p class="text-[11px] text-slate-400 mt-0.5">Dari {{ number_format($totalSiswaAktif) }} total siswa aktif</p>
                 </div>
             </div>

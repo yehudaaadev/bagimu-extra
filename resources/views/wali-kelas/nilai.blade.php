@@ -12,13 +12,13 @@
         <div class="flex flex-wrap items-center gap-2">
             <form method="GET" action="{{ route('wali-kelas.nilai') }}" class="flex items-center gap-2">
                 @if (auth()->user()->isAdmin() && $allClasses->count() > 1)
-                    <select name="kelas_id" class="border-slate-300 rounded-xl px-3 py-1.5 text-xs font-semibold focus:border-indigo-500 focus:ring-indigo-500" onchange="this.form.submit()">
+                    <select name="kelas_id" class="border-slate-300 rounded-xl px-3 py-1.5 text-xs font-semibold focus:border-blue-500 focus:ring-blue-500" onchange="this.form.submit()">
                         @foreach ($allClasses as $c)
                             <option value="{{ $c->id }}" @selected($kelas && $kelas->id === $c->id)>{{ $c->nama }}</option>
                         @endforeach
                     </select>
                 @endif
-                <select name="periode" class="border-slate-300 rounded-xl px-3 py-1.5 text-xs font-semibold focus:border-indigo-500 focus:ring-indigo-500" onchange="this.form.submit()">
+                <select name="periode" class="border-slate-300 rounded-xl px-3 py-1.5 text-xs font-semibold focus:border-blue-500 focus:ring-blue-500" onchange="this.form.submit()">
                     @foreach ($periodes as $p)
                         <option value="{{ $p->periode }}" @selected($periode && $periode->periode === $p->periode)>{{ $p->periode }}</option>
                     @endforeach
@@ -87,7 +87,7 @@
                             <td class="py-2.5 px-4 font-semibold text-slate-900">
                                 {{ $dn->student?->nama ?? $dn->user?->name ?? '-' }}
                             </td>
-                            <td class="py-2.5 px-4 font-bold text-indigo-700">
+                            <td class="py-2.5 px-4 font-bold text-blue-700">
                                 {{ $dn->eskul_utama }}
                             </td>
                             <td class="py-2.5 px-4 text-center font-bold text-sm">

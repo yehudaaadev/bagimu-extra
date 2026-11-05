@@ -7,7 +7,7 @@
     {{-- Header & Info Rombel --}}
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white rounded-3xl border border-slate-200/80 p-6 shadow-xs">
         <div class="flex items-center gap-4">
-            <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-md shadow-indigo-600/20">
+            <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-md shadow-blue-600/20">
                 <x-icon name="academic-cap" class="h-7 w-7" />
             </div>
             <div>
@@ -15,7 +15,7 @@
                     <h1 class="text-lg sm:text-xl font-bold text-slate-900">
                         Rombel: {{ $kelas?->nama ?? 'Belum Ditentukan' }}
                     </h1>
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-100 text-indigo-800">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800">
                         Wali Kelas
                     </span>
                 </div>
@@ -29,7 +29,7 @@
         <form method="GET" action="{{ route('wali-kelas.dashboard') }}" class="flex flex-wrap items-center gap-2 self-start sm:self-center">
             @if (auth()->user()->isAdmin() && $allClasses->count() > 1)
                 <div>
-                    <select name="kelas_id" class="border-slate-300 rounded-xl px-3 py-1.5 text-xs font-semibold focus:border-indigo-500 focus:ring-indigo-500" onchange="this.form.submit()">
+                    <select name="kelas_id" class="border-slate-300 rounded-xl px-3 py-1.5 text-xs font-semibold focus:border-blue-500 focus:ring-blue-500" onchange="this.form.submit()">
                         @foreach ($allClasses as $c)
                             <option value="{{ $c->id }}" @selected($kelas && $kelas->id === $c->id)>{{ $c->nama }}</option>
                         @endforeach
@@ -37,7 +37,7 @@
                 </div>
             @endif
             <div>
-                <select name="periode" class="border-slate-300 rounded-xl px-3 py-1.5 text-xs font-semibold focus:border-indigo-500 focus:ring-indigo-500" onchange="this.form.submit()">
+                <select name="periode" class="border-slate-300 rounded-xl px-3 py-1.5 text-xs font-semibold focus:border-blue-500 focus:ring-blue-500" onchange="this.form.submit()">
                     @foreach ($periodes as $p)
                         <option value="{{ $p->periode }}" @selected($periode && $periode->periode === $p->periode)>{{ $p->periode }}</option>
                     @endforeach
@@ -100,7 +100,7 @@
         <div class="lg:col-span-2 rounded-2xl border border-slate-200 bg-white p-5 shadow-xs space-y-4">
             <div class="flex items-center justify-between border-b border-slate-100 pb-3">
                 <div class="flex items-center gap-2">
-                    <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-50 text-indigo-700">
+                    <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50 text-blue-700">
                         <x-icon name="user-group" class="h-4 w-4" />
                     </span>
                     <h2 class="text-sm font-bold text-slate-900">Aktivitas Siswa Rombel Ini</h2>
@@ -125,7 +125,7 @@
                             <tr class="hover:bg-slate-50/70">
                                 <td class="py-2 px-3 font-semibold text-slate-900">{{ $r->student?->nama ?? $r->user?->name ?? '-' }}</td>
                                 <td class="py-2 px-3 text-slate-600 font-mono">{{ $r->nis }}</td>
-                                <td class="py-2 px-3 font-bold text-indigo-700">{{ $r->eskul_utama }}</td>
+                                <td class="py-2 px-3 font-bold text-blue-700">{{ $r->eskul_utama }}</td>
                                 <td class="py-2 px-3 text-center">
                                     @if ($r->nilai !== null)
                                         <span class="inline-flex items-center px-2 py-0.5 rounded-full font-bold bg-emerald-100 text-emerald-800 text-[11px]">
@@ -161,13 +161,13 @@
                     </div>
                 </a>
 
-                <a href="{{ route('wali-kelas.cetak-nilai', ['kelas_id' => $kelas?->id, 'periode' => $periode?->periode]) }}" target="_blank" class="flex items-center gap-3 p-3 rounded-xl border border-indigo-200 bg-indigo-50/50 hover:bg-indigo-50 transition-colors">
-                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-xs">
+                <a href="{{ route('wali-kelas.cetak-nilai', ['kelas_id' => $kelas?->id, 'periode' => $periode?->periode]) }}" target="_blank" class="flex items-center gap-3 p-3 rounded-xl border border-blue-200 bg-blue-50/50 hover:bg-blue-50 transition-colors">
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white shadow-xs">
                         <x-icon name="printer" class="h-5 w-5" />
                     </div>
                     <div>
-                        <span class="text-xs font-bold text-indigo-950 block">Cetak Lembar Nilai Rapor</span>
-                        <span class="text-[11px] text-indigo-700">Format cetak siap lampirkan ke rapor</span>
+                        <span class="text-xs font-bold text-blue-950 block">Cetak Lembar Nilai Rapor</span>
+                        <span class="text-[11px] text-blue-700">Format cetak siap lampirkan ke rapor</span>
                     </div>
                 </a>
 

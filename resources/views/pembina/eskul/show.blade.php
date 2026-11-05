@@ -291,7 +291,7 @@
     {{-- TAB 2: PRESENSI & PERTEMUAN --}}
     <div x-show="activeTab === 'presensi'" x-cloak class="space-y-6">
         {{-- Banner Highlight Presensi Kartu Pelajar --}}
-        <div class="rounded-2xl border border-blue-200 bg-gradient-to-r from-blue-50/90 via-indigo-50/60 to-white p-4 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="rounded-2xl border border-blue-200 bg-gradient-to-r from-blue-50/90 via-sky-50/60 to-white p-4 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div class="flex items-center gap-3">
                 <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-700 text-white shadow-xs">
                     <x-icon name="qr" class="h-6 w-6" />

@@ -15,8 +15,8 @@
     </div>
     <div class="flex flex-wrap items-center gap-2">
         {{-- Tombol Cek Status Pendaftaran Per Rombel (Ala E-Voting) --}}
-        <a href="{{ route('admin.students.status-rombel') }}" class="inline-flex items-center gap-2 rounded-xl border border-indigo-200 bg-indigo-50 px-3.5 py-2.5 text-xs font-bold text-indigo-700 hover:bg-indigo-100 shadow-2xs transition-all" title="Monitoring Progress Pendaftaran Per Rombel">
-            <x-icon name="chart" class="h-3.5 w-3.5 text-indigo-600 shrink-0" />
+        <a href="{{ route('admin.students.status-rombel') }}" class="inline-flex items-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-3.5 py-2.5 text-xs font-bold text-blue-700 hover:bg-blue-100 shadow-2xs transition-all" title="Monitoring Progress Pendaftaran Per Rombel">
+            <x-icon name="chart" class="h-3.5 w-3.5 text-blue-600 shrink-0" />
             <span>Cek Status Rombel</span>
         </a>
 
