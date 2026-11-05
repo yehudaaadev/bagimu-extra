@@ -41,24 +41,52 @@ class NotifController extends Controller
         ]);
     }
 
-    public function retry(NotificationLog $log)
+    public function retry(NotificationLog $log, \App\Services\FonnteService $fonnte)
     {
         if ($log->status === NotifStatus::TERKIRIM) {
             return back()->with('status', 'Notifikasi ini sudah terkirim.');
         }
 
-        if (preg_match('/^user:(\d+)$/', $log->to, $m) && ($user = User::find($m[1]))) {
+        $berhasil = false;
+        $pesanHasil = 'Notifikasi berhasil dikirim ulang.';
+
+        if ($log->channel === \App\Enums\NotifChannel::WA) {
+            $target = $log->to;
+            $pesan = is_array($log->payload) && !empty($log->payload['message'])
+                ? $log->payload['message']
+                : ($log->template ?: 'Pemberitahuan');
+            $res = $fonnte->sendMessage($target, $pesan);
+
+            if ($res['success']) {
+                $berhasil = true;
+                $log->update([
+                    'status' => NotifStatus::TERKIRIM,
+                    'attempts' => $log->attempts + 1,
+                    'sent_at' => now(),
+                    'provider_resp' => $res['data'] ?? $res['message'],
+                ]);
+            } else {
+                $log->update([
+                    'attempts' => $log->attempts + 1,
+                    'provider_resp' => $res['message'],
+                ]);
+                $pesanHasil = 'Gagal mengirim ulang WhatsApp: ' . ($res['message'] ?? 'Kesalahan gateway');
+            }
+        } elseif (preg_match('/^user:(\d+)$/', $log->to, $m) && ($user = User::find($m[1]))) {
             Notifier::kePengguna($user->id, 'Pemberitahuan', $log->template);
+            $berhasil = true;
+            $log->update([
+                'status' => NotifStatus::TERKIRIM,
+                'attempts' => $log->attempts + 1,
+                'sent_at' => now(),
+            ]);
+        } else {
+            $log->increment('attempts');
+            $pesanHasil = 'Format target notifikasi tidak didukung untuk pengiriman ulang.';
         }
 
-        $log->update([
-            'status' => NotifStatus::TERKIRIM,
-            'attempts' => $log->attempts + 1,
-            'sent_at' => now(),
-        ]);
+        AdminLog::record('notif.retry', 'NotificationLog', $log->id, "Kirim ulang notifikasi {$log->template} (" . ($berhasil ? 'Sukses' : 'Gagal') . ').');
 
-        AdminLog::record('notif.retry', 'NotificationLog', $log->id, "Kirim ulang notifikasi {$log->template}.");
-
-        return back()->with('status', 'Notifikasi dikirim ulang.');
+        return back()->with($berhasil ? 'status' : 'error', $pesanHasil);
     }
 }
