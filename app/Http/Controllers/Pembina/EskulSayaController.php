@@ -181,12 +181,7 @@ class EskulSayaController extends Controller
     {
         $me = $request->user();
 
-        $isMilik = $eskul->pembina_id === $me->id
-            || ($eskul->temp_pembina_id === $me->id
-                && $eskul->temp_pembina_sampai
-                && $eskul->temp_pembina_sampai->gte(today()));
-
-        if (! $isMilik) {
+        if ($eskul->pembina_id !== $me->id) {
             abort(403);
         }
 
@@ -259,12 +254,8 @@ class EskulSayaController extends Controller
     public function tambahAnggota(Request $request, Eskul $eskul)
     {
         $me = $request->user();
-        $isMilik = $eskul->pembina_id === $me->id
-            || ($eskul->temp_pembina_id === $me->id
-                && $eskul->temp_pembina_sampai
-                && $eskul->temp_pembina_sampai->gte(today()));
 
-        if (! $isMilik) {
+        if ($eskul->pembina_id !== $me->id) {
             abort(403);
         }
 
