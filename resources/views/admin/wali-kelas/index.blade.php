@@ -33,9 +33,12 @@
                 </div>
 
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">Email Resmi Sekolah <span class="text-rose-500">*</span></label>
-                    <input type="email" name="email" value="{{ old('email') }}" placeholder="budi@sekolah.sch.id" required
-                           class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-xs font-medium focus:border-blue-600 focus:outline-hidden focus:ring-2 focus:ring-blue-600/20">
+                    <label class="block font-bold text-slate-700 mb-1">Email Gmail Resmi <span class="text-rose-500">*</span></label>
+                    <div class="flex rounded-xl border border-slate-300 focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-600/20 overflow-hidden bg-white shadow-2xs">
+                        <input type="text" name="email" value="{{ old('email') ? Str::before(old('email'), '@gmail.com') : '' }}" placeholder="cth: budi.hartono" required
+                               class="w-full px-3.5 py-2.5 text-xs font-medium border-0 focus:outline-hidden">
+                        <span class="inline-flex items-center px-3 bg-slate-50 border-l border-slate-200 text-xs font-semibold text-slate-500 select-none">@gmail.com</span>
+                    </div>
                 </div>
 
                 <div>
@@ -189,8 +192,11 @@
                                             <p class="text-[11px] text-slate-400 mt-0.5">Jika rombel memiliki 2 wali kelas di sekolah, cantumkan kedua nama di sini.</p>
                                         </div>
                                         <div>
-                                            <label class="block font-bold text-slate-700 mb-1">Email Resmi</label>
-                                            <input type="email" name="email" value="{{ $wk->email }}" required class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-xs font-medium focus:border-blue-600 focus:outline-hidden">
+                                            <label class="block font-bold text-slate-700 mb-1">Email Gmail Resmi <span class="text-rose-500">*</span></label>
+                                            <div class="flex rounded-xl border border-slate-300 focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-600/20 overflow-hidden bg-white shadow-2xs">
+                                                <input type="text" name="email" value="{{ Str::before(old('email', $wk->email), '@gmail.com') }}" required class="w-full px-3.5 py-2 text-xs font-medium border-0 focus:outline-hidden">
+                                                <span class="inline-flex items-center px-3 bg-slate-50 border-l border-slate-200 text-xs font-semibold text-slate-500 select-none">@gmail.com</span>
+                                            </div>
                                         </div>
                                         <div>
                                             <label class="block font-bold text-slate-700 mb-1">Username Login</label>

@@ -65,7 +65,13 @@
     <form method="POST" action="{{ route('admin.users.store') }}" class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
         @csrf
         <div><label class="block font-medium text-slate-700 mb-1">Nama</label><input name="name" required maxlength="100" class="w-full border-slate-300 rounded-xl"></div>
-        <div><label class="block font-medium text-slate-700 mb-1">Email</label><input name="email" type="email" required class="w-full border-slate-300 rounded-xl"></div>
+        <div>
+            <label class="block font-medium text-slate-700 mb-1">Email Gmail <span class="text-rose-500">*</span></label>
+            <div class="flex rounded-xl border border-slate-300 focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-600/20 overflow-hidden bg-white shadow-2xs">
+                <input name="email" type="text" value="{{ old('email') ? Str::before(old('email'), '@gmail.com') : '' }}" placeholder="nama_pengguna" required class="w-full px-3 py-2 text-sm border-0 focus:outline-hidden">
+                <span class="inline-flex items-center px-3 bg-slate-50 border-l border-slate-200 text-xs font-semibold text-slate-500 select-none">@gmail.com</span>
+            </div>
+        </div>
         <div><label class="block font-medium text-slate-700 mb-1">Username (opsional)</label><input name="username" maxlength="30" class="w-full border-slate-300 rounded-xl"></div>
         <div><label class="block font-medium text-slate-700 mb-1">Password (min. 8)</label><input name="password" type="text" required minlength="8" class="w-full border-slate-300 rounded-xl"></div>
         <div><label class="block font-medium text-slate-700 mb-1">Peran</label>

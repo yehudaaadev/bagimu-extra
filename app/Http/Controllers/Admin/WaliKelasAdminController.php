@@ -65,6 +65,10 @@ class WaliKelasAdminController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        if ($request->has('email')) {
+            $request->merge(['email' => User::normalizeEmail($request->input('email'))]);
+        }
+
         $data = $request->validate([
             'name' => ['required', 'string', 'max:100'],
             'email' => ['required', 'email', 'max:191', 'unique:users,email'],
@@ -125,6 +129,10 @@ class WaliKelasAdminController extends Controller
     {
         if ($user->role !== Role::WALI_KELAS) {
             return back()->withErrors(['error' => 'Pengguna ini bukan akun Wali Kelas.']);
+        }
+
+        if ($request->has('email')) {
+            $request->merge(['email' => User::normalizeEmail($request->input('email'))]);
         }
 
         $data = $request->validate([

@@ -105,4 +105,29 @@ class User extends Authenticatable
     {
         return $this->hasOne(SchoolClass::class, 'wali_kelas_id');
     }
+
+    /**
+     * Normalisasi alamat email: otomatis tambahkan domain '@gmail.com' bila diisi tanpa '@'.
+     */
+    public static function normalizeEmail(?string $email): ?string
+    {
+        if ($email === null) {
+            return null;
+        }
+
+        $email = trim(strtolower($email));
+        if ($email === '') {
+            return '';
+        }
+
+        if (! str_contains($email, '@')) {
+            return $email.'@gmail.com';
+        }
+
+        if (str_ends_with($email, '@gmail')) {
+            return $email.'.com';
+        }
+
+        return $email;
+    }
 }

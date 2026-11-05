@@ -29,8 +29,11 @@
                     <p class="text-[11px] text-slate-400 mt-0.5">Jika pembina ada 2 orang, cantumkan kedua nama di kolom ini.</p>
                 </div>
                 <div>
-                    <label class="block font-semibold text-slate-700 text-xs mb-1">Email Resmi Login <span class="text-rose-500">*</span></label>
-                    <input type="email" name="email" value="{{ old('email') }}" placeholder="pembina.futsal@sekolah.sch.id" required class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-blue-600 focus:outline-none">
+                    <label class="block font-semibold text-slate-700 text-xs mb-1">Email Gmail Resmi <span class="text-rose-500">*</span></label>
+                    <div class="flex rounded-xl border border-slate-300 focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-600/20 overflow-hidden bg-white shadow-2xs">
+                        <input type="text" name="email" value="{{ old('email') ? Str::before(old('email'), '@gmail.com') : '' }}" placeholder="cth: pembina.futsal" required class="w-full px-3.5 py-2 text-sm border-0 focus:outline-none">
+                        <span class="inline-flex items-center px-3 bg-slate-50 border-l border-slate-200 text-xs font-semibold text-slate-500 select-none">@gmail.com</span>
+                    </div>
                 </div>
                 <div>
                     <label class="block font-semibold text-slate-700 text-xs mb-1">Username Login (Opsional)</label>
@@ -164,8 +167,11 @@
                                             </div>
 
                                             <div>
-                                                <label class="block font-bold text-slate-700 mb-1">Email Resmi Login <span class="text-rose-500">*</span></label>
-                                                <input type="email" name="email" value="{{ old('email', $u->email) }}" required class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-xs font-medium focus:border-blue-600 focus:outline-none">
+                                                <label class="block font-bold text-slate-700 mb-1">Email Gmail Resmi <span class="text-rose-500">*</span></label>
+                                                <div class="flex rounded-xl border border-slate-300 focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-600/20 overflow-hidden bg-white shadow-2xs">
+                                                    <input type="text" name="email" value="{{ Str::before(old('email', $u->email), '@gmail.com') }}" required class="w-full px-3.5 py-2 text-xs font-medium border-0 focus:outline-none">
+                                                    <span class="inline-flex items-center px-3 bg-slate-50 border-l border-slate-200 text-xs font-semibold text-slate-500 select-none">@gmail.com</span>
+                                                </div>
                                             </div>
 
                                             <div>
