@@ -133,7 +133,21 @@ class EskulSayaController extends Controller
             ];
         });
 
-        $pertemuans = $eskul->pertemuans()->orderByDesc('nomor')->get()->map(function ($p) use ($eskul) {
+        $pertemuanQuery = $eskul->pertemuans();
+        if ($periodeModel) {
+            if ($periodeModel->tgl_mulai && $periodeModel->tgl_selesai) {
+                $pertemuanQuery->whereBetween('tanggal', [
+                    $periodeModel->tgl_mulai->toDateString(),
+                    $periodeModel->tgl_selesai->toDateString(),
+                ]);
+            } elseif (preg_match('/(\d{4})\/(\d{4})/', $periodeModel->periode, $m)) {
+                $pertemuanQuery->whereBetween('tanggal', ["{$m[1]}-07-01", "{$m[2]}-06-30"]);
+            } elseif (preg_match('/^\d{4}$/', $periodeModel->periode)) {
+                $pertemuanQuery->whereBetween('tanggal', ["{$periodeModel->periode}-01-01", "{$periodeModel->periode}-12-31"]);
+            }
+        }
+
+        $pertemuans = $pertemuanQuery->orderByDesc('nomor')->get()->map(function ($p) use ($eskul) {
             $p->hadir_count = Kehadiran::where('eskul_id', $eskul->id)
                 ->whereDate('tanggal', $p->tanggal)
                 ->where('status', KehadiranStatus::HADIR)

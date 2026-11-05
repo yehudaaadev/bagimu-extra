@@ -34,10 +34,28 @@ class AnggotaController extends Controller
         $selectedEskulId = $request->query('eskul_id') ?: $eskuls->first()?->id;
         $currentEskul = $eskuls->firstWhere('id', (int) $selectedEskulId) ?: $eskuls->first();
 
+        $periodeModel = $selectedPeriode ? Periode::where('periode', $selectedPeriode)->first() : null;
+
         $query = Registration::with([
             'user',
             'student',
-            'kehadiran' => fn ($q) => $currentEskul ? $q->where('eskul_id', $currentEskul->id) : $q,
+            'kehadiran' => function ($q) use ($currentEskul, $periodeModel) {
+                if ($currentEskul) {
+                    $q->where('eskul_id', $currentEskul->id);
+                }
+                if ($periodeModel) {
+                    if ($periodeModel->tgl_mulai && $periodeModel->tgl_selesai) {
+                        $q->whereBetween('tanggal', [
+                            $periodeModel->tgl_mulai->toDateString(),
+                            $periodeModel->tgl_selesai->toDateString(),
+                        ]);
+                    } elseif (preg_match('/(\d{4})\/(\d{4})/', $periodeModel->periode, $m)) {
+                        $q->whereBetween('tanggal', ["{$m[1]}-07-01", "{$m[2]}-06-30"]);
+                    } elseif (preg_match('/^\d{4}$/', $periodeModel->periode)) {
+                        $q->whereBetween('tanggal', ["{$periodeModel->periode}-01-01", "{$periodeModel->periode}-12-31"]);
+                    }
+                }
+            },
         ]);
 
         if ($currentEskul) {
@@ -89,7 +107,20 @@ class AnggotaController extends Controller
             ->whereNotNull('nilai')
             ->count();
 
-        $totalPertemuanEskul = $currentEskul ? $currentEskul->pertemuans()->count() : 0;
+        $pertemuanQuery = $currentEskul ? $currentEskul->pertemuans() : null;
+        if ($pertemuanQuery && $periodeModel) {
+            if ($periodeModel->tgl_mulai && $periodeModel->tgl_selesai) {
+                $pertemuanQuery->whereBetween('tanggal', [
+                    $periodeModel->tgl_mulai->toDateString(),
+                    $periodeModel->tgl_selesai->toDateString(),
+                ]);
+            } elseif (preg_match('/(\d{4})\/(\d{4})/', $periodeModel->periode, $m)) {
+                $pertemuanQuery->whereBetween('tanggal', ["{$m[1]}-07-01", "{$m[2]}-06-30"]);
+            } elseif (preg_match('/^\d{4}$/', $periodeModel->periode)) {
+                $pertemuanQuery->whereBetween('tanggal', ["{$periodeModel->periode}-01-01", "{$periodeModel->periode}-12-31"]);
+            }
+        }
+        $totalPertemuanEskul = $pertemuanQuery ? $pertemuanQuery->count() : 0;
 
         return view('pembina.anggota.index', compact(
             'eskuls',
