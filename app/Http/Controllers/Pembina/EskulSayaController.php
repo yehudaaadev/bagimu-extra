@@ -373,7 +373,16 @@ class EskulSayaController extends Controller
         }
 
         $nama = $registration->user?->name ?? $registration->nis;
-        $registration->delete();
+        $user = $registration->user;
+
+        DB::transaction(function () use ($registration, $user) {
+            StatusHistory::where('registration_id', $registration->id)->delete();
+            $registration->delete();
+
+            if ($user && $user->login_token_hash) {
+                $user->forceFill(['login_token_revoked_at' => null])->save();
+            }
+        });
 
         AdminLog::record('pembina.remove_student', 'Registration', (string) $registration->id, "Pembina {$me->name} mengeluarkan siswa {$nama} dari eskul {$eskul->name}.");
 
