@@ -48,7 +48,7 @@ Antarmuka dibangun dengan pendekatan minimalis modern menggunakan palet warna fu
 - **Pengesahan Sesi:** Fitur penguncian data absensi per tanggal pertemuan untuk menjamin validitas rekapitulasi.
 - **Verifikasi Izin & Sakit:** Peninjauan permohonan ketidakhadiran siswa beserta pratinjau dokumen atau foto bukti lampiran.
 - **Pendaftaran Siswa Susulan & Pelepasan Anggota Bersih:** Fitur manual pendaftaran siswa susulan serta mekanisme pelepasan anggota eskul yang otomatis mengembalikan status token login siswa agar dapat memilih eskul kembali dan membersihkan riwayat status terkait.
-- **Evaluasi & Preset Nilai Cepat:** Input skor capaian (skala 0-100) dilengkapi pilihan preset nilai standar (85, 80, 78, 75) untuk pengisian otomatis seluruh baris yang masih kosong, konversi predikat otomatis (A, B, C, D), dan catatan pembina.
+- **Evaluasi & Preset Nilai Cepat:** Input skor capaian (skala 0-100) dilengkapi pilihan preset nilai standar (85, 80, 78, 75) untuk pengisian otomatis seluruh baris yang masih kosong, tombol terpadu **Simpan Semua Nilai** untuk penyimpanan massal seluruh anggota eskul sekaligus, penyimpanan individual per baris, konversi predikat otomatis (A, B, C, D), dan catatan pembina.
 - **Riwayat & Arsip Multi-Periode:** Pembina dapat memilih dan memantau riwayat pendaftaran, kehadiran, dan penilaian anggota eskul dari tahun ajaran lampau dalam mode arsip aman (*read-only*).
 - **Ekspor Laporan:** Pengunduhan rekapitulasi kehadiran dan data anggota per periode dalam format Excel dan CSV.
 

@@ -505,7 +505,17 @@
                     <h2 class="font-bold text-slate-900 text-sm">Penilaian Akhir Anggota Eskul ({{ $disetujui->count() }} Siswa)</h2>
                     <p class="text-[11px] text-slate-400">Predikat otomatis rapor: A &ge; 85, B &ge; 70, C &ge; 55, D &lt; 55.</p>
                 </div>
+                @if ($disetujui->isNotEmpty())
+                    <button type="submit" form="bulkNilaiForm" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-emerald-600 text-white text-xs font-bold hover:bg-emerald-700 transition shadow-2xs cursor-pointer">
+                        <x-icon name="check" class="w-4 h-4" />
+                        Simpan Semua Nilai
+                    </button>
+                @endif
             </div>
+
+            <form id="bulkNilaiForm" method="POST" action="{{ route('pembina.nilai.store', $eskul) }}">
+                @csrf
+            </form>
 
             {{-- Preset Cepat Nilai Massal --}}
             <div class="flex flex-wrap items-center justify-between gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200 mb-4 text-xs">
@@ -521,7 +531,15 @@
                         Terapkan ke Nilai Kosong
                     </button>
                 </div>
-                <span class="text-[11px] text-slate-400">Isi otomatis nilai standar ke seluruh siswa yang belum dinilai</span>
+                <div class="flex items-center gap-3">
+                    <span class="text-[11px] text-slate-400">Isi otomatis nilai standar ke seluruh siswa yang belum dinilai</span>
+                    @if ($disetujui->isNotEmpty())
+                        <button type="submit" form="bulkNilaiForm" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-bold hover:bg-emerald-700 transition shadow-2xs cursor-pointer">
+                            <x-icon name="check" class="w-3.5 h-3.5" />
+                            Simpan Semua Nilai
+                        </button>
+                    @endif
+                </div>
             </div>
 
             <div class="overflow-x-auto">
@@ -541,17 +559,19 @@
                             <tr class="hover:bg-slate-50/60">
                                 <td class="px-3 py-2 font-medium text-slate-900">{{ $r->user?->name }}</td>
                                 <td class="px-3 py-2 text-slate-700">{{ $r->kelas }}</td>
-                                <td class="px-3 py-2"><input type="number" form="nilai-{{ $r->id }}" name="nilai" min="0" max="100" value="{{ $r->nilai }}" placeholder="0–100" class="nilai-input w-24 rounded-lg border border-slate-300 px-2 py-1 text-xs font-bold shadow-2xs"></td>
+                                <td class="px-3 py-2"><input type="number" id="input-nilai-{{ $r->id }}" form="bulkNilaiForm" name="nilai[{{ $r->id }}]" min="0" max="100" value="{{ $r->nilai }}" placeholder="0–100" class="nilai-input w-24 rounded-lg border border-slate-300 px-2 py-1 text-xs font-bold shadow-2xs"></td>
                                 <td class="px-3 py-2">
                                     <span class="inline-flex items-center px-2 py-0.5 rounded font-bold text-[11px] {{ $r->predikat === 'A' ? 'bg-emerald-100 text-emerald-800' : ($r->predikat === 'B' ? 'bg-blue-100 text-blue-800' : 'bg-slate-100 text-slate-700') }}">
                                         {{ $r->predikat ?? '—' }}
                                     </span>
                                 </td>
-                                <td class="px-3 py-2"><input type="text" form="nilai-{{ $r->id }}" name="catatan" value="{{ $r->catatan_nilai }}" maxlength="1000" placeholder="Opsional" class="w-full rounded-lg border border-slate-300 px-2.5 py-1 text-xs shadow-2xs"></td>
+                                <td class="px-3 py-2"><input type="text" id="input-catatan-{{ $r->id }}" form="bulkNilaiForm" name="catatan[{{ $r->id }}]" value="{{ $r->catatan_nilai }}" maxlength="1000" placeholder="Opsional" class="w-full rounded-lg border border-slate-300 px-2.5 py-1 text-xs shadow-2xs"></td>
                                 <td class="px-3 py-2 text-center">
-                                    <form id="nilai-{{ $r->id }}" method="POST" action="{{ route('pembina.nilai.store', $eskul) }}">
+                                    <form id="nilai-{{ $r->id }}" method="POST" action="{{ route('pembina.nilai.store', $eskul) }}" onsubmit="this.querySelector('input[name=nilai]').value = document.getElementById('input-nilai-{{ $r->id }}').value; this.querySelector('input[name=catatan]').value = document.getElementById('input-catatan-{{ $r->id }}').value;">
                                         @csrf
                                         <input type="hidden" name="registration_id" value="{{ $r->id }}">
+                                        <input type="hidden" name="nilai" value="">
+                                        <input type="hidden" name="catatan" value="">
                                         <button class="rounded-lg bg-blue-600 px-3 py-1 text-xs font-bold text-white hover:bg-blue-700 transition shadow-2xs cursor-pointer">Simpan</button>
                                     </form>
                                 </td>
@@ -560,6 +580,16 @@
                     </tbody>
                 </table>
             </div>
+
+            @if ($disetujui->isNotEmpty())
+                <div class="mt-4 flex items-center justify-between border-t border-slate-100 pt-3">
+                    <span class="text-[11px] text-slate-400">Total {{ $disetujui->count() }} siswa terdaftar</span>
+                    <button type="submit" form="bulkNilaiForm" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-emerald-600 text-white text-xs font-bold hover:bg-emerald-700 transition shadow-2xs cursor-pointer">
+                        <x-icon name="check" class="w-4 h-4" />
+                        Simpan Semua Nilai ({{ $disetujui->count() }} Siswa)
+                    </button>
+                </div>
+            @endif
         </div>
     </div>
 
