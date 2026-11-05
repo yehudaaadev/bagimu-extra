@@ -89,10 +89,6 @@
                             </button>
                         </form>
                         @if ($user?->login_token && !$user?->login_token_revoked_at)
-                            <button type="button" onclick="sendTokenViaWa('{{ addslashes($s->nama) }}', '{{ $s->nis }}', '{{ $user->login_token }}', '{{ $waNum }}')" class="flex w-full items-center gap-2 rounded-xl px-2.5 py-2 hover:bg-emerald-50 text-emerald-700 font-medium text-left cursor-pointer">
-                                <x-icon name="message-square" class="h-3.5 w-3.5 text-emerald-600" />
-                                <span>Kirim Token ke WA</span>
-                            </button>
                             <form method="POST" action="{{ route('admin.students.revoke', $s) }}">
                                 @csrf
                                 <button type="submit" class="flex w-full items-center gap-2 rounded-xl px-2.5 py-2 hover:bg-amber-50 text-amber-700 font-medium text-left cursor-pointer">

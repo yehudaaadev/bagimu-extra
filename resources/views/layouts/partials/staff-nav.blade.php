@@ -65,10 +65,6 @@
                         <x-icon name="user-group" class="h-4 w-4 shrink-0" />
                         <span>Kelola Wali Kelas</span>
                     </a>
-                    <a href="{{ route('admin.invitations.index') }}" class="{{ $link(Route::is('admin.invitations.*')) }}">
-                        <x-icon name="user-plus" class="h-4 w-4 shrink-0" />
-                        <span>Undang Pembina</span>
-                    </a>
                 @endif
                 @if ($isAdmin)
                     <a href="{{ route('admin.rekap.index') }}" class="{{ $link(Route::is('admin.rekap.*')) }}">
@@ -165,16 +161,6 @@
                                 {{ $notifBelum > 99 ? '99+' : $notifBelum }}
                             </span>
                         @endif
-                    </a>
-                @endif
-                <a href="{{ route('admin.laporan.index') }}" class="{{ $link(Route::is('admin.laporan.*')) }}">
-                    <x-icon name="chart" class="h-4 w-4 shrink-0" />
-                    <span>Laporan</span>
-                </a>
-                @if ($isAdmin)
-                    <a href="{{ route('admin.cetak.index') }}" class="{{ $link(Route::is('admin.cetak.*')) }}">
-                        <x-icon name="printer" class="h-4 w-4 shrink-0" />
-                        <span>Cetak</span>
                     </a>
                 @endif
             </div>
