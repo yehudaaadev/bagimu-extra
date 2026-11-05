@@ -56,8 +56,8 @@ class DashboardController extends Controller
         $izinPending = Izin::where('status', IzinStatus::PENDING)->count();
         if ($izinPending > 0) {
             $tugas[] = [
-                'label' => "{$izinPending} pengajuan izin menunggu",
-                'url' => route('admin.izin.index', ['status' => 'PENDING']),
+                'label' => "{$izinPending} pengajuan izin menunggu konfirmasi pembina",
+                'url' => route('admin.kehadiran.index'),
             ];
         }
 
@@ -89,7 +89,7 @@ class DashboardController extends Controller
         if ($notifGagal > 0) {
             $tugas[] = [
                 'label' => "{$notifGagal} notifikasi gagal terkirim",
-                'url' => route('admin.logs.index'),
+                'url' => route('admin.notifikasi.index', ['status' => NotifStatus::GAGAL->value]),
             ];
         }
 
