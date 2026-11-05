@@ -4,13 +4,40 @@
 
 @section('content')
 <div class="space-y-6" x-data="{
-    activeTab: 'anggota',
+    activeTab: '{{ request('tab', 'anggota') }}',
     bukaModal: false,
     search: '',
     filterTingkat: 'all',
     filterKelas: 'all',
     selected: [],
     calonList: {{ Js::from($calonSiswa) }},
+    init() {
+        this.$watch('activeTab', (tab) => {
+            const url = new URL(window.location);
+            if (tab === 'anggota') {
+                url.searchParams.delete('tab');
+            } else {
+                url.searchParams.set('tab', tab);
+            }
+            window.history.replaceState({}, '', url);
+
+            document.querySelectorAll('#staff-sidebar-nav a, #staff-mobile-nav a').forEach(a => {
+                if (a.href.includes('tab=nilai')) {
+                    if (tab === 'nilai') {
+                        a.className = 'flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-bold transition-all duration-150 bg-blue-600 text-white shadow-md shadow-blue-600/25';
+                    } else {
+                        a.className = 'flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-bold transition-all duration-150 text-slate-600 hover:bg-slate-100/90 hover:text-slate-900 active:scale-[0.99]';
+                    }
+                } else if (a.href.endsWith('/pembina/eskul') || (a.href.includes('/pembina/eskul/') && !a.href.includes('tab='))) {
+                    if (tab !== 'nilai') {
+                        a.className = 'flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-bold transition-all duration-150 bg-blue-600 text-white shadow-md shadow-blue-600/25';
+                    } else {
+                        a.className = 'flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-bold transition-all duration-150 text-slate-600 hover:bg-slate-100/90 hover:text-slate-900 active:scale-[0.99]';
+                    }
+                }
+            });
+        });
+    },
     get filteredList() {
         return this.calonList.filter(s => {
             if (this.filterTingkat !== 'all') {

@@ -242,7 +242,7 @@ function bukaModalTambahKelas() {
 function bukaModalEditKelas(kelas) {
     document.getElementById('modal-kelas-title').textContent = 'Edit Rombel Kelas: ' + kelas.nama;
     const form = document.getElementById('form-modal-kelas');
-    form.action = "{{ url('admin/kelas') }}/" + kelas.id;
+    form.action = "{{ route('admin.kelas.update', ':id') }}".replace(':id', kelas.id);
     document.getElementById('method-put-wrap').innerHTML = '<input type="hidden" name="_method" value="PUT">';
     document.getElementById('input-kelas-nama').value = kelas.nama || '';
     document.getElementById('input-kelas-tingkat').value = kelas.tingkat || '';

@@ -464,7 +464,7 @@ function confirmDeleteSingle(id, nama, nis) {
         `Apakah Anda yakin ingin menghapus permanen data siswa "${nama}" (NIS: ${nis})? Tindakan ini tidak dapat dibatalkan.`,
         function() {
             const form = document.getElementById('form-single-delete');
-            form.action = "{{ url('admin/students') }}/" + id;
+            form.action = "{{ route('admin.students.destroy', ':id') }}".replace(':id', id);
             form.submit();
         },
         'Hapus Permanen',

@@ -51,9 +51,12 @@
         @method('PUT')
         <div><label class="block font-medium text-slate-700 mb-1">Kelas</label><input name="kelas" value="{{ old('kelas', $registration->kelas) }}" required class="w-full border-slate-300 rounded-xl"></div>
         <div><label class="block font-medium text-slate-700 mb-1">Jurusan</label>
+            @php
+                $jurusanVal = old('jurusan', $registration->jurusan instanceof \BackedEnum ? $registration->jurusan->value : (string) ($registration->jurusan ?? ''));
+            @endphp
             <select name="jurusan" class="w-full border-slate-300 rounded-xl">
                 @foreach (['RPL', 'KULINER', 'DKV', 'TP', 'TKP'] as $j)
-                    <option value="{{ $j }}" @selected(old('jurusan', $registration->jurusan?->value) === $j)>{{ $j }}</option>
+                    <option value="{{ $j }}" @selected($jurusanVal === $j)>{{ $j }}</option>
                 @endforeach
             </select>
         </div>
@@ -62,9 +65,12 @@
         <div><label class="block font-medium text-slate-700 mb-1">Wali Kelas</label><input name="nama_wali_kelas" value="{{ old('nama_wali_kelas', $registration->nama_wali_kelas) }}" class="w-full border-slate-300 rounded-xl"></div>
         <div><label class="block font-medium text-slate-700 mb-1">NIS</label><input name="nis" value="{{ old('nis', $registration->nis) }}" class="w-full border-slate-300 rounded-xl"></div>
         <div><label class="block font-medium text-slate-700 mb-1">Gender</label>
+            @php
+                $genderVal = old('gender', $registration->gender instanceof \BackedEnum ? $registration->gender->value : (string) ($registration->gender ?? ''));
+            @endphp
             <select name="gender" class="w-full border-slate-300 rounded-xl">
-                <option value="LAKI_LAKI" @selected(old('gender', $registration->gender?->value) === 'LAKI_LAKI')>Laki-laki</option>
-                <option value="PEREMPUAN" @selected(old('gender', $registration->gender?->value) === 'PEREMPUAN')>Perempuan</option>
+                <option value="LAKI_LAKI" @selected($genderVal === 'LAKI_LAKI')>Laki-laki</option>
+                <option value="PEREMPUAN" @selected($genderVal === 'PEREMPUAN')>Perempuan</option>
             </select>
         </div>
         <div><label class="block font-medium text-slate-700 mb-1">Eskul Utama</label>
