@@ -98,9 +98,20 @@ class EskulController extends Controller
             $data['pembina_id'] = null;
         }
 
-        $eskul->update($data);
+        $oldName = $eskul->name;
+        $newName = $data['name'];
 
-        AdminLog::record('eskul.update', 'eskul', $eskul->id, "Mengubah eskul {$eskul->name}");
+        \Illuminate\Support\Facades\DB::transaction(function () use ($eskul, $data, $oldName, $newName) {
+            $eskul->update($data);
+
+            // Sinkronisasi cascading jika nama eskul diubah agar relasi pendaftar lama tidak terputus
+            if ($oldName !== $newName) {
+                Registration::where('eskul_utama', $oldName)->update(['eskul_utama' => $newName]);
+                Registration::where('eskul_cadangan', $oldName)->update(['eskul_cadangan' => $newName]);
+            }
+        });
+
+        AdminLog::record('eskul.update', 'eskul', $eskul->id, "Mengubah eskul {$oldName} -> {$newName}");
 
         return redirect()->route('admin.eskuls.show', $eskul)->with('status', 'Eskul berhasil diperbarui.');
     }
