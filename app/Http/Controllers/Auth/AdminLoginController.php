@@ -54,10 +54,13 @@ class AdminLoginController extends Controller
             ]);
         }
 
-        $login = $data['login'];
-        $user = filter_var($login, FILTER_VALIDATE_EMAIL)
-            ? User::where('email', $login)->first()
-            : User::where('username', $login)->first();
+        $login = trim($data['login']);
+        $user = User::where('email', $login)
+            ->orWhere('username', $login)
+            ->when(! str_contains($login, '@'), function ($q) use ($login) {
+                $q->orWhere('email', $login . '@gmail.com');
+            })
+            ->first();
 
         if (! $user || ! $user->password || ! Hash::check($data['password'], $user->password)) {
             $this->logFailure($request, $throttleKey, $user?->id, $login, 'Kredensial login admin salah');
