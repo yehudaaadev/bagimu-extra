@@ -253,7 +253,9 @@ class WaBlastController extends Controller
             $wali = $class->waliKelas;
             $normWa = Whatsapp::normalize($wali->whatsapp);
 
-            $students = Student::with('user')
+            $students = Student::with(['user', 'user.registrations' => function ($q) use ($currentPeriode) {
+                $q->where('periode', $currentPeriode);
+            }])
                 ->where('kelas', $class->nama)
                 ->where('status', 'AKTIF')
                 ->orderBy('nama')
@@ -271,6 +273,12 @@ class WaBlastController extends Controller
                         'role' => Role::STUDENT,
                     ]);
                     $student->update(['user_id' => $user->id]);
+                }
+
+                $regAktif = $user->registrations?->first();
+                if ($regAktif) {
+                    $barisSiswa[] = ($idx + 1) . ". {$student->nis} - {$student->nama} [Sudah Terdaftar: {$regAktif->eskul_utama}]";
+                    continue;
                 }
 
                 $token = $user->login_token;
