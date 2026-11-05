@@ -21,6 +21,16 @@
 
     {{-- Filter Form --}}
     <form method="GET" action="{{ route('admin.kehadiran.index') }}" class="flex flex-wrap gap-3 items-end bg-white border border-slate-200 rounded-2xl p-4 shadow-xs">
+        <div>
+            <label for="periode" class="block text-xs font-bold text-slate-700 mb-1">Periode / Tahun Ajaran</label>
+            <select name="periode" id="periode" class="border-slate-300 rounded-xl text-xs py-2 focus:border-blue-500 focus:ring-blue-500 font-medium">
+                @foreach ($allPeriodes as $p)
+                    <option value="{{ $p->periode }}" @selected($selectedPeriode === $p->periode)>
+                        {{ $p->periode }} {{ $p->status->value === 'DIBUKA' ? '(Aktif)' : "({$p->status->label()})" }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
         <div class="flex-1 min-w-[200px]">
             <label for="eskul_id" class="block text-xs font-bold text-slate-700 mb-1">Pilih Ekstrakurikuler</label>
             <select name="eskul_id" id="eskul_id" class="w-full border-slate-300 rounded-xl text-xs py-2 focus:border-blue-500 focus:ring-blue-500 font-medium">

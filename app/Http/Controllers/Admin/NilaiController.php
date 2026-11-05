@@ -26,7 +26,9 @@ class NilaiController extends Controller
         $eskulId = $request->query('eskul_id', $eskuls->first()?->id);
         $eskul = $eskuls->firstWhere('id', (int) $eskulId) ?? $eskuls->first();
 
-        $periodeAktif = Periode::where('status', PeriodeStatus::DIBUKA)->orderByDesc('periode')->first();
+        $allPeriodes = Periode::orderByDesc('periode')->get();
+        $periodeAktif = $allPeriodes->firstWhere('status', PeriodeStatus::DIBUKA);
+        $selectedPeriode = $request->query('periode') ?: ($periodeAktif?->periode ?: $allPeriodes->first()?->periode);
 
         $pendaftar = collect();
 
@@ -36,8 +38,8 @@ class NilaiController extends Controller
                 ->where('eskul_utama', $eskul->name)
                 ->orderBy('kelas')->orderBy('nis');
 
-            if ($periodeAktif) {
-                $q->where('periode', $periodeAktif->periode);
+            if ($selectedPeriode) {
+                $q->where('periode', $selectedPeriode);
             }
 
             $pendaftar = $q->get();
@@ -48,21 +50,25 @@ class NilaiController extends Controller
             'eskul' => $eskul,
             'pendaftar' => $pendaftar,
             'periodeAktif' => $periodeAktif,
+            'allPeriodes' => $allPeriodes,
+            'selectedPeriode' => $selectedPeriode,
         ]);
     }
 
     public function export(Request $request)
     {
         $eskul = Eskul::findOrFail($request->query('eskul_id'));
-        $periodeAktif = Periode::where('status', PeriodeStatus::DIBUKA)->orderByDesc('periode')->first();
+        $allPeriodes = Periode::orderByDesc('periode')->get();
+        $periodeAktif = $allPeriodes->firstWhere('status', PeriodeStatus::DIBUKA);
+        $selectedPeriode = $request->query('periode') ?: ($periodeAktif?->periode ?: $allPeriodes->first()?->periode);
 
         $q = Registration::with('user')
             ->where('status', Status::APPROVED)
             ->where('eskul_utama', $eskul->name)
             ->orderBy('kelas')->orderBy('nis');
 
-        if ($periodeAktif) {
-            $q->where('periode', $periodeAktif->periode);
+        if ($selectedPeriode) {
+            $q->where('periode', $selectedPeriode);
         }
 
         $headers = ['No', 'Nama', 'NIS', 'Kelas', 'Jurusan', 'Eskul', 'Periode', 'Nilai', 'Predikat', 'Catatan'];

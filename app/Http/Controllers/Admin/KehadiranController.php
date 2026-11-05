@@ -31,7 +31,9 @@ class KehadiranController extends Controller
 
         $eskul = $eskuls->firstWhere('id', (int) $eskulId) ?? $eskuls->first();
 
-        $periodeAktif = Periode::where('status', PeriodeStatus::DIBUKA)->orderByDesc('periode')->first();
+        $allPeriodes = Periode::orderByDesc('periode')->get();
+        $periodeAktif = $allPeriodes->firstWhere('status', PeriodeStatus::DIBUKA);
+        $selectedPeriode = $request->query('periode') ?: ($periodeAktif?->periode ?: $allPeriodes->first()?->periode);
 
         $pendaftar = collect();
         $peta = collect();
@@ -45,8 +47,8 @@ class KehadiranController extends Controller
                 ->where('status', Status::APPROVED)
                 ->where('eskul_utama', $eskul->name);
 
-            if ($periodeAktif) {
-                $q->where('periode', $periodeAktif->periode);
+            if ($selectedPeriode) {
+                $q->where('periode', $selectedPeriode);
             }
 
             $pendaftar = $q->get()->sort(function ($a, $b) {
@@ -103,6 +105,8 @@ class KehadiranController extends Controller
             'rombelStats' => $rombelStats,
             'statusList' => KehadiranStatus::cases(),
             'periodeAktif' => $periodeAktif,
+            'allPeriodes' => $allPeriodes,
+            'selectedPeriode' => $selectedPeriode,
         ]);
     }
 

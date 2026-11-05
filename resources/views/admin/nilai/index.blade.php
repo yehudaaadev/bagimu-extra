@@ -10,6 +10,16 @@
 
 <form method="GET" action="{{ route('admin.nilai.index') }}" class="no-print mb-4 flex flex-wrap gap-3 items-end bg-white border rounded-lg p-4">
     <div>
+        <label for="periode" class="block text-xs font-medium text-gray-700">Periode / Tahun Ajaran</label>
+        <select name="periode" id="periode" class="mt-1 border rounded px-3 py-2 text-sm">
+            @foreach ($allPeriodes as $p)
+                <option value="{{ $p->periode }}" @selected($selectedPeriode === $p->periode)>
+                    {{ $p->periode }} {{ $p->status->value === 'DIBUKA' ? '(Aktif)' : "({$p->status->label()})" }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+    <div>
         <label for="eskul_id" class="block text-xs font-medium text-gray-700">Ekstrakurikuler</label>
         <select name="eskul_id" id="eskul_id" class="mt-1 border rounded px-3 py-2 text-sm">
             @foreach ($eskuls as $e)
@@ -18,11 +28,10 @@
         </select>
     </div>
     <button class="px-4 py-2 rounded bg-gray-900 text-white text-sm">Tampilkan</button>
-    <span class="text-xs text-gray-500">Periode aktif: {{ $periodeAktif?->periode ?? '-' }}</span>
     @if ($eskul)
         <span class="ms-auto flex flex-wrap gap-2">
-            <a href="{{ route('admin.nilai.export', ['eskul_id' => $eskul->id]) }}" class="inline-flex items-center gap-1.5 rounded border px-3 py-2 text-xs font-semibold hover:bg-gray-50"><x-icon name="download" class="h-3.5 w-3.5" />CSV</a>
-            <a href="{{ route('admin.nilai.export', ['eskul_id' => $eskul->id, 'format' => 'excel']) }}" class="inline-flex items-center gap-1.5 rounded border px-3 py-2 text-xs font-semibold hover:bg-gray-50"><x-icon name="download" class="h-3.5 w-3.5" />Excel</a>
+            <a href="{{ route('admin.nilai.export', ['eskul_id' => $eskul->id, 'periode' => $selectedPeriode]) }}" class="inline-flex items-center gap-1.5 rounded border px-3 py-2 text-xs font-semibold hover:bg-gray-50"><x-icon name="download" class="h-3.5 w-3.5" />CSV</a>
+            <a href="{{ route('admin.nilai.export', ['eskul_id' => $eskul->id, 'periode' => $selectedPeriode, 'format' => 'excel']) }}" class="inline-flex items-center gap-1.5 rounded border px-3 py-2 text-xs font-semibold hover:bg-gray-50"><x-icon name="download" class="h-3.5 w-3.5" />Excel</a>
             <button type="button" onclick="window.print()" class="inline-flex items-center gap-1.5 rounded border px-3 py-2 text-xs font-semibold hover:bg-gray-50"><x-icon name="printer" class="h-3.5 w-3.5" />Cetak</button>
         </span>
     @endif
