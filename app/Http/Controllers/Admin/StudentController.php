@@ -264,6 +264,9 @@ class StudentController extends Controller
             $students = $this->filterStudentsQuery($request)->with('user')->get();
         }
 
+        $activePeriode = Periode::where('status', PeriodeStatus::DIBUKA)->orderByDesc('periode')->first()
+            ?? Periode::orderByDesc('periode')->first();
+
         $count = 0;
         foreach ($students as $student) {
             $user = $student->user;
@@ -273,14 +276,17 @@ class StudentController extends Controller
                 continue;
             }
 
-            // Lewati jika siswa sudah memilih eskul (data pendaftaran terkunci)
-            $sudahPilih = \App\Models\Registration::where('nis', $student->nis)
-                ->orWhere(function ($q) use ($student) {
-                    if ($student->user_id) {
-                        $q->where('user_id', $student->user_id);
-                    }
-                })
-                ->exists();
+            // Lewati jika siswa sudah memilih eskul di periode aktif (data pendaftaran terkunci)
+            $sudahPilih = $activePeriode
+                ? \App\Models\Registration::where('periode', $activePeriode->periode)
+                    ->where(function ($q) use ($student) {
+                        $q->where('nis', $student->nis);
+                        if ($student->user_id) {
+                            $q->orWhere('user_id', $student->user_id);
+                        }
+                    })
+                    ->exists()
+                : false;
 
             if ($sudahPilih) {
                 continue;
@@ -823,17 +829,24 @@ class StudentController extends Controller
 
     public function issueToken(Student $student)
     {
-        // Tolak jika siswa sudah memilih eskul (data terkunci)
-        $sudahPilih = \App\Models\Registration::where('nis', $student->nis)
-            ->orWhere(function ($q) use ($student) {
-                if ($student->user_id) {
-                    $q->where('user_id', $student->user_id);
-                }
-            })
-            ->exists();
+        $activePeriode = Periode::where('status', PeriodeStatus::DIBUKA)->orderByDesc('periode')->first()
+            ?? Periode::orderByDesc('periode')->first();
+
+        // Tolak jika siswa sudah memilih eskul di periode aktif berjalan (data terkunci)
+        $sudahPilih = $activePeriode
+            ? \App\Models\Registration::where('periode', $activePeriode->periode)
+                ->where(function ($q) use ($student) {
+                    $q->where('nis', $student->nis);
+                    if ($student->user_id) {
+                        $q->orWhere('user_id', $student->user_id);
+                    }
+                })
+                ->exists()
+            : false;
 
         if ($sudahPilih) {
-            return redirect()->back()->with('error', "Siswa {$student->nama} (NIS: {$student->nis}) sudah memilih ekstrakurikuler dan datanya terkunci. Token baru tidak dapat diterbitkan.");
+            $periodeNama = $activePeriode ? "periode {$activePeriode->periode}" : 'periode ini';
+            return redirect()->back()->with('error', "Siswa {$student->nama} (NIS: {$student->nis}) sudah memilih ekstrakurikuler pada {$periodeNama} dan datanya terkunci. Token baru tidak dapat diterbitkan.");
         }
 
         $user = $student->user;

@@ -113,10 +113,17 @@ class SiswaLoginController extends Controller
             $master->update(['user_id' => $user->getAuthIdentifier()]);
         }
 
-        // Kunci data: Siswa yang sudah memilih eskul tidak dapat login lagi dengan token sekali pakai
-        $sudahPilih = \App\Models\Registration::where('user_id', $user->id)
-            ->orWhere('nis', $master->nis)
-            ->exists();
+        // Kunci data: Siswa yang sudah memilih eskul di periode aktif berjalan tidak dapat login lagi dengan token sekali pakai
+        $periodeAktif = Periode::where('status', \App\Enums\PeriodeStatus::DIBUKA)->orderByDesc('periode')->first();
+
+        $sudahPilih = $periodeAktif
+            ? \App\Models\Registration::where('periode', $periodeAktif->periode)
+                ->where(function ($q) use ($user, $master) {
+                    $q->where('user_id', $user->id)
+                      ->orWhere('nis', $master->nis);
+                })
+                ->exists()
+            : false;
 
         if ($sudahPilih) {
             return $this->handleFailure(
@@ -125,7 +132,7 @@ class SiswaLoginController extends Controller
                 $user->getAuthIdentifier(),
                 $user->email,
                 'Pendaftaran terkunci',
-                'Data Anda sudah terkunci karena sudah memilih ekstrakurikuler. Token pendaftaran bersifat sekali pakai dan tidak dapat digunakan lagi.',
+                "Data Anda sudah terkunci karena sudah memilih ekstrakurikuler pada periode {$periodeAktif->periode}. Token pendaftaran bersifat sekali pakai dan tidak dapat digunakan lagi.",
                 'token',
                 $isDirectLogin,
                 $nis
