@@ -531,7 +531,7 @@ class StudentController extends Controller
         $tingkatFilter = trim((string) $request->input('tingkat'));
         $jurusanFilter = trim((string) $request->input('jurusan'));
 
-        $studentsQuery = Student::query();
+        $studentsQuery = Student::where('status', 'AKTIF');
 
         if ($tingkatFilter) {
             $romawiMap = ['10' => 'X', '11' => 'XI', '12' => 'XII'];
