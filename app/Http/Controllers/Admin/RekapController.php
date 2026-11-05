@@ -36,7 +36,7 @@ class RekapController extends Controller
 
         $regByEskul = $registrations->groupBy('eskul_utama');
 
-        $rekap = Eskul::with(['pembina', 'tempPembina'])->orderBy('name')->get()->map(function ($e) use ($regByEskul) {
+        $rekap = Eskul::with('pembina')->orderBy('name')->get()->map(function ($e) use ($regByEskul) {
             $regs = $regByEskul->get($e->name, collect());
 
             // Sebaran asal rombel kelas siswa di eskul ini
@@ -49,9 +49,6 @@ class RekapController extends Controller
 
             // Pembina saat ini / pengampu
             $pembinaNama = $e->pembina?->name ?? 'Belum Ditugaskan';
-            if ($e->temp_pembina_id && $e->temp_pembina_sampai && $e->temp_pembina_sampai->gte(today())) {
-                $pembinaNama .= ' (Plt: ' . ($e->tempPembina?->name ?? 'Plt') . ')';
-            }
 
             return [
                 'eskul' => $e,
@@ -83,7 +80,7 @@ class RekapController extends Controller
 
     public function show(Request $request, string $eskul)
     {
-        $model = Eskul::with(['pembina', 'tempPembina'])->where('name', urldecode($eskul))->firstOrFail();
+        $model = Eskul::with('pembina')->where('name', urldecode($eskul))->firstOrFail();
 
         $allPeriodes = Periode::orderByDesc('periode')->get();
         $activePeriode = $allPeriodes->firstWhere('status', PeriodeStatus::DIBUKA);
@@ -163,7 +160,7 @@ class RekapController extends Controller
         ];
 
         $i = 1;
-        $rows = Eskul::with(['pembina', 'tempPembina'])->orderBy('name')->get()->map(function ($e) use (&$i, $regByEskul) {
+        $rows = Eskul::with('pembina')->orderBy('name')->get()->map(function ($e) use (&$i, $regByEskul) {
             $regs = $regByEskul->get($e->name, collect());
             $count = $regs->count();
             $approved = $regs->where('status', Status::APPROVED)->count();
@@ -212,7 +209,7 @@ class RekapController extends Controller
             ->orderBy('nis')
             ->get();
 
-        $eskuls = Eskul::with(['pembina', 'tempPembina', 'pertemuans'])->orderBy('name')->get();
+        $eskuls = Eskul::with(['pembina', 'pertemuans'])->orderBy('name')->get();
         $regByEskul = $registrations->groupBy('eskul_utama');
 
         // Sheet 1: Ringkasan Kesiswaan
@@ -227,9 +224,6 @@ class RekapController extends Controller
             $totalPertemuan = $e->pertemuans->count();
 
             $pembinaNama = $e->pembina?->name ?? 'Belum Ditugaskan';
-            if ($e->temp_pembina_id && $e->temp_pembina_sampai && $e->temp_pembina_sampai->gte(today())) {
-                $pembinaNama .= ' (Plt: ' . ($e->tempPembina?->name ?? 'Plt') . ')';
-            }
 
             $statusKuota = $e->kuota_aktif ? ($count >= $e->kuota ? 'Penuh' : 'Tersedia (' . ($e->kuota - $count) . ' sisa)') : 'Tanpa Batas';
 
