@@ -20,6 +20,11 @@ class WindowController extends Controller
     {
         $periodeModel = Periode::findOrFail($periode);
 
+        if ($periodeModel->status !== PeriodeStatus::DIBUKA) {
+            return redirect()->route('admin.periodes.index', ['periode' => $periodeModel->periode])
+                ->withErrors(['window' => "Jendela pendaftaran tidak dapat dibuka/diubah karena status periode {$periodeModel->periode} adalah {$periodeModel->status->label()}. Hanya periode aktif (DIBUKA) yang dapat menerima pendaftaran."]);
+        }
+
         $data = $request->validate([
             'buka' => ['nullable', 'boolean'],
             'tgl_buka' => ['nullable', 'date'],

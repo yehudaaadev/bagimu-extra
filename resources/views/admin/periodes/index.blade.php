@@ -164,76 +164,93 @@
                 </div>
             </div>
 
-            {{-- Kartu Kontrol Jendela Pendaftaran Periode Terpilih --}}
-            <div class="rounded-2xl border p-5 shadow-sm {{ $buka ? 'border-emerald-200 bg-emerald-50/70' : 'border-rose-200 bg-rose-50/70' }}">
-                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <span class="inline-flex h-2.5 w-2.5 rounded-full {{ $buka ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500' }}"></span>
-                            <p class="font-extrabold text-sm sm:text-base {{ $buka ? 'text-emerald-900' : 'text-rose-800' }}">
-                                JENDELA PENDAFTARAN {{ $buka ? 'DIBUKA — Siswa dapat memilih eskul' : 'DITUTUP — Formulir terkunci' }}
+            @if ($isAktif)
+                {{-- Kartu Kontrol Jendela Pendaftaran Periode Terpilih --}}
+                <div class="rounded-2xl border p-5 shadow-sm {{ $buka ? 'border-emerald-200 bg-emerald-50/70' : 'border-rose-200 bg-rose-50/70' }}">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="inline-flex h-2.5 w-2.5 rounded-full {{ $buka ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500' }}"></span>
+                                <p class="font-extrabold text-sm sm:text-base {{ $buka ? 'text-emerald-900' : 'text-rose-800' }}">
+                                    JENDELA PENDAFTARAN {{ $buka ? 'DIBUKA — Siswa dapat memilih eskul' : 'DITUTUP — Formulir terkunci' }}
+                                </p>
+                            </div>
+                            <p class="text-xs mt-1 {{ $buka ? 'text-emerald-700' : 'text-rose-600' }}">
+                                Periode: <strong>{{ $selectedPeriode->periode }}</strong> • {{ $window && $window->exists ? $window->label() : 'Jendela belum diatur (status terkunci)' }}
                             </p>
                         </div>
-                        <p class="text-xs mt-1 {{ $buka ? 'text-emerald-700' : 'text-rose-600' }}">
-                            Periode: <strong>{{ $selectedPeriode->periode }}</strong> • {{ $window && $window->exists ? $window->label() : 'Jendela belum diatur (status terkunci)' }}
-                        </p>
-                    </div>
 
-                    <form method="POST" action="{{ route('admin.windows.update', $selectedPeriode->periode) }}">
-                        @csrf
-                        @method('PUT')
-                        <input type="hidden" name="buka" value="{{ $buka ? '0' : '1' }}">
-                        @if ($window && $window->exists)
-                            <input type="hidden" name="tgl_buka" value="{{ $window->tgl_buka?->format('Y-m-d\TH:i') }}">
-                            <input type="hidden" name="tgl_tutup" value="{{ $window->tgl_tutup?->format('Y-m-d\TH:i') }}">
-                        @endif
-                        <button type="submit" class="w-full sm:w-auto rounded-xl px-5 py-2.5 text-xs sm:text-sm font-bold text-white shadow-sm transition cursor-pointer {{ $buka ? 'bg-rose-600 hover:bg-rose-700' : 'bg-emerald-600 hover:bg-emerald-700' }}">
-                            {{ $buka ? 'Tutup Pendaftaran Sekarang' : 'Buka Pendaftaran Sekarang' }}
-                        </button>
-                    </form>
-                </div>
-            </div>
-
-            {{-- Form Penjadwalan Otomatis (Opsional) --}}
-            <div class="rounded-2xl border border-dashed border-slate-300 bg-white p-5 shadow-2xs">
-                <div class="flex items-center gap-2 mb-1">
-                    <x-icon name="clock" class="h-4 w-4 text-slate-600" />
-                    <h3 class="font-bold text-slate-900 text-sm">Penjadwalan Otomatis Jendela (Periode {{ $selectedPeriode->periode }})</h3>
-                </div>
-                <p class="text-xs text-slate-500 mb-3">Atur rentang waktu otomatis buka dan tutup formulir pendaftaran siswa. Di luar jadwal ini formulir akan terkunci secara mandiri.</p>
-
-                <form method="POST" action="{{ route('admin.windows.update', $selectedPeriode->periode) }}" class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs sm:text-sm">
-                    @csrf
-                    @method('PUT')
-                    <input type="hidden" name="buka" value="1">
-                    <div class="sm:col-span-2">
-                        <label class="block font-medium text-slate-700 mb-1">Buka Mulai</label>
-                        <input type="datetime-local" name="tgl_buka" value="{{ old('tgl_buka', $window?->tgl_buka?->format('Y-m-d\TH:i')) }}" class="w-full border-slate-300 rounded-xl text-xs sm:text-sm">
-                    </div>
-                    <div class="sm:col-span-2">
-                        <label class="block font-medium text-slate-700 mb-1">Tutup Pada</label>
-                        <input type="datetime-local" name="tgl_tutup" value="{{ old('tgl_tutup', $window?->tgl_tutup?->format('Y-m-d\TH:i')) }}" class="w-full border-slate-300 rounded-xl text-xs sm:text-sm">
-                    </div>
-                    <div class="flex items-center gap-3 sm:col-span-4 mt-1">
-                        <button type="submit" class="px-4 py-2 rounded-xl bg-blue-700 text-white font-bold hover:bg-blue-800 text-xs shadow-sm transition cursor-pointer">
-                            Simpan Jadwal Otomatis
-                        </button>
-                        @if ($window && $window->exists && ($window->tgl_buka || $window->tgl_tutup))
-                            <button type="submit" form="hapus-jadwal-form" class="text-xs font-semibold text-rose-600 hover:underline cursor-pointer">
-                                Hapus Jadwal
+                        <form method="POST" action="{{ route('admin.windows.update', $selectedPeriode->periode) }}">
+                            @csrf
+                            @method('PUT')
+                            <input type="hidden" name="buka" value="{{ $buka ? '0' : '1' }}">
+                            @if ($window && $window->exists)
+                                <input type="hidden" name="tgl_buka" value="{{ $window->tgl_buka?->format('Y-m-d\TH:i') }}">
+                                <input type="hidden" name="tgl_tutup" value="{{ $window->tgl_tutup?->format('Y-m-d\TH:i') }}">
+                            @endif
+                            <button type="submit" class="w-full sm:w-auto rounded-xl px-5 py-2.5 text-xs sm:text-sm font-bold text-white shadow-sm transition cursor-pointer {{ $buka ? 'bg-rose-600 hover:bg-rose-700' : 'bg-emerald-600 hover:bg-emerald-700' }}">
+                                {{ $buka ? 'Tutup Pendaftaran Sekarang' : 'Buka Pendaftaran Sekarang' }}
                             </button>
-                        @endif
+                        </form>
                     </div>
-                </form>
+                </div>
 
-                @if ($window && $window->exists && ($window->tgl_buka || $window->tgl_tutup))
-                    <form id="hapus-jadwal-form" method="POST" action="{{ route('admin.windows.update', $selectedPeriode->periode) }}" class="hidden">
+                {{-- Form Penjadwalan Otomatis (Opsional) --}}
+                <div class="rounded-2xl border border-dashed border-slate-300 bg-white p-5 shadow-2xs">
+                    <div class="flex items-center gap-2 mb-1">
+                        <x-icon name="clock" class="h-4 w-4 text-slate-600" />
+                        <h3 class="font-bold text-slate-900 text-sm">Penjadwalan Otomatis Jendela (Periode {{ $selectedPeriode->periode }})</h3>
+                    </div>
+                    <p class="text-xs text-slate-500 mb-3">Atur rentang waktu otomatis buka dan tutup formulir pendaftaran siswa. Di luar jadwal ini formulir akan terkunci secara mandiri.</p>
+
+                    <form method="POST" action="{{ route('admin.windows.update', $selectedPeriode->periode) }}" class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs sm:text-sm">
                         @csrf
                         @method('PUT')
-                        <input type="hidden" name="buka" value="{{ $window->buka ? '1' : '0' }}">
+                        <input type="hidden" name="buka" value="1">
+                        <div class="sm:col-span-2">
+                            <label class="block font-medium text-slate-700 mb-1">Buka Mulai</label>
+                            <input type="datetime-local" name="tgl_buka" value="{{ old('tgl_buka', $window?->tgl_buka?->format('Y-m-d\TH:i')) }}" class="w-full border-slate-300 rounded-xl text-xs sm:text-sm">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="block font-medium text-slate-700 mb-1">Tutup Pada</label>
+                            <input type="datetime-local" name="tgl_tutup" value="{{ old('tgl_tutup', $window?->tgl_tutup?->format('Y-m-d\TH:i')) }}" class="w-full border-slate-300 rounded-xl text-xs sm:text-sm">
+                        </div>
+                        <div class="flex items-center gap-3 sm:col-span-4 mt-1">
+                            <button type="submit" class="px-4 py-2 rounded-xl bg-blue-700 text-white font-bold hover:bg-blue-800 text-xs shadow-sm transition cursor-pointer">
+                                Simpan Jadwal Otomatis
+                            </button>
+                            @if ($window && $window->exists && ($window->tgl_buka || $window->tgl_tutup))
+                                <button type="submit" form="hapus-jadwal-form" class="text-xs font-semibold text-rose-600 hover:underline cursor-pointer">
+                                    Hapus Jadwal
+                                </button>
+                            @endif
+                        </div>
                     </form>
-                @endif
-            </div>
+
+                    @if ($window && $window->exists && ($window->tgl_buka || $window->tgl_tutup))
+                        <form id="hapus-jadwal-form" method="POST" action="{{ route('admin.windows.update', $selectedPeriode->periode) }}" class="hidden">
+                            @csrf
+                            @method('PUT')
+                            <input type="hidden" name="buka" value="{{ $window->buka ? '1' : '0' }}">
+                        </form>
+                    @endif
+                </div>
+            @else
+                {{-- Kunci Jendela pada Periode Arsip / Non-Aktif --}}
+                <div class="rounded-2xl border border-slate-200 bg-slate-50/80 p-5 shadow-2xs">
+                    <div class="flex items-start gap-3.5">
+                        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-200 text-slate-700">
+                            <x-icon name="lock" class="h-5 w-5" />
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-800">Jendela Pendaftaran Terkunci (Mode Arsip / Hanya-Baca)</h3>
+                            <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+                                Periode {{ $selectedPeriode->periode }} berstatus <strong>{{ $selectedPeriode->status->label() }}</strong>. Pembukaan pendaftaran siswa dan penjadwalan otomatis hanya dapat dilakukan pada periode yang sedang aktif berjalan. Untuk mengaktifkan periode ini, gunakan tombol <strong>Ubah Pengaturan</strong> lalu setel status menjadi <strong>DIBUKA</strong>.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            @endif
         </div>
     @endif
 

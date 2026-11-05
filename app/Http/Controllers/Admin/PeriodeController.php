@@ -151,6 +151,11 @@ class PeriodeController extends Controller
                     ->update(['status' => PeriodeStatus::DITUTUP->value]);
             }
 
+            // Jika periode ditutup atau diarsipkan, pastikan jendela pendaftaran ikut ditutup
+            if ($ke !== PeriodeStatus::DIBUKA->value) {
+                PendaftaranWindow::where('periode', $periodeModel->periode)->update(['buka' => false]);
+            }
+
             $periodeModel->update($data);
         });
 
@@ -169,9 +174,16 @@ class PeriodeController extends Controller
             return redirect()->route('admin.periodes.index')->withErrors(['periode' => 'Periode aktif tidak dapat dihapus.']);
         }
 
-        // Arsip alumni: hapus data periode, akun user tetap.
+        // Arsip alumni: hapus data periode secara aman beserta relasi anaknya, akun user tetap.
         DB::transaction(function () use ($periodeModel) {
-            \App\Models\Registration::where('periode', $periodeModel->periode)->delete();
+            $regIds = \App\Models\Registration::where('periode', $periodeModel->periode)->pluck('id');
+            if ($regIds->isNotEmpty()) {
+                \App\Models\Kehadiran::whereIn('registration_id', $regIds)->delete();
+                \App\Models\NilaiHistory::whereIn('registration_id', $regIds)->delete();
+                \App\Models\StatusHistory::whereIn('registration_id', $regIds)->delete();
+                \App\Models\Izin::whereIn('registration_id', $regIds)->delete();
+                \App\Models\Registration::whereIn('id', $regIds)->delete();
+            }
             \App\Models\PendaftaranWindow::where('periode', $periodeModel->periode)->delete();
             $periodeModel->delete();
         });
