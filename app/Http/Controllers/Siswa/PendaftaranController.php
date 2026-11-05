@@ -267,8 +267,13 @@ class PendaftaranController extends Controller
             ? Registration::where('user_id', $user->id)->where('periode', $periode->periode)->latest()->first()
             : null;
 
+        // Fallback ke registrasi terakhir jika periode belum/tidak dibuka atau siswa mendaftar di periode sebelumnya
+        if (! $registration) {
+            $registration = Registration::where('user_id', $user->id)->latest()->first();
+        }
+
         $schoolName = \App\Models\AppSetting::get('school.name', 'SMK Bagimu Negeriku');
-        $tahunAjaran = $periode?->tahun_ajaran ?? ($periode?->periode ?? '2026/2027');
+        $tahunAjaran = $periode?->tahun_ajaran ?? ($periode?->periode ?? ($registration?->periode ?? '2026/2027'));
 
         $berlakuSampai = null;
         if ($periode && $periode->tgl_selesai) {
