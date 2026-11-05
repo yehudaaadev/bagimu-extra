@@ -23,6 +23,7 @@ class User extends Authenticatable
         'student_status',
         'wali_nama',
         'wali_kontak',
+        'whatsapp',
         'notify_wa',
         'notify_email',
     ];
@@ -49,6 +50,11 @@ class User extends Authenticatable
             'login_token_created_at' => 'datetime',
             'login_token_revoked_at' => 'datetime',
         ];
+    }
+
+    public function setWhatsappAttribute($value): void
+    {
+        $this->attributes['whatsapp'] = $value ? \App\Support\Whatsapp::normalize($value) : null;
     }
 
     public function registrations(): HasMany

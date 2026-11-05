@@ -26,7 +26,6 @@
         <p><span class="text-slate-500">No. Absen:</span> {{ $student->no_absen ?? '-' }}</p>
         <p><span class="text-slate-500">Akun:</span> {{ $student->user ? '@'.$student->user->username : 'Belum ada' }}</p>
         <p><span class="text-slate-500">Wali:</span> {{ $student->wali_nama ?? '—' }}{{ $student->wali_kontak ? ' • '.$student->wali_kontak : '' }}</p>
-        <p><span class="inline-flex items-center gap-1 text-slate-500"><x-icon name="phone" class="h-3.5 w-3.5" />HP / WA Siswa:</span> {{ $student->whatsapp ?? '—' }}</p>
     </div>
 </div>
 

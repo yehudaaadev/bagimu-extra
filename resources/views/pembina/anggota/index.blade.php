@@ -180,11 +180,6 @@
                                 <div class="font-bold text-slate-900">
                                     {{ $student?->nama ?: ($reg->user?->name ?: '-') }}
                                 </div>
-                                @if ($reg->whatsapp || $student?->whatsapp)
-                                    <div class="text-[10px] text-slate-400 mt-0.5">
-                                        WA: {{ $reg->whatsapp ?: $student?->whatsapp }}
-                                    </div>
-                                @endif
                             </td>
                             <td class="py-3 px-4 text-center">
                                 @php $g = $reg->gender?->value ?: ($student?->gender?->value ?: '-'); @endphp

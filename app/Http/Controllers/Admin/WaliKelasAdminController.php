@@ -73,6 +73,7 @@ class WaliKelasAdminController extends Controller
             'name' => ['required', 'string', 'max:100'],
             'email' => ['required', 'email', 'max:191', 'unique:users,email'],
             'username' => ['nullable', 'string', 'max:30', 'unique:users,username'],
+            'whatsapp' => ['nullable', 'string', 'max:25'],
             'password' => ['required', 'string', 'min:8', 'max:100'],
             'school_class_id' => ['required', 'exists:school_classes,id'],
         ], [
@@ -91,6 +92,7 @@ class WaliKelasAdminController extends Controller
             'name' => $data['name'],
             'email' => strtolower($data['email']),
             'username' => $data['username'] ? strtolower($data['username']) : null,
+            'whatsapp' => $data['whatsapp'] ?? null,
             'password' => Hash::make($data['password']),
             'role' => Role::WALI_KELAS,
         ]);
@@ -139,6 +141,7 @@ class WaliKelasAdminController extends Controller
             'name' => ['required', 'string', 'max:100'],
             'email' => ['required', 'email', 'max:191', Rule::unique('users', 'email')->ignore($user->id)],
             'username' => ['nullable', 'string', 'max:30', Rule::unique('users', 'username')->ignore($user->id)],
+            'whatsapp' => ['nullable', 'string', 'max:25'],
             'school_class_id' => ['required', 'exists:school_classes,id'],
         ], [
             'school_class_id.required' => 'Rombel kelas binaan wajib dipilih.',
@@ -159,6 +162,7 @@ class WaliKelasAdminController extends Controller
             'name' => $data['name'],
             'email' => strtolower($data['email']),
             'username' => $data['username'] ? strtolower($data['username']) : null,
+            'whatsapp' => $data['whatsapp'] ?? null,
         ]);
 
         // Lepaskan penugasan rombel lama jika ada

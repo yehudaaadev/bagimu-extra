@@ -194,7 +194,6 @@
                         <th class="py-2.5 px-4 text-left">Nama Siswa</th>
                         <th class="py-2.5 px-4 text-center">L/P</th>
                         <th class="py-2.5 px-4 text-left">Ekstrakurikuler Diikuti</th>
-                        <th class="py-2.5 px-4 text-left">No. WhatsApp</th>
                         <th class="py-2.5 px-4 text-center">Status</th>
                         <th class="py-2.5 px-4 text-center">Aksi</th>
                     </tr>
@@ -223,15 +222,6 @@
                                     <span class="inline-flex items-center px-2 py-0.5 rounded-md font-semibold bg-slate-100 text-slate-500 text-[10px]">
                                         Belum Mendaftar
                                     </span>
-                                @endif
-                            </td>
-                            <td class="py-2.5 px-4 text-slate-600 font-mono">
-                                @if ($s->whatsapp)
-                                    <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $s->whatsapp) }}" target="_blank" class="text-emerald-700 font-semibold hover:underline">
-                                        {{ $s->whatsapp }}
-                                    </a>
-                                @else
-                                    <span class="text-slate-300">—</span>
                                 @endif
                             </td>
                             <td class="py-2.5 px-4 text-center">

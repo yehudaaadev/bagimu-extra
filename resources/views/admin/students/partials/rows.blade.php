@@ -2,7 +2,6 @@
     @php
         $reg = $s->registrations?->first() ?? $s->user?->registrations?->first();
         $user = $s->user ?? $reg?->user;
-        $waNum = $s->whatsapp ?: ($s->wali_kontak ?: ($reg?->whatsapp ?? ''));
     @endphp
     <tr class="border-b border-slate-100 hover:bg-slate-50/70 transition-colors">
         <td class="py-3 px-3 w-10 text-center">
@@ -12,21 +11,6 @@
         <td class="py-3 px-3 font-mono text-xs text-slate-500">{{ $s->nisn ?? '—' }}</td>
         <td class="py-3 px-3">
             <div class="font-medium text-slate-800">{{ $s->nama }}</div>
-            <div class="flex flex-wrap items-center gap-1.5 mt-1">
-                @if ($waNum)
-                    <a href="https://wa.me/{{ \App\Support\Whatsapp::normalize($waNum) }}" target="_blank" rel="noopener noreferrer"
-                       class="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-600 hover:text-emerald-700 hover:underline"
-                       title="Buka Chat WhatsApp">
-                        <x-icon name="phone" class="h-3 w-3 text-emerald-500" />
-                        <span>{{ $waNum }}</span>
-                    </a>
-                @else
-                    <span class="inline-flex items-center gap-1 text-[11px] text-slate-400" title="Nomor WA belum diisi">
-                        <x-icon name="phone" class="h-3 w-3 text-slate-300" />
-                        <span>Belum ada WA</span>
-                    </span>
-                @endif
-            </div>
         </td>
         <td class="py-3 px-3">
             <span class="inline-flex items-center rounded-lg bg-blue-50 px-2 py-0.5 text-xs font-semibold text-blue-700 border border-blue-200/80 font-mono">{{ $s->kelas }}</span>
@@ -68,8 +52,6 @@
                     <span class="tracking-widest">{{ $user->login_token }}</span>
                     <button type="button" onclick="salinToken(this, '{{ $user->login_token }}')"
                             class="text-blue-400 hover:text-blue-700 px-0.5 cursor-pointer" title="Salin Token"><x-icon name="copy" class="h-3.5 w-3.5" /></button>
-                    <button type="button" onclick="sendTokenViaWa('{{ addslashes($s->nama) }}', '{{ $s->nis }}', '{{ $user->login_token }}', '{{ $waNum }}')"
-                            class="text-emerald-600 hover:text-emerald-800 px-1 hover:scale-110 transition-transform cursor-pointer" title="Kirim Token via WhatsApp"><x-icon name="send" class="h-3.5 w-3.5" /></button>
                 </div>
                 @if ($user?->password_set_at)
                     <span class="block text-[10px] text-slate-400 font-medium mt-0.5">+ Password aktif</span>

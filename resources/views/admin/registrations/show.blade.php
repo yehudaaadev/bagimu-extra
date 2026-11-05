@@ -28,13 +28,6 @@
         <p><span class="text-slate-500">Jurusan:</span> {{ $registration->jurusan?->label() ?? $registration->jurusan }}</p>
         <p><span class="text-slate-500">Usia:</span> {{ $registration->usia }}</p>
         <p><span class="text-slate-500">Jenis Kelamin:</span> {{ $registration->gender?->label() ?? '-' }}</p>
-        <p><span class="text-slate-500">WhatsApp:</span>
-            @if ($registration->whatsapp && \App\Support\Whatsapp::link($registration->whatsapp))
-                <a href="{{ \App\Support\Whatsapp::link($registration->whatsapp) }}" target="_blank" rel="noopener" class="font-medium text-emerald-600 hover:text-emerald-700">{{ $registration->whatsapp }}</a>
-            @else
-                -
-            @endif
-        </p>
         <p><span class="text-slate-500">Tgl Daftar/Ubah:</span> {{ $registration->created_at?->format('d/m/Y H:i') }} / {{ $registration->updated_at?->format('d/m/Y H:i') }}</p>
         <p><span class="text-slate-500">Eskul Pilihan:</span> {{ $registration->eskul_utama }}</p>
         <p class="sm:col-span-2"><span class="text-slate-500">Alasan:</span> {{ $registration->alasan ?? '-' }}</p>
@@ -65,7 +58,6 @@
             </select>
         </div>
         <div><label class="block font-medium text-slate-700 mb-1">Usia</label><input name="usia" type="number" min="13" max="20" value="{{ old('usia', $registration->usia) }}" required class="w-full border-slate-300 rounded-xl"></div>
-        <div><label class="block font-medium text-slate-700 mb-1">WhatsApp</label><input name="whatsapp" value="{{ old('whatsapp', $registration->whatsapp) }}" class="w-full border-slate-300 rounded-xl"></div>
         <div><label class="block font-medium text-slate-700 mb-1">No. Absen</label><input name="no_absen" type="number" min="1" max="99" value="{{ old('no_absen', $registration->no_absen) }}" required class="w-full border-slate-300 rounded-xl"></div>
         <div><label class="block font-medium text-slate-700 mb-1">Wali Kelas</label><input name="nama_wali_kelas" value="{{ old('nama_wali_kelas', $registration->nama_wali_kelas) }}" class="w-full border-slate-300 rounded-xl"></div>
         <div><label class="block font-medium text-slate-700 mb-1">NIS</label><input name="nis" value="{{ old('nis', $registration->nis) }}" class="w-full border-slate-300 rounded-xl"></div>

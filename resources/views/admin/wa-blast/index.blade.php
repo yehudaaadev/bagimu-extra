@@ -192,54 +192,54 @@
         </div>
     </div>
 
-    {{-- Kartu 2: Statistik Ringkas Siswa & Status Blast --}}
+    {{-- Kartu 2: Statistik Ringkas Rombel & Penghematan Kuota --}}
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <div class="rounded-xl border border-slate-200 bg-white p-3.5 shadow-2xs">
-            <p class="text-xs text-slate-500 font-medium">Total Siswa Aktif</p>
-            <p class="text-xl font-black text-slate-900 mt-0.5">{{ number_format($totalSiswa) }}</p>
-            <p class="text-[10px] text-slate-400 mt-1">{{ number_format($totalDenganWa) }} memiliki nomor WA</p>
+            <p class="text-xs text-slate-500 font-medium">Total Rombel Kelas</p>
+            <p class="text-xl font-black text-slate-900 mt-0.5">{{ number_format($totalKelas) }}</p>
+            <p class="text-[10px] text-slate-400 mt-1">{{ number_format($totalSiswa) }} siswa di seluruh rombel</p>
         </div>
         <div class="rounded-xl border border-emerald-200 bg-emerald-50/50 p-3.5 shadow-2xs">
-            <p class="text-xs text-emerald-800 font-medium">Sudah Dikirimi Periode {{ $currentPeriode }}</p>
-            <p class="text-xl font-black text-emerald-700 mt-0.5">{{ number_format($totalSudahBlasted) }}</p>
-            <p class="text-[10px] text-emerald-600 mt-1 font-semibold">Tercatat di sistem</p>
+            <p class="text-xs text-emerald-800 font-medium">Wali Kelas Ber-WhatsApp</p>
+            <p class="text-xl font-black text-emerald-700 mt-0.5">{{ number_format($kelasDenganWa) }}</p>
+            <p class="text-[10px] text-emerald-600 mt-1 font-semibold">Siap menerima rekap token</p>
         </div>
         <div class="rounded-xl border border-blue-200 bg-blue-50/50 p-3.5 shadow-2xs">
-            <p class="text-xs text-blue-800 font-medium">Belum Menerima Blast</p>
-            <p class="text-xl font-black text-blue-700 mt-0.5">{{ number_format($totalBelumBlasted) }}</p>
-            <p class="text-[10px] text-blue-600 mt-1 font-semibold">Siap dikirim bertahap</p>
+            <p class="text-xs text-blue-800 font-medium">Sudah Dikirimi Periode {{ $currentPeriode }}</p>
+            <p class="text-xl font-black text-blue-700 mt-0.5">{{ number_format($totalSudahBlasted) }}</p>
+            <p class="text-[10px] text-blue-600 mt-1 font-semibold">Tercatat di sistem</p>
         </div>
-        <div class="rounded-xl border border-rose-200 bg-rose-50/50 p-3.5 shadow-2xs">
-            <p class="text-xs text-rose-800 font-medium">Belum Memilih Eskul</p>
-            <p class="text-xl font-black text-rose-700 mt-0.5">{{ number_format($totalBelumDaftar) }}</p>
-            <p class="text-[10px] text-rose-600 mt-1 font-semibold">Prioritas sosialisasi</p>
+        <div class="rounded-xl border border-amber-200 bg-amber-50/50 p-3.5 shadow-2xs">
+            <p class="text-xs text-amber-800 font-medium">Belum Menerima Blast</p>
+            <p class="text-xl font-black text-amber-700 mt-0.5">{{ number_format($totalBelumBlasted) }}</p>
+            <p class="text-[10px] text-amber-600 mt-1 font-semibold">Prioritas gelombang kirim</p>
         </div>
     </div>
 
-    {{-- Kartu 3: Form Eksekusi WA Blast Massal --}}
+    {{-- Kartu 3: Form Eksekusi WA Blast ke Wali Kelas --}}
     <div class="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 shadow-xs space-y-4">
         <div class="flex items-center justify-between gap-3">
             <div class="flex items-center gap-2.5">
-                <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600 border border-blue-200">
+                <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-200">
                     <x-icon name="send" class="h-4 w-4" />
                 </div>
                 <div>
-                    <h2 class="font-bold text-slate-900 text-sm">Kirim WA Blast</h2>
-                    <p class="text-[11px] text-slate-500">Kirim pemberitahuan dan kredensial login via WhatsApp secara aman dan bertahap.</p>
+                    <h2 class="font-bold text-slate-900 text-sm">Kirim WA Blast ke Wali Kelas (Hemat Kuota)</h2>
+                    <p class="text-[11px] text-slate-500">Kirim rekap kredensial token pendaftaran per rombel langsung ke guru Wali Kelas untuk diteruskan ke grup WhatsApp kelas.</p>
                 </div>
             </div>
             <div class="hidden sm:inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
                 <x-icon name="shield" class="h-3.5 w-3.5" />
-                <span>Proteksi Anti-Banned Aktif</span>
+                <span>Efisiensi Kuota &gt;95%</span>
             </div>
         </div>
 
-        {{-- Banner Edukasi Keamanan WA Gateway --}}
+        {{-- Banner Edukasi Penghematan Kuota --}}
         <div class="rounded-xl border border-emerald-200/80 bg-emerald-50/60 p-3.5 text-xs text-emerald-950 shadow-2xs flex items-start gap-2.5">
             <x-icon name="info" class="h-4 w-4 text-emerald-700 shrink-0 mt-0.5" />
             <div class="leading-relaxed">
-                <span class="font-bold">Keamanan Nomor Sekolah Terjamin:</span>
-                Sistem mengirim pesan dengan jeda manusiawi <strong>1,5 detik</strong> per pesan dan secara otomatis membatasi <strong>hanya 1 kali pengiriman per siswa</strong> pada periode berjalan ({{ $currentPeriode }}) agar nomor WhatsApp sekolah terhindar dari pemblokiran Meta/WhatsApp.
+                <span class="font-bold">Arsitektur Hemat Kuota Ekstrem:</span>
+                Alih-alih mengirim {{ number_format($totalSiswa) }} pesan ke setiap ponsel siswa, sistem cukup mengirimkan <strong>1 pesan rekap token per rombel</strong> ke nomor WhatsApp Wali Kelas (hanya <strong>{{ number_format($totalKelas) }} pesan</strong> total). Wali Kelas tinggal meneruskan pesan ke grup WhatsApp kelas masing-masing.
             </div>
         </div>
 
@@ -250,45 +250,39 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('admin.wa-blast.send') }}" class="space-y-4" onsubmit="return confirm('Mulai pengiriman WhatsApp Blast gelombang ini ke siswa yang ditargetkan?')">
+        <form method="POST" action="{{ route('admin.wa-blast.send') }}" class="space-y-4" onsubmit="return confirm('Mulai pengiriman WhatsApp Blast rekap token ke Wali Kelas yang ditargetkan?')">
             @csrf
             
             {{-- Target Penerima --}}
             <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1.5">Target Siswa</label>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+                <label class="block text-xs font-bold text-slate-700 mb-1.5">Target Wali Kelas</label>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                     <label class="flex items-center gap-2.5 p-3 rounded-xl border border-emerald-300 bg-emerald-50/30 hover:bg-emerald-50 cursor-pointer">
-                        <input type="radio" name="mode" value="unblasted" checked class="text-emerald-600 focus:ring-emerald-500">
+                        <input type="radio" name="mode" value="unblasted_wali" checked class="text-emerald-600 focus:ring-emerald-500">
                         <div class="text-xs">
-                            <span class="font-bold text-slate-900 block">Belum Dikirimi Blast</span>
-                            <span class="text-emerald-700 font-semibold text-[11px]">{{ number_format($totalBelumBlasted) }} siswa (Rekomendasi)</span>
+                            <span class="font-bold text-slate-900 block">Wali Kelas Belum Dikirimi</span>
+                            <span class="text-emerald-700 font-semibold text-[11px]">{{ number_format($totalBelumBlasted) }} rombel kelas (Rekomendasi)</span>
                         </div>
                     </label>
 
                     <label class="flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer">
-                        <input type="radio" name="mode" value="unregistered" class="text-emerald-600 focus:ring-emerald-500">
+                        <input type="radio" name="mode" value="all_wali" class="text-emerald-600 focus:ring-emerald-500">
                         <div class="text-xs">
-                            <span class="font-bold text-slate-800 block">Belum Memilih Eskul</span>
-                            <span class="text-slate-500 text-[11px]">{{ number_format($totalBelumDaftar) }} siswa</span>
-                        </div>
-                    </label>
-
-                    <label class="flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer">
-                        <input type="radio" name="mode" value="untokenized" class="text-emerald-600 focus:ring-emerald-500">
-                        <div class="text-xs">
-                            <span class="font-bold text-slate-800 block">Belum Ada Token</span>
-                            <span class="text-slate-500 text-[11px]">{{ number_format($totalBelumToken) }} siswa</span>
+                            <span class="font-bold text-slate-800 block">Semua Wali Kelas Ber-WA</span>
+                            <span class="text-slate-500 text-[11px]">{{ number_format($kelasDenganWa) }} rombel kelas</span>
                         </div>
                     </label>
 
                     <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer">
-                        <input type="radio" name="mode" value="kelas" class="text-emerald-600 focus:ring-emerald-500" id="radio-mode-kelas">
+                        <input type="radio" name="mode" value="single_wali" class="text-emerald-600 focus:ring-emerald-500" id="radio-mode-single-wali">
                         <div class="text-xs flex-1">
-                            <span class="font-bold text-slate-800 block mb-1">Per Kelas Tertentu</span>
-                            <select name="kelas" onchange="document.getElementById('radio-mode-kelas').checked = true" class="block w-full rounded-lg border-slate-300 text-xs py-1">
-                                <option value="">— Pilih Kelas —</option>
-                                @foreach ($kelasList as $k)
-                                    <option value="{{ $k }}">{{ $k }}</option>
+                            <span class="font-bold text-slate-800 block mb-1">Pilih 1 Rombel Spesifik</span>
+                            <select name="class_id" id="select-class-target" onchange="document.getElementById('radio-mode-single-wali').checked = true; updatePagePreview();" class="block w-full rounded-lg border-slate-300 text-xs py-1">
+                                <option value="">— Pilih Rombel Kelas —</option>
+                                @foreach ($schoolClasses as $sc)
+                                    <option value="{{ $sc->id }}" data-kelas="{{ $sc->nama }}" data-wali="{{ $sc->waliKelas?->name ?? 'Wali Kelas' }}" data-has-wa="{{ !empty($sc->waliKelas?->whatsapp) ? '1' : '0' }}">
+                                        {{ $sc->nama }} ({{ $sc->waliKelas?->name ?? 'Belum ada wali' }}{{ empty($sc->waliKelas?->whatsapp) ? ' - Tanpa WA' : '' }})
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
@@ -296,34 +290,18 @@
                 </div>
             </div>
 
-            {{-- Pengaturan Gelombang & Pencegahan Duplikasi --}}
-            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-                <div class="flex items-center gap-2">
-                    <label for="batch_limit" class="font-bold text-slate-700 shrink-0">Batas Gelombang:</label>
-                    <select name="batch_limit" id="batch_limit" class="rounded-lg border-slate-300 text-xs py-1 font-semibold text-slate-800">
-                        <option value="25" selected>25 Siswa / Gelombang (Sangat Aman)</option>
-                        <option value="50">50 Siswa / Gelombang (Aman)</option>
-                        <option value="0">Semua Target Sekaligus</option>
-                    </select>
-                </div>
-                <label class="flex items-center gap-2 cursor-pointer font-medium text-slate-700 select-none">
-                    <input type="checkbox" name="skip_already_blasted" value="1" checked class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500">
-                    <span>Lewati siswa yang sudah pernah menerima blast pada periode {{ $currentPeriode }}</span>
-                </label>
-            </div>
-
             {{-- Template Pesan --}}
             <div>
                 <div class="flex items-center justify-between gap-2 mb-1.5">
-                    <label class="text-xs font-bold text-slate-700">Isi Pesan</label>
+                    <label class="text-xs font-bold text-slate-700">Isi Template Pesan (Siap Diteruskan ke Grup Kelas)</label>
                     <div class="flex items-center gap-1.5">
-                        <button type="button" onclick="setPageTemplate('token')" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 transition cursor-pointer">
+                        <button type="button" onclick="setPageTemplate('token_rekap')" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 transition cursor-pointer">
                             <x-icon name="key" class="h-3.5 w-3.5" />
-                            <span>Token Login</span>
+                            <span>Rekap Token Kelas</span>
                         </button>
-                        <button type="button" onclick="setPageTemplate('pengumuman')" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 transition cursor-pointer">
+                        <button type="button" onclick="setPageTemplate('pengumuman')" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 transition cursor-pointer">
                             <x-icon name="megaphone" class="h-3.5 w-3.5" />
-                            <span>Pengumuman</span>
+                            <span>Pengumuman Pendaftaran</span>
                         </button>
                         <button type="button" onclick="setPageTemplate('custom')" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200 transition cursor-pointer">
                             <x-icon name="pencil" class="h-3.5 w-3.5" />
@@ -335,10 +313,10 @@
                 {{-- Variabel Pembantu --}}
                 <div class="flex flex-wrap items-center gap-1 text-xs text-slate-500 mb-2">
                     <span class="text-[11px] font-semibold text-slate-400">Variabel:</span>
-                    <button type="button" onclick="insertPageTag('{nama}')" class="px-1.5 py-0.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono text-[11px] cursor-pointer">{nama}</button>
-                    <button type="button" onclick="insertPageTag('{token}')" class="px-1.5 py-0.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono text-[11px] cursor-pointer">{token}</button>
-                    <button type="button" onclick="insertPageTag('{nis}')" class="px-1.5 py-0.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono text-[11px] cursor-pointer">{nis}</button>
-                    <button type="button" onclick="insertPageTag('{kelas}')" class="px-1.5 py-0.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono text-[11px] cursor-pointer">{kelas}</button>
+                    <button type="button" onclick="insertPageTag('{wali_kelas}')" class="px-1.5 py-0.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono text-[11px] cursor-pointer" title="Nama lengkap Guru Wali Kelas">{wali_kelas}</button>
+                    <button type="button" onclick="insertPageTag('{kelas}')" class="px-1.5 py-0.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono text-[11px] cursor-pointer" title="Nama Rombel">{kelas}</button>
+                    <button type="button" onclick="insertPageTag('{daftar_siswa_token}')" class="px-1.5 py-0.5 rounded bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 font-mono text-[11px] cursor-pointer font-bold" title="Kompilasi daftar seluruh siswa dan token login kelas">{daftar_siswa_token}</button>
+                    <button type="button" onclick="insertPageTag('{total_siswa}')" class="px-1.5 py-0.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono text-[11px] cursor-pointer">{total_siswa}</button>
                     <button type="button" onclick="insertPageTag('{login_url}')" class="px-1.5 py-0.5 rounded bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 font-mono text-[11px] cursor-pointer" title="Tautan halaman login siswa">{login_url}</button>
                 </div>
 
@@ -347,135 +325,135 @@
                         <textarea 
                             name="pesan" 
                             id="page-wa-blast-input" 
-                            rows="6" 
+                            rows="9" 
                             required 
                             oninput="updatePagePreview()"
-                            placeholder="Ketik isi pesan WhatsApp di sini..."
+                            placeholder="Ketik isi template pesan WhatsApp di sini..."
                             class="w-full border-slate-300 rounded-xl text-xs sm:text-sm font-sans focus:border-emerald-500 focus:ring-emerald-500 leading-relaxed"></textarea>
                     </div>
 
                     <div>
-                        <div class="rounded-xl border border-emerald-200 bg-[#eef7ee] p-3 text-xs text-slate-800 whitespace-pre-wrap font-sans shadow-2xs leading-relaxed min-h-[140px]" id="page-wa-preview-box">
+                        <div class="rounded-xl border border-emerald-200 bg-[#eef7ee] p-3 text-xs text-slate-800 whitespace-pre-wrap font-sans shadow-2xs leading-relaxed min-h-[200px] max-h-[300px] overflow-y-auto" id="page-wa-preview-box">
                             (Pratinjau pesan WhatsApp)
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="pt-2 border-t border-slate-100 flex items-center justify-end">
+            <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
+                <span class="text-xs text-slate-500">1 Rombel Kelas = 1 Pesan Fonnte (Hemat Kuota)</span>
                 <button 
                     type="submit" 
                     {{ !$fonnteStatus['connected'] ? 'disabled' : '' }}
                     class="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-2 text-xs font-bold text-white hover:bg-emerald-700 transition shadow-xs disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
                     <x-icon name="send" class="h-3.5 w-3.5" />
-                    <span>Kirim WA Blast</span>
+                    <span>Mulai Kirim WA Blast ke Wali Kelas</span>
                 </button>
             </div>
         </form>
     </div>
 
-    {{-- Kartu 4: Daftar Target Siswa --}}
+    {{-- Kartu 4: Daftar Rombel Kelas & Wali Kelas --}}
     <div class="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 shadow-xs">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
-            <div class="flex flex-wrap items-center gap-2">
-                <h2 class="font-bold text-slate-900 text-sm mr-2">Daftar Kontak Siswa</h2>
-                <div class="inline-flex rounded-xl bg-slate-100 p-0.5 text-xs font-semibold">
-                    <a href="{{ route('admin.wa-blast.index', array_merge(request()->except('filter_blast', 'page'), [])) }}" class="px-2.5 py-1 rounded-lg transition {{ !request('filter_blast') ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-600 hover:text-slate-900' }}">Semua</a>
-                    <a href="{{ route('admin.wa-blast.index', array_merge(request()->except('filter_blast', 'page'), ['filter_blast' => 'belum_kirim'])) }}" class="px-2.5 py-1 rounded-lg transition {{ request('filter_blast') === 'belum_kirim' ? 'bg-white text-blue-700 shadow-2xs font-bold' : 'text-slate-600 hover:text-slate-900' }}">Belum Dikirim ({{ number_format($totalBelumBlasted) }})</a>
-                    <a href="{{ route('admin.wa-blast.index', array_merge(request()->except('filter_blast', 'page'), ['filter_blast' => 'sudah_kirim'])) }}" class="px-2.5 py-1 rounded-lg transition {{ request('filter_blast') === 'sudah_kirim' ? 'bg-white text-emerald-700 shadow-2xs font-bold' : 'text-slate-600 hover:text-slate-900' }}">Sudah Terkirim ({{ number_format($totalSudahBlasted) }})</a>
-                </div>
+            <div>
+                <h2 class="font-bold text-slate-900 text-sm">Daftar Rombel Kelas &amp; Wali Kelas</h2>
+                <p class="text-[11px] text-slate-500">Status kontak WhatsApp Wali Kelas dan rekap pengiriman pada Periode <b>{{ $currentPeriode }}</b>.</p>
             </div>
-            <form method="GET" action="{{ route('admin.wa-blast.index') }}" class="flex items-center gap-2">
-                @if(request('filter_blast'))
-                    <input type="hidden" name="filter_blast" value="{{ request('filter_blast') }}">
-                @endif
-                <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari nama / NIS / WA..." class="rounded-xl border-slate-300 text-xs py-1.5 px-3">
-                <button class="px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 font-semibold text-xs hover:bg-slate-200 cursor-pointer">Cari</button>
-            </form>
+            <a href="{{ route('admin.wali-kelas.index') }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition">
+                <x-icon name="user" class="h-3.5 w-3.5 text-blue-600" />
+                <span>Kelola Nomor WhatsApp Wali Kelas</span>
+            </a>
         </div>
 
         <div class="overflow-x-auto">
             <table class="min-w-full text-xs">
                 <thead>
-                    <tr class="border-b border-slate-200 text-left text-slate-400 font-bold uppercase tracking-wider">
-                        <th class="py-2 px-3">NIS</th>
-                        <th class="py-2 px-3">Nama</th>
-                        <th class="py-2 px-3">Kelas</th>
-                        <th class="py-2 px-3">WhatsApp</th>
-                        <th class="py-2 px-3">Token</th>
-                        <th class="py-2 px-3">Blast ({{ $currentPeriode }})</th>
-                        <th class="py-2 px-3 text-right">Status Kontak</th>
+                    <tr class="border-b border-slate-200 text-left text-slate-400 font-bold uppercase tracking-wider bg-slate-50/60">
+                        <th class="py-2.5 px-3">Rombel Kelas</th>
+                        <th class="py-2.5 px-3">Tingkat / Jurusan</th>
+                        <th class="py-2.5 px-3">Guru Wali Kelas</th>
+                        <th class="py-2.5 px-3">WhatsApp Wali Kelas</th>
+                        <th class="py-2.5 px-3 text-center">Jumlah Siswa</th>
+                        <th class="py-2.5 px-3">Status Blast ({{ $currentPeriode }})</th>
+                        <th class="py-2.5 px-3 text-right">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
-                    @forelse ($students as $s)
+                    @forelse ($schoolClasses as $sc)
                         @php
-                            $wa = $s->whatsapp ?: ($s->wali_kontak ?: ($s->registrations?->first()?->whatsapp ?? ''));
-                            $isBlasted = isset($blastedNisList[$s->nis]);
+                            $wali = $sc->waliKelas;
+                            $wa = $wali?->whatsapp;
+                            $isBlasted = isset($blastedClassIds[$sc->id]);
+                            $studentCount = $sc->students->count();
                         @endphp
-                        <tr class="hover:bg-slate-50">
-                            <td class="py-2 px-3 font-mono font-bold text-slate-800">{{ $s->nis }}</td>
-                            <td class="py-2 px-3 font-medium text-slate-900">{{ $s->nama }}</td>
-                            <td class="py-2 px-3 font-mono text-slate-600">{{ $s->kelas }}</td>
-                            <td class="py-2 px-3 font-mono">
-                                @if ($wa)
-                                    <span class="text-emerald-700 font-semibold">{{ $wa }}</span>
+                        <tr class="hover:bg-slate-50/70 transition-colors">
+                            <td class="py-2.5 px-3 font-mono font-bold text-slate-900 text-sm">{{ $sc->nama }}</td>
+                            <td class="py-2.5 px-3 text-slate-600 font-medium">Kelas {{ $sc->tingkat ?? '-' }} • {{ $sc->jurusan ?? '-' }}</td>
+                            <td class="py-2.5 px-3 font-semibold text-slate-800">
+                                @if ($wali)
+                                    <span>{{ $wali->name }}</span>
                                 @else
-                                    <span class="text-slate-400 italic">Belum ada</span>
+                                    <span class="text-rose-500 italic font-normal">Belum ditentukan</span>
                                 @endif
                             </td>
-                            <td class="py-2 px-3 font-mono">
-                                @if ($s->user?->login_token && !$s->user?->login_token_revoked_at)
-                                    <span class="bg-blue-50 text-blue-800 px-2 py-0.5 rounded font-bold">{{ $s->user->login_token }}</span>
+                            <td class="py-2.5 px-3 font-mono">
+                                @if ($wa && \App\Support\Whatsapp::link($wa))
+                                    <a href="{{ \App\Support\Whatsapp::link($wa) }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 font-semibold text-emerald-700 hover:text-emerald-800 hover:underline">
+                                        <x-icon name="phone" class="h-3 w-3 text-emerald-600" />
+                                        <span>{{ $wa }}</span>
+                                    </a>
                                 @else
-                                    <span class="text-slate-400 italic">Belum terbit</span>
+                                    <span class="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+                                        Belum Ada WA
+                                    </span>
                                 @endif
                             </td>
-                            <td class="py-2 px-3">
+                            <td class="py-2.5 px-3 text-center font-mono font-bold text-slate-700">
+                                <span class="bg-slate-100 px-2 py-0.5 rounded-lg border border-slate-200">{{ $studentCount }}</span>
+                            </td>
+                            <td class="py-2.5 px-3">
                                 @if ($isBlasted)
-                                    <span class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                    <span class="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
                                         <span class="h-1.5 w-1.5 rounded-full bg-emerald-600"></span>
                                         Sudah Dikirim
                                     </span>
                                 @else
-                                    <span class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold bg-slate-100 text-slate-600">
+                                    <span class="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold bg-slate-100 text-slate-600">
                                         <span class="h-1.5 w-1.5 rounded-full bg-slate-400"></span>
                                         Belum Dikirim
                                     </span>
                                 @endif
                             </td>
-                            <td class="py-2 px-3 text-right">
+                            <td class="py-2.5 px-3 text-right">
                                 @if ($wa)
-                                    <span class="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                        Siap
-                                    </span>
+                                    <button type="button" onclick="selectClassForBlast('{{ $sc->id }}')" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 text-xs font-semibold cursor-pointer transition">
+                                        <x-icon name="send" class="h-3 w-3" />
+                                        <span>Kirim ke Kelas Ini</span>
+                                    </button>
                                 @else
-                                    <span class="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
-                                        Tanpa WA
-                                    </span>
+                                    <a href="{{ route('admin.wali-kelas.index') }}" class="text-xs text-blue-600 hover:underline font-medium">
+                                        + Atur WA
+                                    </a>
                                 @endif
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="py-5 text-center text-slate-400">Tidak ada data siswa ditemukan.</td>
+                            <td colspan="7" class="py-6 text-center text-slate-400">Belum ada data rombel kelas tercatat.</td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
-        </div>
-
-        <div class="mt-2.5 border-t border-slate-100 pt-2.5">
-            {{ $students->links() }}
         </div>
     </div>
 </div>
 
 <script>
 const PAGE_WA_TEMPLATES = {
-    token: "Halo {nama} ({kelas}),\nBerikut adalah kredensial akun kamu untuk Sistem Ekstrakurikuler:\n\n*NIS:* {nis}\n*Token Login:* {token}\n\nSilakan buka tautan login berikut lalu masukkan NIS dan Token kamu:\n{login_url}\n\nSimpan pesan ini dengan baik. Terima kasih!",
-    pengumuman: "Halo {nama} ({kelas}),\nPemberitahuan resmi: Pendaftaran kegiatan ekstrakurikuler untuk periode baru telah dibuka!\n\nSilakan segera login ke sistem melalui tautan di bawah dan tentukan pilihan eskul favoritmu:\n{login_url}\n\nJangan sampai terlambat ya!",
-    custom: "Halo {nama},\n\n[Tuliskan pesan atau pengumuman Anda di sini]\n\nSalam,\nPengurus Ekstrakurikuler"
+    token_rekap: "Yth. Bapak/Ibu {wali_kelas}\nWali Kelas {kelas}\n\nBerikut kami sampaikan daftar kredensial token login pendaftaran kegiatan ekstrakurikuler untuk seluruh siswa kelas {kelas}:\n\n{daftar_siswa_token}\n\nTautan Portal Login Siswa:\n{login_url}\n\nMohon bantuan Bapak/Ibu untuk meneruskan (forward) pesan ini ke Grup WhatsApp Kelas {kelas} agar para siswa dapat segera memilih ekstrakurikuler. Terima kasih atas kerja samanya.",
+    pengumuman: "Yth. Bapak/Ibu {wali_kelas} (Wali Kelas {kelas}),\n\nPemberitahuan resmi: Pendaftaran kegiatan ekstrakurikuler sekolah untuk periode baru telah dibuka!\n\nMohon bantuannya untuk mengimbau seluruh siswa kelas {kelas} agar segera mengakses portal pendaftaran melalui tautan berikut:\n{login_url}\n\nTerima kasih.",
+    custom: "Yth. Bapak/Ibu {wali_kelas},\nWali Kelas {kelas}\n\n[Tuliskan pengumuman atau instruksi khusus untuk kelas ini di sini]\n\nSalam,\nPengurus Ekstrakurikuler"
 };
 
 function setPageTemplate(type) {
@@ -498,19 +476,45 @@ function insertPageTag(tag) {
     updatePagePreview();
 }
 
+function selectClassForBlast(classId) {
+    const select = document.getElementById('select-class-target');
+    const radio = document.getElementById('radio-mode-single-wali');
+    if (select && radio) {
+        select.value = classId;
+        radio.checked = true;
+        updatePagePreview();
+        window.scrollTo({ top: 400, behavior: 'smooth' });
+    }
+}
+
 function updatePagePreview() {
     const textarea = document.getElementById('page-wa-blast-input');
     const previewBox = document.getElementById('page-wa-preview-box');
     if (!textarea || !previewBox) return;
 
+    const select = document.getElementById('select-class-target');
+    let waliNama = 'Drs. Supriyanto, M.Pd';
+    let kelasNama = '10 RPL 1';
+
+    if (select && select.value) {
+        const opt = select.options[select.selectedIndex];
+        if (opt) {
+            waliNama = opt.getAttribute('data-wali') || waliNama;
+            kelasNama = opt.getAttribute('data-kelas') || kelasNama;
+        }
+    }
+
+    const contohDaftar = "1. 10234 - Budi Santoso [Token: K7X9PQ]\n2. 10235 - Siti Rahma [Token: W3Y8AZ]\n3. 10236 - Ahmad Rizky [Token: M4L2VX]\n4. 10237 - Dewi Lestari [Token: R8N1CT]";
+
     let text = textarea.value;
-    text = text.replace(/\{nama\}/g, 'Budi Santoso')
-               .replace(/\{nis\}/g, '10234')
-               .replace(/\{kelas\}/g, '10 RPL 1')
-               .replace(/\{token\}/g, '98231456')
+    text = text.replace(/\{wali_kelas\}/g, waliNama)
+               .replace(/\{kelas\}/g, kelasNama)
+               .replace(/\{daftar_siswa_token\}/g, contohDaftar)
+               .replace(/\{total_siswa\}/g, '36')
                .replace(/\{link\}/g, window.location.origin + '/siswa/login')
                .replace(/\{login_url\}/g, window.location.origin + '/siswa/login')
-               .replace(/\{aplikasi\}/g, 'Bagimu Extra');
+               .replace(/\{aplikasi\}/g, 'Bagimu Extra')
+               .replace(/\{sekolah\}/g, 'SMK Negeri 1');
 
     previewBox.textContent = text || '(Pratinjau pesan WhatsApp)';
 }
@@ -518,7 +522,7 @@ function updatePagePreview() {
 document.addEventListener('DOMContentLoaded', function() {
     const textarea = document.getElementById('page-wa-blast-input');
     if (textarea && !textarea.value.trim()) {
-        textarea.value = PAGE_WA_TEMPLATES.token;
+        textarea.value = PAGE_WA_TEMPLATES.token_rekap;
         updatePagePreview();
     }
 });

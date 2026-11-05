@@ -124,7 +124,6 @@
                         <th class="py-2.5 px-3 hidden sm:table-cell">Jurusan</th>
                         <th class="py-2.5 px-3 text-center">Nilai Akhir</th>
                         <th class="py-2.5 px-3 hidden md:table-cell">Tgl Daftar</th>
-                        <th class="py-2.5 px-3 text-right">Kontak</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
@@ -155,21 +154,10 @@
                                 @endif
                             </td>
                             <td class="py-2.5 px-3 hidden md:table-cell text-slate-500 font-mono">{{ $r->created_at?->format('d/m/Y') }}</td>
-                            <td class="py-2.5 px-3 text-right">
-                                @php $kontak = $r->whatsapp ?: ($r->wali_kontak ?? ''); @endphp
-                                @if ($kontak && \App\Support\Whatsapp::link($kontak))
-                                    <a href="{{ \App\Support\Whatsapp::link($kontak) }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 font-semibold text-emerald-700 hover:text-emerald-800 hover:underline">
-                                        <x-icon name="phone" class="h-3 w-3 text-emerald-600" />
-                                        <span>{{ $kontak }}</span>
-                                    </a>
-                                @else
-                                    <span class="text-slate-300">—</span>
-                                @endif
-                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="py-10 text-center text-slate-400">
+                            <td colspan="7" class="py-10 text-center text-slate-400">
                                 <x-icon name="user" class="h-8 w-8 mx-auto text-slate-300 mb-2" />
                                 <p class="font-semibold text-slate-600">Tidak ada data siswa terdaftar</p>
                                 <p class="text-[11px] text-slate-400 mt-0.5">Tidak ditemukan pendaftaran pada eskul ini untuk periode {{ $periode }}.</p>

@@ -48,6 +48,13 @@
                 </div>
 
                 <div>
+                    <label class="block font-bold text-slate-700 mb-1">Nomor WhatsApp Wali Kelas <span class="text-rose-500">*</span></label>
+                    <input type="text" name="whatsapp" value="{{ old('whatsapp') }}" placeholder="cth: 081234567890" required
+                           class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-xs font-semibold focus:border-blue-600 focus:outline-hidden focus:ring-2 focus:ring-blue-600/20">
+                    <p class="text-[11px] text-slate-400 mt-1">Nomor ini menerima WA Blast rekap &amp; token kelas untuk diteruskan ke grup.</p>
+                </div>
+
+                <div>
                     <label class="block font-bold text-slate-700 mb-1">Rombel Kelas Binaan (1 Rombel = 1 Akun) <span class="text-rose-500">*</span></label>
                     <select name="school_class_id" required class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-xs font-semibold focus:border-blue-600 focus:outline-hidden focus:ring-2 focus:ring-blue-600/20">
                         <option value="">-- Pilih Rombel Kelas Binaan --</option>
@@ -125,6 +132,19 @@
                                 <x-icon name="mail" class="h-3 w-3 text-slate-400" />
                                 <span>{{ $wk->email }}</span>
                             </div>
+                            @if ($wk->whatsapp)
+                                <div class="text-[11px] text-emerald-700 flex items-center gap-1 mt-0.5 font-medium">
+                                    <x-icon name="phone" class="h-3 w-3 text-emerald-600" />
+                                    <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $wk->whatsapp) }}" target="_blank" rel="noopener noreferrer" class="hover:underline font-mono">
+                                        {{ $wk->whatsapp }}
+                                    </a>
+                                </div>
+                            @else
+                                <div class="text-[11px] text-amber-600 flex items-center gap-1 mt-0.5">
+                                    <x-icon name="phone" class="h-3 w-3 text-amber-500" />
+                                    <span>Belum ada WA</span>
+                                </div>
+                            @endif
                         </td>
                         <td class="px-5 py-3.5 font-mono font-medium text-slate-700">
                             {{ $wk->username ?? '—' }}
@@ -201,6 +221,10 @@
                                         <div>
                                             <label class="block font-bold text-slate-700 mb-1">Username Login</label>
                                             <input type="text" name="username" value="{{ $wk->username }}" class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-xs font-medium focus:border-blue-600 focus:outline-hidden">
+                                        </div>
+                                        <div>
+                                            <label class="block font-bold text-slate-700 mb-1">Nomor WhatsApp Wali Kelas</label>
+                                            <input type="text" name="whatsapp" value="{{ old('whatsapp', $wk->whatsapp) }}" placeholder="cth: 081234567890" class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-xs font-semibold focus:border-blue-600 focus:outline-hidden">
                                         </div>
                                         <div>
                                             <label class="block font-bold text-slate-700 mb-1">Rombel Kelas Binaan (1 Rombel = 1 Akun) <span class="text-rose-500">*</span></label>

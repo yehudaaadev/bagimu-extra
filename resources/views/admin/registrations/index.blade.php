@@ -71,7 +71,6 @@
                     <th class="py-2 px-3">Jurusan</th>
                     <th class="py-2 px-3">Gender</th>
                     <th class="py-2 px-3">Usia</th>
-                    <th class="py-2 px-3">No. WA</th>
                     <th class="py-2 px-3">Eskul</th>
                     <th class="py-2 px-3">Periode</th>
                     <th class="py-2 px-3">Aksi</th>
@@ -90,13 +89,6 @@
                         <td class="py-2 px-3">{{ $r->jurusan?->short() ?? '-' }}</td>
                         <td class="py-2 px-3">{{ $r->gender?->label() ?? '-' }}</td>
                         <td class="py-2 px-3">{{ $r->usia }}</td>
-                        <td class="py-2 px-3">
-                            @if ($r->whatsapp && \App\Support\Whatsapp::link($r->whatsapp))
-                                <a href="{{ \App\Support\Whatsapp::link($r->whatsapp) }}" target="_blank" rel="noopener" class="font-medium text-emerald-600 hover:text-emerald-700">{{ $r->whatsapp }}</a>
-                            @else
-                                —
-                            @endif
-                        </td>
                         <td class="py-2 px-3">{{ $r->eskul_utama }}</td>
                         <td class="py-2 px-3">{{ $r->periode }}</td>
                         <td class="py-2 px-3">
