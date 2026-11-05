@@ -57,6 +57,13 @@
             </button>
         </form>
 
+        {{-- Tombol Hapus Semua Siswa Secara Massal (Verifikasi Sandi Admin) --}}
+        <button type="button" onclick="openDeleteAllStudentsModal()" class="inline-flex items-center gap-1.5 rounded-xl border border-rose-300 bg-rose-50 px-3.5 py-2.5 text-xs font-bold text-rose-700 hover:bg-rose-100 hover:border-rose-400 shadow-2xs transition-all cursor-pointer" title="Hapus seluruh data siswa secara massal dengan verifikasi sandi login admin">
+            <x-icon name="trash" class="h-3.5 w-3.5 text-rose-600 shrink-0" />
+            <span class="hidden sm:inline">Hapus Semua Siswa</span>
+            <span class="sm:hidden">Hapus Semua</span>
+        </button>
+
         <a href="{{ route('admin.students.create') }}" class="inline-flex items-center gap-2 rounded-xl bg-blue-700 px-4 py-2.5 text-xs font-bold text-white hover:bg-blue-800 shadow-2xs transition-colors">
             <x-icon name="plus" class="h-3.5 w-3.5" />
             <span>Tambah Siswa</span>
@@ -65,6 +72,15 @@
 </div>
 
 {{-- Bar Notifikasi Flash --}}
+@if ($errors->any())
+    <div class="mb-4 flex items-center justify-between rounded-2xl border border-rose-200 bg-rose-50/90 px-4 py-3 text-xs font-medium text-rose-800 shadow-xs">
+        <div class="flex items-center gap-2">
+            <x-icon name="alert-triangle" class="h-4 w-4 text-rose-600 shrink-0" />
+            <span>{{ $errors->first() }}</span>
+        </div>
+        <button type="button" onclick="this.parentElement.remove()" class="text-rose-600 hover:text-rose-900 font-bold">&times;</button>
+    </div>
+@endif
 @if (session('status'))
     <div class="mb-4 flex items-center justify-between rounded-2xl border border-emerald-200 bg-emerald-50/90 px-4 py-3 text-xs font-medium text-emerald-800 shadow-xs">
         <div class="flex items-center gap-2">
@@ -510,6 +526,54 @@
     @csrf
     @method('DELETE')
 </form>
+
+{{-- Modal Konfirmasi Hapus Semua Data Siswa (Verifikasi Sandi Admin) --}}
+<div id="modal-delete-all-students" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs" onclick="closeDeleteAllStudentsModal()">
+    <div class="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl border border-slate-200" onclick="event.stopPropagation()">
+        <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
+            <div class="flex items-center gap-2.5">
+                <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-rose-50 text-rose-600 shrink-0">
+                    <x-icon name="alert-triangle" class="h-5 w-5" />
+                </div>
+                <div>
+                    <h3 class="font-bold text-slate-900 text-sm">Hapus Semua Data Siswa</h3>
+                    <p class="text-[11px] text-slate-500">Tindakan permanen &amp; tidak dapat dibatalkan</p>
+                </div>
+            </div>
+            <button type="button" onclick="closeDeleteAllStudentsModal()" class="text-slate-400 hover:text-slate-600 cursor-pointer p-1" aria-label="Tutup">
+                <x-icon name="x" class="h-4 w-4" />
+            </button>
+        </div>
+
+        <div class="rounded-xl border border-rose-200 bg-rose-50/70 p-3 mb-4 text-xs text-rose-800 leading-relaxed">
+            Peringatan: Seluruh data siswa aktif, akun login siswa, token pendaftaran, dan riwayat eskul terkait akan dihapus secara permanen dari sistem.
+        </div>
+
+        <p class="text-xs text-slate-600 mb-4 leading-relaxed">
+            Untuk mengonfirmasi tindakan ini, masukkan kata sandi akun admin Anda saat ini (<strong>{{ auth()->user()->email }}</strong>):
+        </p>
+
+        <form method="POST" action="{{ route('admin.students.bulk-delete') }}" onsubmit="return handleDeleteAllStudentsSubmit(this)" class="space-y-4">
+            @csrf
+            <input type="hidden" name="mode" value="all">
+
+            <div>
+                <label class="block font-bold text-slate-700 text-xs mb-1">Kata Sandi Akun Admin <span class="text-rose-500">*</span></label>
+                <input type="password" name="admin_password" required placeholder="Masukkan kata sandi login admin Anda" autocomplete="current-password"
+                       class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-xs font-medium focus:border-rose-500 focus:outline-hidden focus:ring-2 focus:ring-rose-500/20">
+            </div>
+
+            <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
+                <button type="button" onclick="closeDeleteAllStudentsModal()" class="rounded-xl border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition cursor-pointer">
+                    Batal
+                </button>
+                <button type="submit" id="btn-confirm-delete-all-students" class="rounded-xl bg-rose-600 px-4 py-2 text-xs font-bold text-white hover:bg-rose-700 transition shadow-xs cursor-pointer">
+                    Hapus Semua Siswa Permanen
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 
 <script>
 let confirmCallback = null;
@@ -1000,6 +1064,42 @@ function handleWaBlastSubmit(form) {
     if (btn) {
         btn.disabled = true;
         btn.innerHTML = `<svg class="animate-spin h-3.5 w-3.5 text-white inline mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg> Mengirim WA Blast...`;
+    }
+    return true;
+}
+
+function openDeleteAllStudentsModal() {
+    const modal = document.getElementById('modal-delete-all-students');
+    if (!modal) return;
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    const pwdInput = modal.querySelector('input[name="admin_password"]');
+    if (pwdInput) {
+        pwdInput.value = '';
+        setTimeout(() => pwdInput.focus(), 60);
+    }
+}
+
+function closeDeleteAllStudentsModal() {
+    const modal = document.getElementById('modal-delete-all-students');
+    if (!modal) return;
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+}
+
+function handleDeleteAllStudentsSubmit(form) {
+    const pwd = form.querySelector('input[name="admin_password"]')?.value.trim();
+    if (!pwd) {
+        alert('Silakan masukkan kata sandi akun admin Anda terlebih dahulu.');
+        return false;
+    }
+    if (!confirm('Peringatan Terakhir: Apakah Anda BENAR-BENAR yakin ingin menghapus seluruh data siswa secara permanen? Data yang dihapus tidak dapat dipulihkan kembali.')) {
+        return false;
+    }
+    const btn = document.getElementById('btn-confirm-delete-all-students');
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<svg class="animate-spin h-3.5 w-3.5 text-white inline mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg> Menghapus...`;
     }
     return true;
 }

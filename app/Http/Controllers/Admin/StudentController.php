@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Services\FonnteService;
 use App\Support\LoginToken;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -319,10 +320,23 @@ class StudentController extends Controller
 
     public function bulkDelete(Request $request)
     {
-        $mode = $request->input('mode', 'selected'); // 'selected' or 'filter'
+        $mode = $request->input('mode', 'selected'); // 'selected', 'filter', or 'all'
         $selectedIds = (array) $request->input('ids', []);
 
-        if ($mode === 'selected') {
+        if ($mode === 'all') {
+            $password = (string) $request->input('admin_password', $request->input('password', ''));
+            if ($password === '' || ! Hash::check($password, auth()->user()->password)) {
+                $errorMsg = 'Kata sandi akun admin salah. Operasi hapus seluruh data siswa dibatalkan demi keamanan.';
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => $errorMsg,
+                    ], 422);
+                }
+                return back()->with('error', $errorMsg)->withErrors(['admin_password' => $errorMsg]);
+            }
+            $students = Student::all();
+        } elseif ($mode === 'selected') {
             if (empty($selectedIds)) {
                 return back()->with('error', 'Pilih minimal satu data siswa untuk dihapus.');
             }
@@ -337,13 +351,19 @@ class StudentController extends Controller
             return back()->with('warning', 'Tidak ada data siswa yang cocok untuk dihapus.');
         }
 
-        foreach ($students as $student) {
-            $student->delete();
-        }
+        DB::transaction(function () use ($students) {
+            foreach ($students as $student) {
+                $user = $student->user;
+                $student->delete();
+                if ($user && $user->role === Role::STUDENT) {
+                    $user->delete();
+                }
+            }
+        });
 
-        AdminLog::record('student.bulk_delete', 'student', null, "Menghapus {$count} data siswa secara massal");
+        AdminLog::record('student.bulk_delete', 'student', null, "Menghapus {$count} data siswa secara massal".($mode === 'all' ? ' (seluruh data direktori)' : ''));
 
-        $message = "Berhasil menghapus {$count} data siswa secara permanen.";
+        $message = "Berhasil menghapus {$count} data siswa beserta akun terkait secara permanen.";
 
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([

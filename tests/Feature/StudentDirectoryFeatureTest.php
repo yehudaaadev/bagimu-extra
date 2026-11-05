@@ -164,6 +164,36 @@ class StudentDirectoryFeatureTest extends TestCase
         $this->assertDatabaseHas('students', ['id' => $s3->id]);
     }
 
+    public function test_bulk_delete_all_students_requires_valid_admin_password(): void
+    {
+        $admin = $this->admin();
+        $s1 = Student::create([
+            'nis' => '1001',
+            'nama' => 'Siswa 1',
+            'kelas' => '10 RPL 1',
+            'jurusan' => 'RPL',
+            'status' => 'AKTIF',
+        ]);
+
+        // Percobaan 1: Password salah
+        $resWrong = $this->actingAs($admin)->post(route('admin.students.bulk-delete'), [
+            'mode' => 'all',
+            'admin_password' => 'wrong-password',
+        ]);
+        $resWrong->assertSessionHasErrors('admin_password');
+        $this->assertDatabaseHas('students', ['id' => $s1->id]);
+
+        // Percobaan 2: Password benar
+        $resCorrect = $this->actingAs($admin)->post(route('admin.students.bulk-delete'), [
+            'mode' => 'all',
+            'admin_password' => 'password',
+        ]);
+        $resCorrect->assertRedirect();
+        $resCorrect->assertSessionHas('status');
+        $this->assertDatabaseMissing('students', ['id' => $s1->id]);
+        $this->assertEquals(0, Student::count());
+    }
+
     public function test_bulk_generate_token_for_selected_students(): void
     {
         $admin = $this->admin();
