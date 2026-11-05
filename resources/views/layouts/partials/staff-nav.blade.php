@@ -82,9 +82,7 @@
                 @endif
                 @if ($isPembina)
                     @php
-                        $pembinaEskul = \App\Models\Eskul::where('pembina_id', $user->id)
-                            ->orWhere(fn ($q) => $q->where('temp_pembina_id', $user->id)->whereDate('temp_pembina_sampai', '>=', today()))
-                            ->first();
+                        $pembinaEskul = \App\Models\Eskul::where('pembina_id', $user->id)->first();
                     @endphp
                     <a href="{{ route('pembina.eskul.index') }}" class="{{ $link(Route::is('pembina.eskul.index') || (Route::is('pembina.eskul.show') && request('tab') !== 'nilai')) }}">
                         <x-icon name="trophy" class="h-4 w-4 shrink-0" />

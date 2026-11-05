@@ -22,7 +22,6 @@ Route::middleware(['auth', 'role:admin,operator'])->prefix('admin')->name('admin
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::resource('eskuls', EskulController::class);
-    Route::post('eskuls/{eskul}/delegasi', [EskulController::class, 'delegasi'])->name('eskuls.delegasi');
 
     Route::post('eskuls/{eskul}/jadwals', [EskulJadwalController::class, 'store'])->name('jadwals.store');
     Route::put('jadwals/{jadwal}', [EskulJadwalController::class, 'update'])->name('jadwals.update');

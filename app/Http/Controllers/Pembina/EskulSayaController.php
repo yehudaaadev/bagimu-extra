@@ -30,7 +30,7 @@ class EskulSayaController extends Controller
     {
         $me = $request->user();
 
-        $milik = Eskul::where('pembina_id', $me->id)->orWhere(fn ($q) => $q->where('temp_pembina_id', $me->id)->whereDate('temp_pembina_sampai', '>=', today()));
+        $milik = Eskul::where('pembina_id', $me->id);
 
         $eskuls = $milik->withCount('jadwals')->orderBy('name')->get();
 
@@ -41,12 +41,7 @@ class EskulSayaController extends Controller
     {
         $me = $request->user();
 
-        $isMilik = $eskul->pembina_id === $me->id
-            || ($eskul->temp_pembina_id === $me->id
-                && $eskul->temp_pembina_sampai
-                && $eskul->temp_pembina_sampai->gte(today()));
-
-        if (! $isMilik) {
+        if ($eskul->pembina_id !== $me->id) {
             abort(403);
         }
 
@@ -370,12 +365,7 @@ class EskulSayaController extends Controller
     public function hapusAnggota(Request $request, Eskul $eskul, Registration $registration)
     {
         $me = $request->user();
-        $isMilik = $eskul->pembina_id === $me->id
-            || ($eskul->temp_pembina_id === $me->id
-                && $eskul->temp_pembina_sampai
-                && $eskul->temp_pembina_sampai->gte(today()));
-
-        if (! $isMilik) {
+        if ($eskul->pembina_id !== $me->id) {
             abort(403);
         }
 

@@ -57,7 +57,7 @@ class EskulController extends Controller
 
     public function show(Eskul $eskul)
     {
-        $eskul->load(['pembina', 'tempPembina', 'jadwals']);
+        $eskul->load(['pembina', 'jadwals']);
 
         $pendaftar = Registration::selectRaw('status, COUNT(*) as total')
             ->where('eskul_utama', $eskul->name)
@@ -67,32 +67,7 @@ class EskulController extends Controller
 
         $hariList = ['SENIN', 'SELASA', 'RABU', 'KAMIS', 'JUMAT', 'SABTU', 'MINGGU'];
 
-        $pembinas = User::where('role', Role::PEMBINA)->orderBy('name')->get();
-
-        return view('admin.eskuls.show', compact('eskul', 'pendaftar', 'hariList', 'pembinas'));
-    }
-
-    public function delegasi(Request $request, Eskul $eskul)
-    {
-        $data = $request->validate([
-            'temp_pembina_id' => ['nullable', 'exists:users,id', function ($attr, $val, $fail) {
-                if ($val && ! \App\Models\User::where('id', $val)->where('role', \App\Enums\Role::PEMBINA)->exists()) {
-                    $fail('Pembina sementara harus akun dengan peran pembina.');
-                }
-            }],
-            'temp_pembina_sampai' => ['nullable', 'date', 'after_or_equal:today', 'required_with:temp_pembina_id'],
-        ], [
-            'temp_pembina_sampai.required_with' => 'Tanggal berakhir wajib diisi bila pembina sementara dipilih.',
-        ]);
-
-        $eskul->update([
-            'temp_pembina_id' => $data['temp_pembina_id'] ?? null,
-            'temp_pembina_sampai' => $data['temp_pembina_sampai'] ?? null,
-        ]);
-
-        AdminLog::record('eskul.delegasi', 'eskul', (string) $eskul->id, "Delegasi sementara eskul {$eskul->name}.");
-
-        return back()->with('status', 'Delegasi sementara disimpan.');
+        return view('admin.eskuls.show', compact('eskul', 'pendaftar', 'hariList'));
     }
 
     public function edit(Eskul $eskul)

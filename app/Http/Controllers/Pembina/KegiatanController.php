@@ -22,16 +22,12 @@ class KegiatanController extends Controller
 {
     private function milikIds(int $pembinaId)
     {
-        $milik = Eskul::where('pembina_id', $pembinaId)->orWhere(fn ($q) => $q->where('temp_pembina_id', $pembinaId)->whereDate('temp_pembina_sampai', '>=', today()));
-
-        return $milik->pluck('id');
+        return Eskul::where('pembina_id', $pembinaId)->pluck('id');
     }
 
     private function milikEskuls(int $pembinaId)
     {
-        $milik = Eskul::where('pembina_id', $pembinaId)->orWhere(fn ($q) => $q->where('temp_pembina_id', $pembinaId)->whereDate('temp_pembina_sampai', '>=', today()));
-
-        return $milik->orderBy('name')->get();
+        return Eskul::where('pembina_id', $pembinaId)->orderBy('name')->get();
     }
 
     private function pastikanMilik(ActivityPlan $kegiatan, $milikIds): void

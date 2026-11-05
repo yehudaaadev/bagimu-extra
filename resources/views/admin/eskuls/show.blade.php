@@ -14,9 +14,6 @@
 <div class="bg-white rounded-lg shadow p-5 mb-4 text-sm space-y-1">
     <p><span class="text-gray-500">Deskripsi:</span> {{ $eskul->description ?? '-' }}</p>
     <p><span class="text-gray-500">Pembina:</span> {{ $eskul->pembina?->name ?? '-' }}</p>
-    @if ($eskul->temp_pembina_id)
-        <p><span class="text-gray-500">Pembina sementara:</span> {{ $eskul->tempPembina?->name ?? '-' }} s/d {{ $eskul->temp_pembina_sampai?->format('d M Y') ?? '-' }}</p>
-    @endif
     <p><span class="text-gray-500">Kuota:</span> {{ $eskul->kuota_aktif ? $eskul->kuota : 'Tanpa batas' }}</p>
     <p><span class="text-gray-500">Status:</span> {{ $eskul->aktif ? 'Aktif' : 'Nonaktif' }}</p>
     <div class="pt-2">
@@ -25,29 +22,6 @@
         <span class="text-gray-600">Disetujui: {{ $pendaftar['APPROVED'] ?? $pendaftar[\App\Enums\Status::APPROVED->value] ?? 0 }}</span> ·
         <span class="text-gray-600">Ditolak: {{ $pendaftar['REJECTED'] ?? $pendaftar[\App\Enums\Status::REJECTED->value] ?? 0 }}</span>
     </div>
-</div>
-
-<div class="bg-white rounded-lg shadow p-5 mb-4">
-    <h2 class="font-semibold mb-3 text-sm">Delegasi Pembina Sementara</h2>
-    <form method="POST" action="{{ route('admin.eskuls.delegasi', $eskul) }}" class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm items-end">
-        @csrf
-        <div>
-            <label class="block font-medium mb-1">Pembina sementara</label>
-            <select name="temp_pembina_id" class="w-full border rounded px-3 py-2">
-                <option value="">— Lepas delegasi —</option>
-                @foreach ($pembinas ?? [] as $p)
-                    <option value="{{ $p->id }}" @selected(old('temp_pembina_id', $eskul->temp_pembina_id) == $p->id)>{{ $p->name }}</option>
-                @endforeach
-            </select>
-        </div>
-        <div>
-            <label class="block font-medium mb-1">Berlaku sampai</label>
-            <input type="date" name="temp_pembina_sampai" value="{{ old('temp_pembina_sampai', $eskul->temp_pembina_sampai?->format('Y-m-d')) }}" class="w-full border rounded px-3 py-2">
-        </div>
-        <div>
-            <button class="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700">Simpan Delegasi</button>
-        </div>
-    </form>
 </div>
 
 <div id="jadwal" class="bg-white rounded-2xl border border-slate-200 p-5 mb-4 shadow-sm">

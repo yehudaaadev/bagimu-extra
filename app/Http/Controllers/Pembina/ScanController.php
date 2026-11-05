@@ -18,12 +18,7 @@ class ScanController extends Controller
 {
     private function pastikanMilik(Eskul $eskul, int $pembinaId): void
     {
-        $isMilik = $eskul->pembina_id === $pembinaId
-            || ($eskul->temp_pembina_id === $pembinaId
-                && $eskul->temp_pembina_sampai
-                && $eskul->temp_pembina_sampai->gte(today()));
-
-        if (! $isMilik) {
+        if ($eskul->pembina_id !== $pembinaId) {
             abort(403);
         }
     }

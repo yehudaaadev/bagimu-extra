@@ -15,8 +15,6 @@ class Eskul extends Model
         'kuota_aktif',
         'aktif',
         'pembina_id',
-        'temp_pembina_id',
-        'temp_pembina_sampai',
     ];
 
     protected function casts(): array
@@ -24,18 +22,12 @@ class Eskul extends Model
         return [
             'kuota_aktif' => 'boolean',
             'aktif' => 'boolean',
-            'temp_pembina_sampai' => 'date',
         ];
     }
 
     public function pembina(): BelongsTo
     {
         return $this->belongsTo(User::class, 'pembina_id');
-    }
-
-    public function tempPembina(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'temp_pembina_id');
     }
 
     public function jadwals(): HasMany

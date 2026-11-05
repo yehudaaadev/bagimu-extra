@@ -15,9 +15,7 @@ class IzinController extends Controller
 {
     private function milikIds(int $pembinaId)
     {
-        return Eskul::where('pembina_id', $pembinaId)
-            ->orWhere(fn ($q) => $q->where('temp_pembina_id', $pembinaId)->whereDate('temp_pembina_sampai', '>=', today()))
-            ->pluck('id');
+        return Eskul::where('pembina_id', $pembinaId)->pluck('id');
     }
 
     public function approve(Request $request, Izin $izin)

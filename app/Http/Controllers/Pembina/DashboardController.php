@@ -20,8 +20,7 @@ class DashboardController extends Controller
         $me = $request->user();
 
         // Aturan bisnis: 1 akun pembina = 1 eskul
-        $milik = Eskul::where('pembina_id', $me->id)
-            ->orWhere(fn ($q) => $q->where('temp_pembina_id', $me->id)->whereDate('temp_pembina_sampai', '>=', today()));
+        $milik = Eskul::where('pembina_id', $me->id);
 
         $eskul = (clone $milik)->withCount('jadwals')->first();
         $eskuls = $eskul ? collect([$eskul]) : collect();

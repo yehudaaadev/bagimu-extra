@@ -18,7 +18,6 @@ class AnggotaController extends Controller
     private function getEskuls(int $pembinaId)
     {
         return Eskul::where('pembina_id', $pembinaId)
-            ->orWhere(fn ($q) => $q->where('temp_pembina_id', $pembinaId)->whereDate('temp_pembina_sampai', '>=', today()))
             ->orderBy('name')
             ->get();
     }
