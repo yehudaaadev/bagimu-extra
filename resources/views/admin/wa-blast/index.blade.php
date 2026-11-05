@@ -352,101 +352,6 @@
             </div>
         </form>
     </div>
-
-    {{-- Kartu 4: Daftar Rombel Kelas & Wali Kelas --}}
-    <div class="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 shadow-xs">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
-            <div>
-                <h2 class="font-bold text-slate-900 text-sm">Daftar Rombel Kelas &amp; Wali Kelas</h2>
-                <p class="text-[11px] text-slate-500">Status kontak WhatsApp Wali Kelas dan rekap pengiriman pada Periode <b>{{ $currentPeriode }}</b>.</p>
-            </div>
-            <a href="{{ route('admin.wali-kelas.index') }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition">
-                <x-icon name="user" class="h-3.5 w-3.5 text-blue-600" />
-                <span>Kelola Nomor WhatsApp Wali Kelas</span>
-            </a>
-        </div>
-
-        <div class="overflow-x-auto">
-            <table class="min-w-full text-xs">
-                <thead>
-                    <tr class="border-b border-slate-200 text-left text-slate-400 font-bold uppercase tracking-wider bg-slate-50/60">
-                        <th class="py-2.5 px-3">Rombel Kelas</th>
-                        <th class="py-2.5 px-3">Tingkat / Jurusan</th>
-                        <th class="py-2.5 px-3">Guru Wali Kelas</th>
-                        <th class="py-2.5 px-3">WhatsApp Wali Kelas</th>
-                        <th class="py-2.5 px-3 text-center">Jumlah Siswa</th>
-                        <th class="py-2.5 px-3">Status Blast ({{ $currentPeriode }})</th>
-                        <th class="py-2.5 px-3 text-right">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-100">
-                    @forelse ($schoolClasses as $sc)
-                        @php
-                            $wali = $sc->waliKelas;
-                            $wa = $wali?->whatsapp;
-                            $isBlasted = isset($blastedClassIds[$sc->id]);
-                            $studentCount = $sc->students->count();
-                        @endphp
-                        <tr class="hover:bg-slate-50/70 transition-colors">
-                            <td class="py-2.5 px-3 font-mono font-bold text-slate-900 text-sm">{{ $sc->nama }}</td>
-                            <td class="py-2.5 px-3 text-slate-600 font-medium">Kelas {{ $sc->tingkat ?? '-' }} • {{ $sc->jurusan ?? '-' }}</td>
-                            <td class="py-2.5 px-3 font-semibold text-slate-800">
-                                @if ($wali)
-                                    <span>{{ $wali->name }}</span>
-                                @else
-                                    <span class="text-rose-500 italic font-normal">Belum ditentukan</span>
-                                @endif
-                            </td>
-                            <td class="py-2.5 px-3 font-mono">
-                                @if ($wa && \App\Support\Whatsapp::link($wa))
-                                    <a href="{{ \App\Support\Whatsapp::link($wa) }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 font-semibold text-emerald-700 hover:text-emerald-800 hover:underline">
-                                        <x-icon name="phone" class="h-3 w-3 text-emerald-600" />
-                                        <span>{{ $wa }}</span>
-                                    </a>
-                                @else
-                                    <span class="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
-                                        Belum Ada WA
-                                    </span>
-                                @endif
-                            </td>
-                            <td class="py-2.5 px-3 text-center font-mono font-bold text-slate-700">
-                                <span class="bg-slate-100 px-2 py-0.5 rounded-lg border border-slate-200">{{ $studentCount }}</span>
-                            </td>
-                            <td class="py-2.5 px-3">
-                                @if ($isBlasted)
-                                    <span class="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                        <span class="h-1.5 w-1.5 rounded-full bg-emerald-600"></span>
-                                        Sudah Dikirim
-                                    </span>
-                                @else
-                                    <span class="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold bg-slate-100 text-slate-600">
-                                        <span class="h-1.5 w-1.5 rounded-full bg-slate-400"></span>
-                                        Belum Dikirim
-                                    </span>
-                                @endif
-                            </td>
-                            <td class="py-2.5 px-3 text-right">
-                                @if ($wa)
-                                    <button type="button" onclick="selectClassForBlast('{{ $sc->id }}')" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 text-xs font-semibold cursor-pointer transition">
-                                        <x-icon name="send" class="h-3 w-3" />
-                                        <span>Kirim ke Kelas Ini</span>
-                                    </button>
-                                @else
-                                    <a href="{{ route('admin.wali-kelas.index') }}" class="text-xs text-blue-600 hover:underline font-medium">
-                                        + Atur WA
-                                    </a>
-                                @endif
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="7" class="py-6 text-center text-slate-400">Belum ada data rombel kelas tercatat.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
 </div>
 
 <script>
@@ -474,17 +379,6 @@ function insertPageTag(tag) {
     textarea.focus();
     textarea.selectionStart = textarea.selectionEnd = start + tag.length;
     updatePagePreview();
-}
-
-function selectClassForBlast(classId) {
-    const select = document.getElementById('select-class-target');
-    const radio = document.getElementById('radio-mode-single-wali');
-    if (select && radio) {
-        select.value = classId;
-        radio.checked = true;
-        updatePagePreview();
-        window.scrollTo({ top: 400, behavior: 'smooth' });
-    }
 }
 
 function updatePagePreview() {
