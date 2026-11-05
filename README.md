@@ -17,7 +17,7 @@ Antarmuka dibangun dengan pendekatan minimalis modern menggunakan palet warna fu
 ### 1. Portal Siswa
 - **Autentikasi Token Aman:** Akses masuk menggunakan kombinasi Nomor Induk Siswa (NIS) dan Token Login sekali pakai yang diterbitkan oleh pihak sekolah.
 - **Pemilihan Ekstrakurikuler Dinamis:** Pemantauan kuota berjalan (*real-time*), deskripsi kegiatan, dan jadwal latihan mingguan sebelum menetapkan pilihan langsung tanpa proses seleksi manual yang berbelit.
-- **Portal Cek Status & Cetak Ulang Mandiri:** Siswa yang telah mendaftar dan tokennya telah terpakai dapat memeriksa status kepesertaan resmi, informasi pembina pengampu, jadwal mingguan, serta mencetak atau menyimpan ulang Kartu ID-1 langsung melalui NIS tanpa kendala sesi keluar otomatis.
+- **Portal Cek Status & Cetak Ulang Mandiri:** Siswa yang telah mendaftar dan tokennya telah terpakai dapat memeriksa status kepesertaan resmi, informasi pembina pengampu, jadwal mingguan, serta mencetak atau menyimpan ulang Kartu ID-1 langsung melalui NIS tanpa kendala sesi keluar otomatis, dilengkapi fallback data registrasi terakhir saat jendela pendaftaran telah ditutup.
 - **Kartu Peserta Dual-Orientasi & QR Code Presensi:** Penerbitan kartu tanda anggota resmi berdimensi presisi standar internasional ID-1 (CR80) dengan pilihan tata letak Horizontal (85,6 mm x 54 mm) dan Vertikal / Tegak (54 mm x 85,6 mm), lengkap dengan kode QR resmi berbasis NIS untuk pemindaian presensi, tombol Unduh Gambar (PNG) tajam, serta Cetak / Simpan PDF terisolasi.
 - **Proteksi Keterbacaan & Kontras Visual:** Panel autentikasi desktop dilengkapi lapisan *gradient scrim* pelindung kontras pada area bawah gambar latar serta bayangan teks presisi untuk menjamin teks hak cipta dan status sistem terbaca tajam dan jelas di atas foto gedung instansi.
 - **Proteksi Data Final:** Pilihan langsung terkunci setelah konfirmasi untuk mencegah manipulasi data pendaftaran.
@@ -26,11 +26,11 @@ Antarmuka dibangun dengan pendekatan minimalis modern menggunakan palet warna fu
 - **Direktori Rombel:** Pemantauan daftar siswa aktif dalam rombel kelas perwalian beserta status kepemilikan ekstrakurikuler.
 - **Pengingat WhatsApp 1-Klik:** Tombol salin format pesan pengingat siap tempel ke grup WhatsApp kelas berisi daftar siswa yang belum menentukan pilihan eskul.
 - **Ekspor Rekap Nilai e-Rapor (.xls):** Fasilitas unduh lembar nilai ekstrakurikuler rombel perwalian ke format berkas Excel yang selaras dengan kebutuhan buku nilai e-Rapor.
-- **Manajemen Kelas (+ Kelas Saya):** Kemudahan mengelompokkan siswa ke dalam rombel perwalian melalui modal pencarian dan filter jenjang/status penempatan.
-- **Penyesuaian Penempatan:** Fitur pembatalan atau pengeluaran siswa dari rombel perwalian baik per individu maupun checklist massal (*bulk action*).
+- **Manajemen Kelas & Sinkronisasi Registrasi:** Pengelompokan siswa ke dalam rombel perwalian melalui modal pencarian dan filter status penempatan yang otomatis menyelaraskan atribut kelas dan nama wali kelas pada data registrasi eskul periode aktif berjalan.
+- **Penyesuaian Penempatan:** Fitur pembatalan atau pengeluaran siswa dari rombel perwalian baik per individu maupun checklist massal (*bulk action*) dengan sinkronisasi instan ke data registrasi eskul.
 
 ### 3. Panel Pembina Ekstrakurikuler
-- **Direktori Anggota Siswa & Indikator Kritis (< 75%):** Menu dedicated direktori murid binaan (`/pembina/anggota`) yang menyajikan tabel anggota eskul lengkap dengan ringkasan kehadiran (berapa kali Hadir, Tidak Hadir: Izin/Sakit/Alpa, dan Total Pertemuan), kartu metrik sesi pertemuan terselenggara, NIS, Kelas Rombel, status Nilai Rapor, filter pencarian instan, ekspor data Excel, serta indikator visual peringatan dini otomatis (Kritis / Perhatian) bagi siswa dengan persentase kehadiran di bawah 75% setelah 3 pertemuan berlangsung.
+- **Direktori Anggota Siswa & Indikator Kritis (< 75%):** Menu dedicated direktori murid binaan (`/pembina/anggota`) yang menyajikan tabel anggota eskul lengkap dengan ringkasan kehadiran (berapa kali Hadir, Tidak Hadir: Izin/Sakit/Alpa, dan Total Pertemuan terisolasi per periode akademik), kartu metrik sesi pertemuan terselenggara, NIS, Kelas Rombel, status Nilai Rapor, filter pencarian instan, ekspor data Excel, serta indikator visual peringatan dini otomatis (Kritis / Perhatian) bagi siswa dengan persentase kehadiran di bawah 75% setelah 3 pertemuan berlangsung.
 - **Navigasi Mandiri 6 Menu:** Tata kelola panel pembina terpadu dengan navigasi langsung ke Dashboard Saya, Direktori Anggota, Eskul Saya, Scan Presensi QR, Penilaian Rapor, serta Kegiatan & Jadwal.
 - **Banner Pure Deep Navy Monokromatik:** Seluruh banner utama (beranda, dashboard admin, dashboard pembina, dan layar masuk) menerapkan tema warna Deep Navy murni (#0b1e3d ke #1e3a8a) dengan pola mikro dot-grid presisi bebas gradasi ungu/indigo dan bebas efek neon AI slop.
 - **Penyederhanaan Modul Kegiatan:** Penghapusan filter eskul redundan (otomatis terarah ke eskul binaan) dan peniadaan opsi klasifikasi jenis kegiatan yang tidak diperlukan.
@@ -40,14 +40,14 @@ Antarmuka dibangun dengan pendekatan minimalis modern menggunakan palet warna fu
   - Validasi jam latihan ketat: sistem memvalidasi jam mulai dan jam selesai pertemuan (contoh: jika jadwal mulai pukul 14:00, presensi belum dapat dilakukan sebelum jam tersebut tiba).
   - Pencegahan pembacaan parsial (*anti-partial scan*): filter cerdas yang mencegah error prematur saat kartu baru diarahkan ke kamera dengan instruksi panduan ramah pengguna.
   - Pemindaian instan kode Barcode 1D (Code 128, Code 39, EAN, Codabar) serta QR Code 2D untuk membaca kartu fisik sekolah baik dalam format horizontal (landscape) maupun format tegak (portrait).
-  - Pengenalan cerdas identitas kartu: mendukung input kode NIS murni, nomor NISN, maupun format gabungan NIS/NISN yang otomatis dipetakan ke profil pendaftaran siswa di database.
+  - Pengenalan cerdas identitas kartu: mendukung input kode NIS murni, nomor NISN, maupun format gabungan NIS/NISN yang diprioritaskan pada periode pendaftaran aktif pembina.
   - Penanganan fleksibel pergantian lensa kamera depan/belakang, deteksi panduan izin HTTPS, getar haptic, serta opsi pemindaian via unggah foto kartu.
   - Pencarian pendaftaran berbasis NIS/NISN terisolasi khusus eskul pembina dan input cepat manual NIS/NISN berbasis AJAX tanpa reload halaman.
   - Fitur sekali klik "Tandai Semua Hadir" untuk kecepatan presensi lapangan tanpa klik satu per satu.
   - Pengisian presensi manual yang dikelompokkan teratur berdasarkan rombel kelas (Hadir, Izin, Sakit, Alpa).
 - **Pengesahan Sesi:** Fitur penguncian data absensi per tanggal pertemuan untuk menjamin validitas rekapitulasi.
 - **Verifikasi Izin & Sakit:** Peninjauan permohonan ketidakhadiran siswa beserta pratinjau dokumen atau foto bukti lampiran.
-- **Pendaftaran Siswa Susulan (+ Tambah Anggota):** Fitur manual untuk mendaftarkan siswa yang terkendala akses perangkat atau kuota internet.
+- **Pendaftaran Siswa Susulan & Pelepasan Anggota Bersih:** Fitur manual pendaftaran siswa susulan serta mekanisme pelepasan anggota eskul yang otomatis mengembalikan status token login siswa agar dapat memilih eskul kembali dan membersihkan riwayat status terkait.
 - **Evaluasi & Preset Nilai Cepat:** Input skor capaian (skala 0-100) dilengkapi pilihan preset nilai standar (85, 80, 78, 75) untuk pengisian otomatis seluruh baris yang masih kosong, konversi predikat otomatis (A, B, C, D), dan catatan pembina.
 - **Riwayat & Arsip Multi-Periode:** Pembina dapat memilih dan memantau riwayat pendaftaran, kehadiran, dan penilaian anggota eskul dari tahun ajaran lampau dalam mode arsip aman (*read-only*).
 - **Ekspor Laporan:** Pengunduhan rekapitulasi kehadiran dan data anggota per periode dalam format Excel dan CSV.
