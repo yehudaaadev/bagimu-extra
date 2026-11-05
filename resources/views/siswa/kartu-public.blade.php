@@ -121,46 +121,8 @@
 <body class="bg-slate-50 font-sans text-slate-800 antialiased selection:bg-blue-600 selection:text-white min-h-screen py-8 px-4">
 
 @php
-    $cardLogo = \App\Models\AppSetting::get('school.logo');
-    $cardLogoUrl = $cardLogo ? (str_starts_with($cardLogo, 'http') ? $cardLogo : asset(ltrim($cardLogo, '/'))) : asset('logo.png');
     $nisValue = $student->nis;
-    $nisnValue = $student->nisn ?? null;
     $namaValue = $student->nama;
-    $kelasValue = $registration->kelas ?: ($student->kelas ?? '-');
-    $eskulValue = $registration->eskul_utama ?? 'Terdaftar';
-    $jurusanRaw = $registration->jurusan ?: ($student->jurusan ?? '');
-    $jurusanStr = $jurusanRaw instanceof \BackedEnum ? $jurusanRaw->value : (is_string($jurusanRaw) ? $jurusanRaw : '');
-
-    $jurusanMap = [
-        'DKV' => 'Desain Komunikasi Visual',
-        'RPL' => 'Rekayasa Perangkat Lunak',
-        'KULINER' => 'Kuliner',
-        'TP' => 'Teknik Pengelasan',
-        'TKP' => 'Teknik Konstruksi Perumahan',
-    ];
-    $jurusanKey = strtoupper(trim($jurusanStr));
-    $jurusanDeskripsi = $jurusanMap[$jurusanKey] ?? (str_contains($jurusanStr, '(') ? '' : $jurusanStr);
-
-    $kelasNormalized = preg_replace('/^10\b/', 'X', $kelasValue);
-    $kelasNormalized = preg_replace('/^11\b/', 'XI', $kelasNormalized);
-    $kelasNormalized = preg_replace('/^12\b/', 'XII', $kelasNormalized);
-
-    $kelasJurusanDisplay = $kelasNormalized;
-    if ($jurusanDeskripsi && !str_contains($kelasNormalized, '(') && !str_contains($kelasNormalized, $jurusanDeskripsi)) {
-        $kelasJurusanDisplay .= ' (' . $jurusanDeskripsi . ')';
-    }
-
-    $genderRaw = $student->gender ?? ($registration->gender ?? 'LAKI_LAKI');
-    $genderVal = $genderRaw instanceof \BackedEnum ? $genderRaw->value : (is_string($genderRaw) ? $genderRaw : 'LAKI_LAKI');
-    $isPutri = in_array(strtoupper($genderVal), ['P', 'PEREMPUAN', 'FEMALE']);
-    $alamatValue = $isPutri ? 'Wisma Remaja Putri SMK Bagimu Negeriku' : 'Wisma Remaja Putra SMK Bagimu Negeriku';
-
-    $tahunParts = explode('/', $tahunAjaran);
-    $tahunSelesai = $tahunParts[1] ?? '2027';
-    $tanggalPengesahan = '14 Juli ' . $tahunSelesai;
-
-    $kepsekNama = \App\Models\AppSetting::get('school.kepsek', 'Daniel Satyo Wibowo, S.Pd., Gr.');
-    $barcodeSvg = \App\Support\Barcode::svg($nisValue, 32, 2);
 @endphp
 
 <div class="max-w-xl mx-auto space-y-6">
@@ -218,72 +180,6 @@
 </div>
 
 <script>
-function drawBarcodeCanvas(ctx, startX, startY, targetWidth, height, text) {
-    const patterns = [
-        '212222', '222122', '222221', '121223', '121322', '131222', '122213', '122312', '132212', '221213',
-        '221312', '231212', '112232', '122132', '122231', '113222', '123122', '123221', '223211', '221132',
-        '221231', '213212', '223112', '312131', '311222', '321122', '321221', '312212', '322112', '322211',
-        '212123', '212321', '232121', '111323', '131123', '131321', '112313', '132113', '132311', '211313',
-        '231113', '231311', '112133', '112331', '132131', '113123', '113321', '133121', '313121', '211331',
-        '231131', '213113', '213311', '213131', '311123', '311321', '331121', '312113', '312311', '332111',
-        '314111', '221411', '431111', '111224', '111422', '121124', '121421', '141122', '141221', '112214',
-        '112412', '122114', '122411', '142112', '142211', '241211', '221114', '413111', '241112', '134111',
-        '111242', '121142', '121241', '114212', '124112', '124211', '411212', '421112', '421211', '212141',
-        '214121', '412121', '111143', '111341', '131141', '114113', '114311', '411113', '411311', '113141',
-        '114131', '311141', '411131', '211412', '211214', '211232', '2331112'
-    ];
-    let codes = [104];
-    let checksum = 104;
-    for (let i = 0; i < text.length; i++) {
-        let val = text.charCodeAt(i) - 32;
-        if (val < 0 || val > 95) val = 0;
-        codes.push(val);
-        checksum += val * (i + 1);
-    }
-    codes.push(checksum % 103);
-    codes.push(106);
-
-    let modules = '';
-    codes.forEach(c => {
-        let pat = patterns[c];
-        let bar = true;
-        for (let p = 0; p < pat.length; p++) {
-            let w = parseInt(pat[p]);
-            modules += (bar ? '1' : '0').repeat(w);
-            bar = !bar;
-        }
-    });
-    modules += '11';
-
-    let barW = targetWidth / modules.length;
-    ctx.fillStyle = '#0f172a';
-    for (let i = 0; i < modules.length; i++) {
-        if (modules[i] === '1') {
-            ctx.fillRect(startX + i * barW, startY, Math.ceil(barW), height);
-        }
-    }
-}
-
-function drawRoundedRect(ctx, x, y, width, height, radius, fill, stroke, strokeColor, lineWidth) {
-    ctx.beginPath();
-    ctx.moveTo(x + radius, y);
-    ctx.lineTo(x + width - radius, y);
-    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-    ctx.lineTo(x + width, y + height - radius);
-    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-    ctx.lineTo(x + radius, y + height);
-    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-    ctx.lineTo(x, y + radius);
-    ctx.quadraticCurveTo(x, y, x + radius, y);
-    ctx.closePath();
-    if (fill) ctx.fill();
-    if (stroke) {
-        ctx.strokeStyle = strokeColor || '#ffffff';
-        ctx.lineWidth = lineWidth || 1;
-        ctx.stroke();
-    }
-}
-
 function unduhKartuPng() {
     const nis = '{{ $nisValue }}';
     const canvas = document.createElement('canvas');
