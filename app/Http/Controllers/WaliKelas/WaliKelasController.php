@@ -186,6 +186,20 @@ class WaliKelasController extends Controller
                     'wali_nama' => $waliNama,
                 ]);
 
+                // Sinkronkan kelas dan nama_wali_kelas pada registrasi periode aktif bila siswa sudah mendaftar
+                Registration::where(function ($q) use ($s) {
+                    if ($s->user_id) {
+                        $q->where('user_id', $s->user_id)->orWhere('nis', $s->nis);
+                    } else {
+                        $q->where('nis', $s->nis);
+                    }
+                })
+                ->where('periode', $periodeStr)
+                ->update([
+                    'kelas' => $kelas->nama,
+                    'nama_wali_kelas' => $waliNama,
+                ]);
+
                 if ($s->user_id) {
                     ClassHistory::create([
                         'user_id' => $s->user_id,
@@ -222,6 +236,21 @@ class WaliKelasController extends Controller
 
         $student->update([
             'kelas' => null,
+            'wali_nama' => null,
+        ]);
+
+        $periodeStr = Periode::where('status', PeriodeStatus::DIBUKA)->first()?->periode ?? date('Y');
+        Registration::where(function ($q) use ($student) {
+            if ($student->user_id) {
+                $q->where('user_id', $student->user_id)->orWhere('nis', $student->nis);
+            } else {
+                $q->where('nis', $student->nis);
+            }
+        })
+        ->where('periode', $periodeStr)
+        ->update([
+            'kelas' => null,
+            'nama_wali_kelas' => null,
         ]);
 
         AdminLog::record('wali_kelas.remove_student', 'Student', (string) $student->id, "Wali kelas {$waliNama} mengeluarkan siswa {$student->nama} ({$student->nis}) dari rombel {$kelas->nama}.");
@@ -243,9 +272,32 @@ class WaliKelasController extends Controller
         ]);
 
         $waliNama = $kelas->wali_kelas_nama ?? auth()->user()->name;
-        $count = Student::whereIn('id', $data['student_ids'])
+        $periodeStr = Periode::where('status', PeriodeStatus::DIBUKA)->first()?->periode ?? date('Y');
+        $studentsToRemove = Student::whereIn('id', $data['student_ids'])
             ->where('kelas', $kelas->nama)
-            ->update(['kelas' => null]);
+            ->get();
+
+        $count = 0;
+        foreach ($studentsToRemove as $st) {
+            $st->update([
+                'kelas' => null,
+                'wali_nama' => null,
+            ]);
+
+            Registration::where(function ($q) use ($st) {
+                if ($st->user_id) {
+                    $q->where('user_id', $st->user_id)->orWhere('nis', $st->nis);
+                } else {
+                    $q->where('nis', $st->nis);
+                }
+            })
+            ->where('periode', $periodeStr)
+            ->update([
+                'kelas' => null,
+                'nama_wali_kelas' => null,
+            ]);
+            $count++;
+        }
 
         AdminLog::record('wali_kelas.bulk_remove_students', 'Student', null, "Wali kelas {$waliNama} mengeluarkan {$count} siswa secara massal dari rombel {$kelas->nama}.");
 
