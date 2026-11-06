@@ -26,11 +26,13 @@ class WaliKelasAdminController extends Controller
         $distinctClasses = Student::select('kelas', 'jurusan')
             ->distinct()
             ->whereNotNull('kelas')
+            ->where('kelas', '!=', '')
+            ->where('kelas', '!=', '-')
             ->get();
 
         foreach ($distinctClasses as $ds) {
             $clean = Kelas::normalisasi($ds->kelas);
-            if (! $clean) {
+            if (! $clean || ! Kelas::tingkat($clean)) {
                 continue;
             }
             $tingkat = Kelas::tingkat($clean);

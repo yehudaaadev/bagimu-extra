@@ -74,19 +74,27 @@
                                     <span class="text-slate-400 text-[11px]">— Belum ditautkan akun</span>
                                 @endif
                             </td>
-                            <td class="py-2.5 px-4 text-right space-x-1">
-                                <button type="button"
-                                        onclick="bukaModalEditKelas({{ json_encode($mk) }})"
-                                        class="inline-flex items-center px-2.5 py-1 rounded-lg border border-slate-300 text-[11px] font-semibold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer">
-                                    Edit
-                                </button>
-                                <form method="POST" action="{{ route('admin.kelas.destroy', $mk) }}" class="inline" onsubmit="return confirm('Hapus kelas {{ $mk->nama }} dari master?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="inline-flex items-center px-2.5 py-1 rounded-lg border border-rose-200 text-[11px] font-semibold text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer">
-                                        Hapus
+                            <td class="py-2.5 px-4 text-right">
+                                <div class="inline-flex items-center gap-1.5 justify-end">
+                                    <button type="button"
+                                            onclick="bukaModalEditKelas({{ json_encode($mk) }})"
+                                            title="Edit Rombel Kelas"
+                                            class="inline-flex items-center justify-center h-8 w-8 rounded-lg border border-slate-200 bg-white text-slate-600 hover:text-amber-600 hover:bg-amber-50 hover:border-amber-200 transition shadow-2xs cursor-pointer">
+                                        <x-icon name="pencil" class="h-4 w-4" />
                                     </button>
-                                </form>
+                                    <form method="POST" action="{{ route('admin.kelas.destroy', $mk) }}"
+                                          data-confirm="Hapus rombel kelas {{ $mk->nama }} dari master data? Seluruh kaitan siswa dan wali kelas pada rombel ini akan dilepaskan."
+                                          data-confirm-title="Hapus Rombel Kelas"
+                                          data-confirm-btn="Ya, Hapus Kelas"
+                                          class="inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" title="Hapus Kelas"
+                                                class="inline-flex items-center justify-center h-8 w-8 rounded-lg border border-rose-200 bg-rose-50 text-rose-600 hover:bg-rose-100 hover:border-rose-300 transition shadow-2xs cursor-pointer">
+                                            <x-icon name="trash" class="h-4 w-4" />
+                                        </button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                     @empty

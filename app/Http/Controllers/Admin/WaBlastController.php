@@ -33,10 +33,15 @@ class WaBlastController extends Controller
             ?? Periode::latest('periode')->value('periode') ?? '2026/2027';
 
         // Sinkronisasi rombel dari data siswa bila tabel master belum lengkap
-        $studentClasses = Student::whereNotNull('kelas')->where('kelas', '!=', '')->distinct()->pluck('kelas');
+        $studentClasses = Student::whereNotNull('kelas')
+            ->where('kelas', '!=', '')
+            ->where('kelas', '!=', '-')
+            ->distinct()
+            ->pluck('kelas');
+
         foreach ($studentClasses as $scName) {
             $clean = Kelas::normalisasi($scName);
-            if ($clean) {
+            if ($clean && Kelas::tingkat($clean)) {
                 SchoolClass::firstOrCreate(
                     ['nama' => $clean],
                     [

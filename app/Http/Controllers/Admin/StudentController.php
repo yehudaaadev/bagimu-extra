@@ -121,6 +121,7 @@ class StudentController extends Controller
         $kelasList = Student::query()
             ->whereNotNull('kelas')
             ->where('kelas', '!=', '')
+            ->where('kelas', '!=', '-')
             ->distinct()
             ->pluck('kelas')
             ->sort(SORT_NATURAL)

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Enums\Jurusan;
 use App\Enums\Role;
 use App\Http\Controllers\Controller;
+use App\Models\AdminLog;
 use App\Models\Periode;
 use App\Models\Registration;
 use App\Models\SchoolClass;
@@ -111,7 +112,14 @@ class KelasController extends Controller
             }
         }
 
-        SchoolClass::create($data);
+        $sc = SchoolClass::create($data);
+
+        AdminLog::record(
+            'kelas.create',
+            'SchoolClass',
+            $sc->id,
+            "Menambahkan rombel kelas {$sc->nama} ke master data."
+        );
 
         return back()->with('status', "Rombel kelas {$data['nama']} berhasil ditambahkan ke master.");
     }
@@ -150,7 +158,29 @@ class KelasController extends Controller
             $data['wali_kelas_nama'] = null;
         }
 
+        $oldNama = $schoolClass->nama;
         $schoolClass->update($data);
+
+        // Jika nama kelas diperbarui, sinkronkan seluruh data siswa & registrasi yang terikat
+        if ($oldNama !== $data['nama']) {
+            $variations = array_unique(array_filter([
+                $oldNama,
+                str_replace('10 ', 'X ', $oldNama),
+                str_replace('11 ', 'XI ', $oldNama),
+                str_replace('12 ', 'XII ', $oldNama),
+                strtolower($oldNama),
+            ]));
+
+            Student::whereIn('kelas', $variations)->update(['kelas' => $data['nama']]);
+            Registration::whereIn('kelas', $variations)->update(['kelas' => $data['nama']]);
+        }
+
+        AdminLog::record(
+            'kelas.update',
+            'SchoolClass',
+            $schoolClass->id,
+            "Memperbarui data rombel kelas {$oldNama} menjadi {$schoolClass->nama}."
+        );
 
         return back()->with('status', "Data rombel kelas {$schoolClass->nama} berhasil diperbarui.");
     }
@@ -158,7 +188,34 @@ class KelasController extends Controller
     public function destroy(SchoolClass $schoolClass): RedirectResponse
     {
         $nama = $schoolClass->nama;
+        $classId = $schoolClass->id;
+
+        // Lepas kaitan akun wali kelas
+        SchoolClass::where('id', $schoolClass->id)->update([
+            'wali_kelas_id' => null,
+            'wali_kelas_nama' => null,
+        ]);
+
+        // Lepaskan seluruh siswa & registrasi dari kelas yang dihapus agar tidak menjadi data hantu/menghidupkan kelas kembali
+        $variations = array_unique(array_filter([
+            $nama,
+            str_replace('10 ', 'X ', $nama),
+            str_replace('11 ', 'XI ', $nama),
+            str_replace('12 ', 'XII ', $nama),
+            strtolower($nama),
+        ]));
+
+        Student::whereIn('kelas', $variations)->update(['kelas' => '-']);
+        Registration::whereIn('kelas', $variations)->update(['kelas' => '-']);
+
         $schoolClass->delete();
+
+        AdminLog::record(
+            'kelas.delete',
+            'SchoolClass',
+            $classId,
+            "Menghapus rombel kelas {$nama} dari master data dan melepaskan kaitan siswa."
+        );
 
         return back()->with('status', "Rombel kelas {$nama} berhasil dihapus dari master.");
     }
@@ -168,12 +225,14 @@ class KelasController extends Controller
         $distinctClasses = Student::select('kelas', 'jurusan')
             ->distinct()
             ->whereNotNull('kelas')
+            ->where('kelas', '!=', '')
+            ->where('kelas', '!=', '-')
             ->get();
 
         $added = 0;
         foreach ($distinctClasses as $ds) {
             $clean = Kelas::normalisasi($ds->kelas);
-            if (! $clean) {
+            if (! $clean || ! Kelas::tingkat($clean)) {
                 continue;
             }
             $tingkat = Kelas::tingkat($clean);
@@ -191,6 +250,13 @@ class KelasController extends Controller
                 $added++;
             }
         }
+
+        AdminLog::record(
+            'kelas.sync',
+            'SchoolClass',
+            null,
+            "Sinkronisasi rombel dari direktori siswa: {$added} kelas baru ditambahkan."
+        );
 
         return back()->with('status', "Sinkronisasi selesai. {$added} rombel baru ditambahkan ke Master Kelas.");
     }
