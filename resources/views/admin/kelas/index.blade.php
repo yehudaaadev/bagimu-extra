@@ -212,10 +212,18 @@
                 <select id="input-wali-user" name="wali_kelas_id" class="w-full rounded-xl border-slate-300 py-2 px-3 text-xs focus:border-blue-500 focus:ring-blue-500">
                     <option value="">— Tidak ada / Belum ditautkan —</option>
                     @foreach ($waliUsers as $u)
-                        <option value="{{ $u->id }}">{{ $u->name }} ({{ $u->role->label() }})</option>
+                        @php
+                            $assignedClass = $u->managedClass;
+                        @endphp
+                        <option value="{{ $u->id }}"
+                                data-assigned-class-id="{{ $assignedClass?->id }}"
+                                data-assigned-class-name="{{ $assignedClass?->nama }}"
+                                data-base-name="{{ $u->name }}">
+                            {{ $u->name }}
+                        </option>
                     @endforeach
                 </select>
-                <p class="mt-1 text-[10px] text-slate-400">User yang ditautkan dapat login menggunakan akunnya untuk mengakses data kelas ini.</p>
+                <p class="mt-1 text-[10px] text-slate-400">Hanya menampilkan akun guru wali kelas. Guru yang sudah ditugaskan ke rombel lain ditandai dan tidak dapat dipilih.</p>
             </div>
 
             <div class="flex gap-2 pt-2 border-t border-slate-100">
@@ -231,6 +239,28 @@
 </div>
 
 <script>
+function perbaruiOpsiWaliKelas(currentClassId = null) {
+    const select = document.getElementById('input-wali-user');
+    if (!select) return;
+
+    Array.from(select.options).forEach(opt => {
+        if (!opt.value) return;
+        const assignedClassId = opt.dataset.assignedClassId;
+        const assignedClassName = opt.dataset.assignedClassName;
+        const baseName = opt.dataset.baseName;
+
+        if (assignedClassId && String(assignedClassId) !== String(currentClassId)) {
+            opt.disabled = true;
+            opt.textContent = `${baseName} (Sudah ada di kelas: ${assignedClassName}) - Tidak Tersedia`;
+        } else {
+            opt.disabled = false;
+            opt.textContent = assignedClassId && String(assignedClassId) === String(currentClassId)
+                ? `${baseName} (Wali Kelas Saat Ini)`
+                : `${baseName} (Tersedia)`;
+        }
+    });
+}
+
 function bukaModalTambahKelas() {
     document.getElementById('modal-kelas-title').textContent = 'Tambah Rombel Kelas';
     const form = document.getElementById('form-modal-kelas');
@@ -240,6 +270,7 @@ function bukaModalTambahKelas() {
     document.getElementById('input-kelas-tingkat').value = '';
     document.getElementById('input-kelas-jurusan').value = '';
     document.getElementById('input-wali-nama').value = '';
+    perbaruiOpsiWaliKelas(null);
     document.getElementById('input-wali-user').value = '';
 
     const modal = document.getElementById('modal-kelas');
@@ -256,6 +287,7 @@ function bukaModalEditKelas(kelas) {
     document.getElementById('input-kelas-tingkat').value = kelas.tingkat || '';
     document.getElementById('input-kelas-jurusan').value = kelas.jurusan || '';
     document.getElementById('input-wali-nama').value = kelas.wali_kelas_nama || '';
+    perbaruiOpsiWaliKelas(kelas.id);
     document.getElementById('input-wali-user').value = kelas.wali_kelas_id || '';
 
     const modal = document.getElementById('modal-kelas');

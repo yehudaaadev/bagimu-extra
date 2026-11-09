@@ -44,7 +44,8 @@ class KelasController extends Controller
             return strnatcasecmp($a->nama, $b->nama);
         })->values();
 
-        $waliUsers = User::whereIn('role', [Role::WALI_KELAS, Role::PEMBINA, Role::OPERATOR, Role::ADMIN])
+        $waliUsers = User::where('role', Role::WALI_KELAS)
+            ->with('managedClass')
             ->orderBy('name')
             ->get();
 
@@ -100,8 +101,8 @@ class KelasController extends Controller
         if (! empty($data['wali_kelas_id'])) {
             $user = User::find($data['wali_kelas_id']);
             if ($user) {
-                if ($user->role === Role::STUDENT) {
-                    return back()->withInput()->withErrors(['wali_kelas_id' => 'Akun siswa tidak dapat ditugaskan sebagai wali kelas.']);
+                if ($user->role !== Role::WALI_KELAS) {
+                    return back()->withInput()->withErrors(['wali_kelas_id' => 'Hanya akun guru dengan peran Wali Kelas yang dapat ditugaskan ke rombel.']);
                 }
                 // Jaga integritas 1 Rombel = 1 Wali Kelas: lepaskan dari rombel lama
                 SchoolClass::where('wali_kelas_id', $user->id)->update([
@@ -142,8 +143,8 @@ class KelasController extends Controller
         if (! empty($data['wali_kelas_id'])) {
             $user = User::find($data['wali_kelas_id']);
             if ($user) {
-                if ($user->role === Role::STUDENT) {
-                    return back()->withInput()->withErrors(['wali_kelas_id' => 'Akun siswa tidak dapat ditugaskan sebagai wali kelas.']);
+                if ($user->role !== Role::WALI_KELAS) {
+                    return back()->withInput()->withErrors(['wali_kelas_id' => 'Hanya akun guru dengan peran Wali Kelas yang dapat ditugaskan ke rombel.']);
                 }
                 // Jaga integritas 1 Rombel = 1 Wali Kelas: lepaskan dari rombel lama selain rombel ini
                 SchoolClass::where('wali_kelas_id', $user->id)
