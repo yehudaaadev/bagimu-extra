@@ -24,7 +24,7 @@
         <div class="flex flex-wrap items-center gap-2">
             <a href="{{ route('admin.students.export', ['format' => 'xlsx']) }}" class="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 shadow-2xs transition">
                 <x-icon name="file" class="h-3.5 w-3.5 text-emerald-600" />
-                <span>Export Excel</span>
+                <span>Ekspor Excel</span>
             </a>
             <a href="{{ route('admin.students.index') }}" class="inline-flex items-center gap-2 rounded-xl bg-blue-700 px-4 py-2.5 text-xs font-bold text-white hover:bg-blue-800 shadow-2xs transition">
                 <x-icon name="users" class="h-3.5 w-3.5" />

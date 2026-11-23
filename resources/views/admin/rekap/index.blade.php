@@ -33,7 +33,7 @@
 
             <a href="{{ route('admin.rekap.super-export', ['periode' => $selectedPeriode]) }}" class="inline-flex items-center gap-1.5 rounded-xl border border-emerald-300 bg-emerald-50 px-3.5 py-1.5 text-xs font-bold text-emerald-800 hover:bg-emerald-100 transition shadow-2xs cursor-pointer">
                 <x-icon name="document" class="h-3.5 w-3.5 text-emerald-700" />
-                <span>Super-Export (4 Sheet)</span>
+                <span>Ekspor Lengkap (4 Lembar)</span>
             </a>
         </div>
     </div>

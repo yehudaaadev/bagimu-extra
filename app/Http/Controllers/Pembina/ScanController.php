@@ -95,7 +95,7 @@ class ScanController extends Controller
         }
 
         if ($registration->card_revoked_at) {
-            return $this->gagal($request, 'Kartu pelajar / E-Card sudah dicabut (cetak ulang). Minta kartu terbaru kepada siswa.');
+            return $this->gagal($request, 'Kartu Pelajar sudah dicabut (cetak ulang). Minta kartu terbaru kepada siswa.');
         }
 
         return DB::transaction(function () use ($request, $eskul, $data, $registration, $pertemuan) {

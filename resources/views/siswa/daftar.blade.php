@@ -158,7 +158,7 @@
             </div>
 
             {{-- Formulir Pendaftaran --}}
-            <form id="form-pendaftaran" method="POST" action="{{ route('siswa.daftar.store') }}" class="space-y-6 rounded-3xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-xs">
+            <form id="form-pendaftaran" method="POST" action="{{ route('siswa.daftar.store') }}" enctype="multipart/form-data" class="space-y-6 rounded-3xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-xs">
                 @csrf
 
                 {{-- Bagian 1: Identitas & Akademik Siswa (Terkoneksi Kartu Pelajar) --}}
@@ -179,7 +179,7 @@
                         </span>
                     </div>
 
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
                         <div class="bg-white p-2.5 rounded-xl border border-slate-200/60 shadow-2xs">
                             <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block">NIS</span>
                             <span class="font-mono font-bold text-slate-800">{{ $user->student?->nis ?? $user->username }}</span>
@@ -192,14 +192,97 @@
                             <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block">Jurusan</span>
                             <span class="font-bold text-slate-800">{{ $user->student?->jurusan?->label() ?? '-' }}</span>
                         </div>
-                        <div class="bg-white p-2.5 rounded-xl border border-slate-200/60 shadow-2xs">
-                            <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block">No. Absen</span>
-                            <span class="font-bold text-slate-800">{{ $user->student?->no_absen ?? '-' }}</span>
+                    </div>
+                </div>
+
+                {{-- Bagian 2: Pasfoto Kartu Siswa (diisi sendiri oleh siswa) --}}
+                <div class="pt-2" x-data="fotoSiswa()" x-cloak>
+                    <div class="flex items-center gap-2 pb-3 mb-4 border-b border-slate-100">
+                        <div class="flex h-8 w-8 items-center justify-center rounded-xl bg-sky-50 text-sky-700">
+                            <x-icon name="id-card" class="h-4 w-4" />
+                        </div>
+                        <div>
+                            <h2 class="text-sm font-bold text-slate-900">Pasfoto Kartu Siswa</h2>
+                            <p class="text-[11px] text-slate-400">Atur pasfoto Anda agar tampil rapi dan proporsional pada kartu ekstrakurikuler.</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-5">
+                        {{-- Bingkai foto 3x4 dengan area geser langsung --}}
+                        <div class="flex flex-col items-center gap-2">
+                            <div x-ref="frame"
+                                 @pointerdown.prevent="mulaiGeser($event)"
+                                 @pointermove="geser($event)"
+                                 @pointerup="selesaiGeser($event)"
+                                 @pointercancel="selesaiGeser($event)"
+                                 class="relative w-36 h-48 select-none rounded-2xl border-2 border-dashed overflow-hidden bg-slate-50 touch-none"
+                                 :class="url ? 'border-slate-300 cursor-grab active:cursor-grabbing' : 'border-slate-200 cursor-default'"
+                                 style="touch-action: none;">
+                                <template x-if="url">
+                                    <img :src="url" alt="Pratinjau foto siswa" draggable="false"
+                                         class="pointer-events-none w-full h-full object-cover select-none transition-none will-change-transform"
+                                         :style="`object-position: center; transform: translate(${(50 - posisiX()) * factor}%, ${(50 - posisiY()) * factor}%) scale(${zoom}); transform-origin: center;`">
+                                </template>
+                                <div x-show="!url" class="absolute inset-0 flex flex-col items-center justify-center gap-2 text-slate-300 px-3 text-center pointer-events-none">
+                                    <x-icon name="user" class="h-8 w-8" />
+                                    <span class="text-[10px] font-bold uppercase tracking-wider leading-tight">Belum ada foto</span>
+                                </div>
+                                <div x-show="url" class="absolute inset-0 ring-2 ring-inset ring-blue-500/30 pointer-events-none"></div>
+                                <div x-show="url" class="absolute bottom-1.5 inset-x-1.5 py-1 px-1.5 rounded-lg bg-slate-900/65 backdrop-blur-xs text-[9px] font-bold text-white text-center tracking-wide pointer-events-none">
+                                    Tahan &amp; geser foto
+                                </div>
+                            </div>
+
+                            <input type="file" id="foto" name="foto" accept="image/png,image/jpeg,image/webp"
+                                   @change="pilihFoto($event)"
+                                   class="block w-36 text-[11px] text-slate-500 file:mr-2 file:rounded-lg file:border-0 file:bg-blue-600 file:px-3 file:py-1.5 file:text-[11px] file:font-bold file:text-white hover:file:bg-blue-700 cursor-pointer">
+
+                            {{-- Koordinat tersembunyi yang otomatis dikirim ke form --}}
+                            <input type="hidden" id="foto_x" name="foto_x" :value="posisiX()">
+                            <input type="hidden" id="foto_y" name="foto_y" :value="posisiY()">
+
+                            <div x-show="url" class="flex items-center justify-between w-36 pt-0.5">
+                                <span class="text-[10px] font-mono text-slate-400" x-text="`${posisiX()}%, ${posisiY()}%`"></span>
+                                <button type="button" @click="resetPosisi()"
+                                        class="text-[10px] font-bold text-blue-700 hover:text-blue-900 underline underline-offset-2 cursor-pointer">
+                                    Atur Ulang ke Tengah
+                                </button>
+                            </div>
+
+                            <p x-show="!url" class="text-[10px] text-slate-400 text-center leading-relaxed w-36">
+                                Pasfoto 3x4 (JPG, PNG, WebP maks 2MB).
+                            </p>
+                        </div>
+
+                        {{-- Petunjuk Pasfoto --}}
+                        <div class="space-y-4">
+                            <div class="rounded-2xl border border-blue-200/80 bg-blue-50/70 p-4 text-[11px] text-slate-700 leading-relaxed flex items-start gap-2.5">
+                                <x-icon name="info" class="h-4 w-4 shrink-0 mt-0.5 text-blue-600" />
+                                <div class="space-y-2">
+                                    <p class="font-bold text-slate-800 text-xs">Petunjuk Pasfoto Kartu:</p>
+                                    <ul class="space-y-1.5 list-disc pl-4 text-slate-600">
+                                        <li>Foto bersifat <span class="font-semibold text-slate-700">opsional</span>. Bila belum diunggah, kartu otomatis menampilkan avatar monogram inisial nama Anda.</li>
+                                        <li>Disarankan menggunakan pasfoto formal rasio 3:4 dengan latar polos dan pakaian seragam rapi.</li>
+                                        <li>Setelah mengunggah foto, klik atau sentuh dan tahan pada gambar lalu geser ke segala arah untuk menempatkan wajah tepat di tengah bingkai.</li>
+                                        <li>Gunakan tombol <span class="font-semibold text-slate-700">Atur Ulang ke Tengah</span> bila ingin mengembalikan posisi wajah ke titik tengah bingkai.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            @error('foto')
+                                <p class="text-[11px] font-medium text-rose-600">{{ $message }}</p>
+                            @enderror
+                            @error('foto_x')
+                                <p class="text-[11px] font-medium text-rose-600">{{ $message }}</p>
+                            @enderror
+                            @error('foto_y')
+                                <p class="text-[11px] font-medium text-rose-600">{{ $message }}</p>
+                            @enderror
                         </div>
                     </div>
                 </div>
 
-                {{-- Bagian 2: Pemilihan Ekstrakurikuler --}}
+                {{-- Bagian 3: Pemilihan Ekstrakurikuler --}}
                 <div class="pt-2">
                     <div class="flex items-center gap-2 pb-3 mb-4 border-b border-slate-100">
                         <div class="flex h-8 w-8 items-center justify-center rounded-xl bg-amber-50 text-amber-700">
@@ -337,6 +420,92 @@
             </div>
 
             <script>
+            function fotoSiswa() {
+                return {
+                    url: @js($fotoAwal ? asset($fotoAwal) : null),
+                    x: @js((int) old('foto_x', $fotoPosisi['x'])),
+                    y: @js((int) old('foto_y', $fotoPosisi['y'])),
+                    zoom: 1.35,
+                    factor: 0.35,
+                    img: null,
+                    dragging: false,
+                    startPx: 0,
+                    startPy: 0,
+                    startX: 50,
+                    startY: 50,
+
+                    init() {
+                        if (this.url) this.muat(this.url);
+                    },
+
+                    muat(url) {
+                        const img = new Image();
+                        img.onload = () => { this.img = img; };
+                        img.src = url;
+                    },
+
+                    pilihFoto(event) {
+                        const file = event.target.files[0];
+                        if (!file) return;
+                        if (this.url && this.url.indexOf('blob:') === 0) URL.revokeObjectURL(this.url);
+                        this.url = URL.createObjectURL(file);
+                        this.muat(this.url);
+                        this.resetPosisi();
+                    },
+
+                    resetPosisi() {
+                        this.x = 50;
+                        this.y = 50;
+                    },
+
+                    posisiX() {
+                        return Math.max(0, Math.min(100, Math.round(Number(this.x) || 0)));
+                    },
+
+                    posisiY() {
+                        return Math.max(0, Math.min(100, Math.round(Number(this.y) || 0)));
+                    },
+
+                    sensitivitas() {
+                        // 1 pixel geser kursor / sentuhan = 1 unit koordinat (0-100)
+                        return { x: 1.0, y: 1.0 };
+                    },
+
+                    mulaiGeser(event) {
+                        if (!this.url) return;
+                        if (event.cancelable) event.preventDefault();
+                        this.dragging = true;
+                        this.startPx = event.clientX;
+                        this.startPy = event.clientY;
+                        this.startX = this.posisiX();
+                        this.startY = this.posisiY();
+                        const el = this.$refs.frame;
+                        if (el && el.setPointerCapture && event.pointerId !== undefined) {
+                            try { el.setPointerCapture(event.pointerId); } catch (e) {}
+                        }
+                    },
+
+                    geser(event) {
+                        if (!this.dragging) return;
+                        if (event.cancelable) event.preventDefault();
+                        const s = this.sensitivitas();
+                        const deltaX = (event.clientX - this.startPx) / s.x;
+                        const deltaY = (event.clientY - this.startPy) / s.y;
+                        this.x = Math.max(0, Math.min(100, Math.round(this.startX - deltaX)));
+                        this.y = Math.max(0, Math.min(100, Math.round(this.startY - deltaY)));
+                    },
+
+                    selesaiGeser(event) {
+                        if (!this.dragging) return;
+                        this.dragging = false;
+                        const el = this.$refs.frame;
+                        if (el && el.releasePointerCapture && event && event.pointerId !== undefined) {
+                            try { el.releasePointerCapture(event.pointerId); } catch (e) {}
+                        }
+                    },
+                };
+            }
+
             (function () {
                 const sel = document.getElementById('eskul_utama');
                 const box = document.getElementById('detail-eskul-box');

@@ -78,7 +78,7 @@
                                 <div class="inline-flex items-center gap-1.5 justify-end">
                                     <button type="button"
                                             onclick="bukaModalEditKelas({{ json_encode($mk) }})"
-                                            title="Edit Rombel Kelas"
+                                            title="Ubah Rombel Kelas"
                                             class="inline-flex items-center justify-center h-8 w-8 rounded-lg border border-slate-200 bg-white text-slate-600 hover:text-amber-600 hover:bg-amber-50 hover:border-amber-200 transition shadow-2xs cursor-pointer">
                                         <x-icon name="pencil" class="h-4 w-4" />
                                     </button>
@@ -279,7 +279,7 @@ function bukaModalTambahKelas() {
 }
 
 function bukaModalEditKelas(kelas) {
-    document.getElementById('modal-kelas-title').textContent = 'Edit Rombel Kelas: ' + kelas.nama;
+    document.getElementById('modal-kelas-title').textContent = 'Ubah Rombel Kelas: ' + kelas.nama;
     const form = document.getElementById('form-modal-kelas');
     form.action = "{{ route('admin.kelas.update', ':id') }}".replace(':id', kelas.id);
     document.getElementById('method-put-wrap').innerHTML = '<input type="hidden" name="_method" value="PUT">';

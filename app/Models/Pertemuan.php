@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\KehadiranStatus;
+use App\Enums\Status;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -31,14 +33,94 @@ class Pertemuan extends Model
         return $this->belongsTo(Eskul::class);
     }
 
+    public function getRouteKey(): mixed
+    {
+        return 'pertemuan-' . $this->nomor;
+    }
+
+    public function resolveRouteBinding($value, $field = null)
+    {
+        if (preg_match('/(?:pertemuan[-_\s]*)?(\d+)/i', (string) $value, $m)) {
+            $nomor = (int) $m[1];
+            $pembinaId = auth()->id();
+            $query = static::where('nomor', $nomor);
+            if ($pembinaId) {
+                $query->whereHas('eskul', fn ($q) => $q->where('pembina_id', $pembinaId));
+            }
+            $found = $query->first();
+            if ($found) {
+                return $found;
+            }
+        }
+
+        return static::find($value) ?? abort(404);
+    }
+
     public function isLocked(): bool
     {
-        return $this->locked_at !== null;
+        if ($this->locked_at !== null) {
+            return true;
+        }
+
+        // Otomatis sah/terkunci jika tanggal pertemuan sudah lewat
+        if ($this->tanggal && $this->tanggal->isPast() && ! $this->tanggal->isToday()) {
+            return true;
+        }
+
+        // Otomatis sah/terkunci jika hari ini dan waktu sekarang sudah mencapai atau melewati jam_selesai
+        if ($this->tanggal && $this->tanggal->isToday() && $this->jam_selesai) {
+            $nowTime = now()->format('H:i');
+            if ($nowTime >= $this->jam_selesai) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function sinkronkanAlfaOtomatis(): void
+    {
+        if (! $this->isLocked()) {
+            return;
+        }
+
+        $eskul = $this->eskul;
+        if (! $eskul) {
+            return;
+        }
+
+        $approvedMembers = Registration::where('eskul_utama', $eskul->name)
+            ->where('status', Status::APPROVED)
+            ->pluck('id');
+
+        $sudahAda = Kehadiran::where('eskul_id', $eskul->id)
+            ->whereDate('tanggal', $this->tanggal)
+            ->pluck('registration_id')
+            ->flip();
+
+        $baru = [];
+        foreach ($approvedMembers as $regId) {
+            if (! isset($sudahAda[$regId])) {
+                $baru[] = [
+                    'eskul_id' => $eskul->id,
+                    'registration_id' => $regId,
+                    'tanggal' => $this->tanggal->toDateString(),
+                    'status' => KehadiranStatus::ALPA->value,
+                    'keterangan' => 'Alfa (Otomatis tidak presensi)',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }
+        }
+
+        if (! empty($baru)) {
+            Kehadiran::insert($baru);
+        }
     }
 
     public function label(): string
     {
-        return 'Pertemuan '.$this->nomor.' • '.$this->tanggal->format('d M Y');
+        return 'Pertemuan '.$this->nomor.' • '.$this->tanggal->translatedFormat('d M Y');
     }
 
     public function rentangJam(): string

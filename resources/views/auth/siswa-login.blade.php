@@ -6,7 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <x-favicon />
     <meta name="theme-color" content="#1b5fd6">
-    <title>Login Siswa — {{ config('app.name', 'Bagimu Extra') }}</title>
+    <title>Masuk Siswa — {{ config('app.name', 'Bagimu Extra') }}</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700,800,900&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
     <noscript><link href="https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700,800,900&display=swap" rel="stylesheet" /></noscript>
@@ -20,14 +20,14 @@
     $motto = \App\Models\AppSetting::get('school.motto', '4B Berbudi • Berkualitas • Berdaya • Berhasil');
 @endphp
 <main class="flex min-h-screen">
-    {{-- Panel Branding Desktop - Sesuai Mockup Desain Resmi (58% Lebar Layar) --}}
+    {{-- Panel Branding Desktop - Tema Biru Modern --}}
     <div class="relative hidden w-full lg:w-[58%] min-h-screen flex-col justify-between overflow-hidden p-8 xl:p-12 text-white lg:flex"
-         style="background-color: #1a62d8; background: #1a62d8;">
+         style="background: linear-gradient(135deg, #0f2b6b 0%, #1a56c4 55%, #2563eb 100%);">
         
-        {{-- Foto Asli Gedung & Langit SMK Bagimu Negeriku (Bersih Tanpa Teks Bawaan) --}}
-        <img src="{{ asset('images/gedung-backdrop-clean.jpg') }}?v={{ filemtime(public_path('images/gedung-backdrop-clean.jpg')) }}"
-             alt="Gedung {{ $sekolah }}"
-             class="pointer-events-none absolute inset-0 h-full w-full object-cover object-right select-none z-0" />
+        {{-- Pola Latar Geometris Biru Halus --}}
+        <div class="pointer-events-none absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:20px_20px]"></div>
+        <div class="pointer-events-none absolute -right-24 -top-24 h-96 w-96 rounded-full bg-sky-400/20 blur-3xl"></div>
+        <div class="pointer-events-none absolute -left-20 bottom-1/4 h-80 w-80 rounded-full bg-blue-600/25 blur-3xl"></div>
 
         {{-- Gradient Scrim Pelindung Kontras Teks Footer --}}
         <div class="pointer-events-none absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-[#0a1931]/95 via-[#0a1931]/60 to-transparent z-0"></div>

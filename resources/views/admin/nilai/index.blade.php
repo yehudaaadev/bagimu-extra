@@ -11,7 +11,7 @@
 <form method="GET" action="{{ route('admin.nilai.index') }}" class="no-print mb-4 flex flex-wrap gap-3 items-end bg-white border rounded-lg p-4">
     <div>
         <label for="periode" class="block text-xs font-medium text-gray-700">Periode / Tahun Ajaran</label>
-        <select name="periode" id="periode" class="mt-1 border rounded px-3 py-2 text-sm">
+        <select name="periode" id="periode" class="mt-1 border border-slate-300 rounded-lg pl-3 pr-9 py-2 text-sm min-w-[210px] focus:outline-none focus:ring-1 focus:ring-blue-500">
             @foreach ($allPeriodes as $p)
                 <option value="{{ $p->periode }}" @selected($selectedPeriode === $p->periode)>
                     {{ $p->periode }} {{ $p->status->value === 'DIBUKA' ? '(Aktif)' : "({$p->status->label()})" }}
@@ -21,7 +21,7 @@
     </div>
     <div>
         <label for="eskul_id" class="block text-xs font-medium text-gray-700">Ekstrakurikuler</label>
-        <select name="eskul_id" id="eskul_id" class="mt-1 border rounded px-3 py-2 text-sm">
+        <select name="eskul_id" id="eskul_id" class="mt-1 border border-slate-300 rounded-lg pl-3 pr-9 py-2 text-sm min-w-[180px] focus:outline-none focus:ring-1 focus:ring-blue-500">
             @foreach ($eskuls as $e)
                 <option value="{{ $e->id }}" @selected($eskul && $eskul->id === $e->id)>{{ $e->name }}</option>
             @endforeach

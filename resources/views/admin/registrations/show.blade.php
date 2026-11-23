@@ -45,7 +45,7 @@
 
 {{-- Edit data --}}
 <div class="rounded-2xl border border-slate-200 bg-white p-5 mb-4 shadow-sm">
-    <h2 class="font-bold text-sm text-slate-900 mb-3">Edit Data Pendaftaran</h2>
+    <h2 class="font-bold text-sm text-slate-900 mb-3">Ubah Data Pendaftaran</h2>
     <form method="POST" action="{{ route('admin.registrations.update', $registration) }}" class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
         @csrf
         @method('PUT')
@@ -69,6 +69,7 @@
                 $genderVal = old('gender', $registration->gender instanceof \BackedEnum ? $registration->gender->value : (string) ($registration->gender ?? ''));
             @endphp
             <select name="gender" class="w-full border-slate-300 rounded-xl">
+                <option value="" @selected($genderVal === '')>Tidak diisi</option>
                 <option value="LAKI_LAKI" @selected($genderVal === 'LAKI_LAKI')>Laki-laki</option>
                 <option value="PEREMPUAN" @selected($genderVal === 'PEREMPUAN')>Perempuan</option>
             </select>
@@ -110,9 +111,9 @@
     <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
         <h2 class="font-bold text-sm text-slate-900 mb-3">Keamanan Kartu Pelajar</h2>
         <div class="flex flex-wrap gap-2 text-sm">
-            <form method="POST" action="{{ route('admin.registrations.cabut', $registration) }}" data-confirm="Cabut kartu & terbitkan token baru? Token lama akan otomatis hangus." data-confirm-title="Cabut Kartu Pelajar" data-confirm-btn="Cabut & Reset">
+            <form method="POST" action="{{ route('admin.registrations.cabut', $registration) }}" data-confirm="Cabut kartu & terbitkan token baru? Token lama akan otomatis hangus." data-confirm-title="Cabut Kartu Pelajar" data-confirm-btn="Cabut & Atur Ulang">
                 @csrf
-                <button class="px-4 py-2 rounded-xl border border-slate-300 font-semibold hover:bg-slate-50 cursor-pointer">Cabut Kartu & Reset Token</button>
+                <button class="px-4 py-2 rounded-xl border border-slate-300 font-semibold hover:bg-slate-50 cursor-pointer">Cabut Kartu & Atur Ulang Token</button>
             </form>
         </div>
         <p class="mt-2 text-[11px] text-slate-400">Gunakan bila kartu pelajar fisik siswa hilang atau dicetak ulang.</p>
@@ -120,7 +121,7 @@
 
     {{-- Token & password --}}
     <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-        <h2 class="font-bold text-sm text-slate-900 mb-3">Token & Password Akun</h2>
+        <h2 class="font-bold text-sm text-slate-900 mb-3">Token & Kata Sandi Akun</h2>
         <p class="text-sm text-slate-600">Token saat ini:
             @if ($registration->user?->login_token && !$registration->user?->login_token_revoked_at)
                 <span class="font-mono font-bold tracking-widest">{{ $registration->user->login_token }}</span>
@@ -129,18 +130,18 @@
             @endif
         </p>
         <div class="mt-2 flex flex-wrap gap-2 text-sm">
-            <form method="POST" action="{{ route('admin.registrations.token', $registration) }}" data-confirm="Buat token baru? Token lama akan otomatis hangus." data-confirm-title="Reset Token Siswa" data-confirm-btn="Buat Token">
+            <form method="POST" action="{{ route('admin.registrations.token', $registration) }}" data-confirm="Buat token baru? Token lama akan otomatis hangus." data-confirm-title="Atur Ulang Token Siswa" data-confirm-btn="Buat Token">
                 @csrf
-                <button class="px-4 py-2 rounded-xl border border-slate-300 font-semibold hover:bg-slate-50 cursor-pointer">{{ $registration->user?->login_token_hash ? 'Reset Token' : 'Buat Token' }}</button>
+                <button class="px-4 py-2 rounded-xl border border-slate-300 font-semibold hover:bg-slate-50 cursor-pointer">{{ $registration->user?->login_token_hash ? 'Atur Ulang Token' : 'Buat Token' }}</button>
             </form>
         </div>
         <form method="POST" action="{{ route('admin.registrations.password', $registration) }}" class="mt-3 flex gap-2 items-end text-sm">
             @csrf
             <div class="flex-1">
-                <label class="block font-medium text-slate-700 mb-1">Password baru (min. 8)</label>
+                <label class="block font-medium text-slate-700 mb-1">Kata sandi baru (min. 8)</label>
                 <input name="password" type="text" required minlength="8" maxlength="100" class="w-full border-slate-300 rounded-xl">
             </div>
-            <button class="px-4 py-2 rounded-xl border border-slate-300 font-semibold hover:bg-slate-50">Reset Password</button>
+            <button class="px-4 py-2 rounded-xl border border-slate-300 font-semibold hover:bg-slate-50">Atur Ulang Kata Sandi</button>
         </form>
     </div>
 </div>

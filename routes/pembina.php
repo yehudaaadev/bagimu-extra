@@ -3,7 +3,6 @@
 use App\Http\Controllers\Pembina\AnggotaController;
 use App\Http\Controllers\Pembina\DashboardController;
 use App\Http\Controllers\Pembina\EskulSayaController;
-use App\Http\Controllers\Pembina\IzinController;
 use App\Http\Controllers\Pembina\JadwalController;
 use App\Http\Controllers\Pembina\KegiatanController;
 use App\Http\Controllers\Pembina\KehadiranController;
@@ -16,6 +15,13 @@ Route::middleware(['auth', 'role:pembina', \App\Http\Middleware\MaintenanceMode:
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('anggota', [AnggotaController::class, 'index'])->name('anggota.index');
     Route::get('anggota/export', [AnggotaController::class, 'export'])->name('anggota.export');
+
+    Route::get('sesi', [PertemuanController::class, 'index'])->name('sesi.index');
+    Route::get('sesi/{pertemuan}', [PertemuanController::class, 'show'])->name('sesi.show');
+    Route::redirect('presensi', '/pembina/sesi')->name('presensi.index');
+    Route::get('nilai', [NilaiController::class, 'index'])->name('nilai.index');
+    Route::get('jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
+    Route::view('pengaturan', 'pembina.pengaturan.index')->name('pengaturan.index');
 
     Route::get('eskul', [EskulSayaController::class, 'index'])->name('eskul.index');
     Route::get('eskul/{eskul}', [EskulSayaController::class, 'show'])->name('eskul.show');
@@ -34,9 +40,8 @@ Route::middleware(['auth', 'role:pembina', \App\Http\Middleware\MaintenanceMode:
     Route::post('eskul/{eskul}/pertemuan', [PertemuanController::class, 'store'])->name('pertemuan.store');
     Route::delete('pertemuan/{pertemuan}', [PertemuanController::class, 'destroy'])->name('pertemuan.destroy');
     Route::post('eskul/{eskul}/nilai', [NilaiController::class, 'store'])->name('nilai.store');
-
-    Route::post('izin/{izin}/approve', [IzinController::class, 'approve'])->name('izin.approve');
-    Route::post('izin/{izin}/reject', [IzinController::class, 'reject'])->name('izin.reject');
+    Route::post('izin/{izin}/approve', [\App\Http\Controllers\Pembina\IzinController::class, 'approve'])->name('izin.approve');
+    Route::post('izin/{izin}/reject', [\App\Http\Controllers\Pembina\IzinController::class, 'reject'])->name('izin.reject');
 
     Route::resource('kegiatan', KegiatanController::class);
 });

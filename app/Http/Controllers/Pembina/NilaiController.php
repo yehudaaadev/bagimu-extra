@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Pembina;
 
+use App\Enums\PeriodeStatus;
 use App\Enums\Status;
 use App\Http\Controllers\Controller;
 use App\Models\AdminLog;
 use App\Models\Eskul;
 use App\Models\NilaiHistory;
+use App\Models\Periode;
 use App\Models\Registration;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -18,6 +20,59 @@ class NilaiController extends Controller
         if ($eskul->pembina_id !== $pembinaId) {
             abort(403);
         }
+    }
+
+    public function index(Request $request)
+    {
+        $me = $request->user();
+        $eskuls = Eskul::where('pembina_id', $me->id)->orderBy('name')->get();
+
+        $allPeriodes = Periode::orderByDesc('periode')->get();
+        $activePeriode = $allPeriodes->firstWhere('status', PeriodeStatus::DIBUKA);
+        $selectedPeriode = $request->query('periode') ?: ($activePeriode?->periode ?: $allPeriodes->first()?->periode);
+        $periodeModel = $allPeriodes->firstWhere('periode', $selectedPeriode);
+        $isArsip = $selectedPeriode !== ($activePeriode?->periode ?? '');
+        $periodeQuery = $selectedPeriode ? [$selectedPeriode] : [];
+
+        $selectedEskulId = $request->query('eskul_id') ?: $eskuls->first()?->id;
+        $currentEskul = $eskuls->firstWhere('id', (int) $selectedEskulId) ?: $eskuls->first();
+
+        $disetujui = collect();
+
+        if ($currentEskul) {
+            $sortFn = function ($a, $b) {
+                $tingkatA = \App\Support\Kelas::tingkat($a->kelas) ?? 99;
+                $tingkatB = \App\Support\Kelas::tingkat($b->kelas) ?? 99;
+                if ($tingkatA !== $tingkatB) {
+                    return $tingkatA <=> $tingkatB;
+                }
+                $cmp = strnatcasecmp($a->kelas ?? '', $b->kelas ?? '');
+                if ($cmp !== 0) {
+                    return $cmp;
+                }
+                return strcasecmp($a->user?->name ?? '', $b->user?->name ?? '');
+            };
+
+            $disetujui = Registration::with(['user', 'kehadiran' => fn ($q) => $q->where('eskul_id', $currentEskul->id)])
+                ->join('users', 'users.id', '=', 'registrations.user_id')
+                ->select('registrations.*')
+                ->whereIn('periode', $periodeQuery)
+                ->where('eskul_utama', $currentEskul->name)
+                ->where('status', Status::APPROVED)
+                ->get()
+                ->sort($sortFn)
+                ->values();
+        }
+
+        return view('pembina.nilai.index', compact(
+            'eskuls',
+            'currentEskul',
+            'allPeriodes',
+            'selectedPeriode',
+            'periodeModel',
+            'isArsip',
+            'disetujui'
+        ));
     }
 
     public function store(Request $request, Eskul $eskul)

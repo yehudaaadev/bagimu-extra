@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Pembina;
 
+use App\Enums\IzinStatus;
 use App\Http\Controllers\Controller;
 use App\Models\AdminLog;
 use App\Models\Eskul;
 use App\Models\EskulJadwal;
+use App\Models\Izin;
 use Illuminate\Http\Request;
 
 class JadwalController extends Controller
@@ -15,6 +17,27 @@ class JadwalController extends Controller
         if ($eskul->pembina_id !== $pembinaId) {
             abort(403);
         }
+    }
+
+    public function index(Request $request)
+    {
+        $me = $request->user();
+        $eskuls = Eskul::where('pembina_id', $me->id)->orderBy('name')->get();
+
+        $selectedEskulId = $request->query('eskul_id') ?: $eskuls->first()?->id;
+        $currentEskul = $eskuls->firstWhere('id', (int) $selectedEskulId) ?: $eskuls->first();
+
+        $jadwals = collect();
+
+        if ($currentEskul) {
+            $jadwals = $currentEskul->jadwals()->orderBy('hari')->orderBy('jam_mulai')->get();
+        }
+
+        return view('pembina.jadwal.index', compact(
+            'eskuls',
+            'currentEskul',
+            'jadwals'
+        ));
     }
 
     public function store(Request $request, Eskul $eskul)
@@ -38,7 +61,7 @@ class JadwalController extends Controller
 
         AdminLog::record('pembina.jadwal.store', EskulJadwal::class, $jadwal->id, "Tambah jadwal {$eskul->name} {$data['hari']} {$data['jam_mulai']}-{$data['jam_selesai']}");
 
-        return redirect()->route('pembina.eskul.show', $eskul)->with('status', 'Jadwal berhasil ditambahkan.');
+        return redirect()->route('pembina.jadwal.index', ['eskul_id' => $eskul->id])->with('status', 'Jadwal berhasil ditambahkan.');
     }
 
     public function update(Request $request, EskulJadwal $jadwal)
@@ -63,7 +86,7 @@ class JadwalController extends Controller
 
         AdminLog::record('pembina.jadwal.update', EskulJadwal::class, $jadwal->id, "Ubah jadwal {$jadwal->eskul->name} {$data['hari']} {$data['jam_mulai']}-{$data['jam_selesai']}");
 
-        return redirect()->route('pembina.eskul.show', $jadwal->eskul_id)->with('status', 'Jadwal berhasil diperbarui.');
+        return redirect()->route('pembina.jadwal.index', ['eskul_id' => $jadwal->eskul_id])->with('status', 'Jadwal berhasil diperbarui.');
     }
 
     public function destroy(Request $request, EskulJadwal $jadwal)
@@ -78,7 +101,7 @@ class JadwalController extends Controller
 
         AdminLog::record('pembina.jadwal.destroy', EskulJadwal::class, $jadwal->id, "Hapus jadwal {$info}");
 
-        return redirect()->route('pembina.eskul.show', $eskulId)->with('status', 'Jadwal berhasil dihapus.');
+        return redirect()->route('pembina.jadwal.index', ['eskul_id' => $eskulId])->with('status', 'Jadwal berhasil dihapus.');
     }
 
     private function bentrok(Eskul $eskul, string $hari, string $mulai, string $selesai, ?int $kecualiId = null): bool

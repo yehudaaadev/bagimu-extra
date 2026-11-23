@@ -11,10 +11,25 @@
     <link href="https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700,800&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
     <noscript><link href="https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700,800&display=swap" rel="stylesheet" /></noscript>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script>
+        (function() {
+            const saved = localStorage.getItem('theme');
+            if (saved === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+
+            const savedLang = localStorage.getItem('app_lang') || 'id';
+            document.documentElement.setAttribute('lang', savedLang);
+        })();
+    </script>
     @include('layouts.partials.session-guard')
     @include('layouts.partials.speed-accelerator')
+    @include('layouts.partials.dark-theme')
+    @include('layouts.partials.lang-engine')
 </head>
-<body class="bg-slate-50 font-sans text-slate-800 antialiased selection:bg-blue-600 selection:text-white">
+<body class="bg-slate-50 dark:bg-slate-950 font-sans text-slate-800 dark:text-slate-100 antialiased selection:bg-blue-600 selection:text-white transition-colors duration-200">
 <a href="#konten-utama" class="skip-link">Lewati ke konten utama</a>
 @php
     $user = auth()->user();
@@ -23,16 +38,16 @@
     $isPembina = $user && $user->hasRole(\App\Enums\Role::PEMBINA);
     $isWaliKelas = $user && $user->hasRole(\App\Enums\Role::WALI_KELAS);
     $link = fn ($active) => 'flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-bold transition-all duration-150 '
-        .($active ? 'bg-blue-600 text-white shadow-md shadow-blue-600/25' : 'text-slate-600 hover:bg-slate-100/90 hover:text-slate-900 active:scale-[0.99]');
+        .($active ? 'bg-blue-600 text-white shadow-md shadow-blue-600/25' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100/90 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white active:scale-[0.99]');
 @endphp
-<div class="min-h-screen lg:flex bg-slate-50">
+<div class="min-h-screen lg:flex bg-slate-50 dark:bg-slate-950">
     {{-- Sidebar desktop --}}
-    <aside class="no-print fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-slate-200/80 bg-white/95 backdrop-blur-sm lg:flex">
-        <div class="flex items-center gap-3 border-b border-slate-100/90 px-5 py-5">
+    <aside class="no-print fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-slate-200/80 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm lg:flex">
+        <div class="flex items-center gap-3 border-b border-slate-100/90 dark:border-slate-800 px-5 py-5">
             <x-school-logo :size="38" />
             <div class="leading-tight min-w-0">
-                <p class="text-sm font-extrabold text-slate-900 tracking-tight truncate">{{ config('app.name', 'Bagimu Extra') }}</p>
-                <p class="text-[11px] text-slate-400 font-medium truncate">{{ \App\Models\AppSetting::get('school.name', 'Panel Guru / Staf') }}</p>
+                <p class="text-sm font-extrabold text-slate-900 dark:text-white tracking-tight truncate">{{ config('app.name', 'Bagimu Extra') }}</p>
+                <p class="text-[11px] text-slate-400 dark:text-slate-500 font-medium truncate">{{ \App\Models\AppSetting::get('school.name', 'Panel Guru / Staf') }}</p>
             </div>
         </div>
 
@@ -40,19 +55,19 @@
             @include('layouts.partials.staff-nav')
         </nav>
 
-        <div class="border-t border-slate-100 p-3.5">
-            <div class="flex items-center gap-3 rounded-2xl border border-slate-200/70 bg-slate-50/80 p-2.5 shadow-2xs">
+        <div class="border-t border-slate-100 dark:border-slate-800 p-3.5">
+            <div class="flex items-center gap-3 rounded-2xl border border-slate-200/70 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/80 p-2.5 shadow-2xs">
                 <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-xs font-black text-white shadow-xs">
                     {{ strtoupper(substr($user?->name ?? 'A', 0, 1)) }}
                 </span>
                 <div class="min-w-0 flex-1 leading-tight">
-                    <p class="truncate text-xs font-bold text-slate-900">{{ $user?->name }}</p>
-                    <p class="truncate text-[10px] text-slate-400 capitalize font-medium">{{ str_replace('_', ' ', $user?->role?->value ?? ($user?->role ?? 'Staf')) }}</p>
+                    <p class="truncate text-xs font-bold text-slate-900 dark:text-slate-100">{{ $user?->name }}</p>
+                    <p class="truncate text-[10px] text-slate-400 dark:text-slate-500 capitalize font-medium">{{ str_replace('_', ' ', $user?->role?->value ?? ($user?->role ?? 'Staf')) }}</p>
                 </div>
             </div>
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit" class="mt-2 flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-600 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 transition-all cursor-pointer">
+                <button type="submit" class="mt-2 flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-rose-50 dark:hover:bg-rose-950/40 hover:text-rose-600 dark:hover:text-rose-400 hover:border-rose-200 dark:hover:border-rose-800 transition-all cursor-pointer">
                     <x-icon name="logout" class="h-3.5 w-3.5" />
                     Keluar Sesi
                 </button>
@@ -62,14 +77,14 @@
 
     <div class="flex-1 min-w-0 lg:ps-64">
         {{-- Topbar mobile --}}
-        <header class="no-print sticky top-0 z-30 flex h-16 items-center justify-between border-b border-slate-200/80 bg-white/90 backdrop-blur-md px-4 sm:px-6 lg:hidden">
+        <header class="no-print sticky top-0 z-30 flex h-16 items-center justify-between border-b border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md px-4 sm:px-6 lg:hidden">
             <div class="flex items-center gap-2.5">
                 <x-school-logo :size="32" />
-                <span class="text-sm font-extrabold text-slate-900 tracking-tight">{{ config('app.name', 'Bagimu Extra') }}</span>
+                <span class="text-sm font-extrabold text-slate-900 dark:text-white tracking-tight">{{ config('app.name', 'Bagimu Extra') }}</span>
             </div>
             <x-popover label="Menu navigasi" panelClass="w-64 max-h-[75vh] overflow-y-auto">
                 <x-slot:trigger>
-                    <button type="button" class="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 transition-colors" aria-label="Menu navigasi" aria-haspopup="menu">
+                    <button type="button" class="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" aria-label="Menu navigasi" aria-haspopup="menu">
                         <x-icon name="menu" class="h-5 w-5" />
                     </button>
                 </x-slot:trigger>

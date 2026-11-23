@@ -22,7 +22,7 @@
     <div class="rounded-xl bg-blue-50/70 border border-blue-100 p-4 text-xs text-blue-900 leading-relaxed space-y-1.5">
         <p class="font-bold">Format Kolom yang Dikenali Otomatis:</p>
         <p>Header: <code class="bg-white px-1.5 py-0.5 rounded border border-blue-200 font-mono">nis, nisn, nama, kelas, jurusan, gender, no_absen</code></p>
-        <p class="text-blue-700">Jurusan: <b>RPL, KULINER, DKV, TP, TKP</b> (boleh dikosongkan bila sudah tercantum di kolom kelas, mis. "10 RPL 1"). Gender diisi <b>L/P</b> (opsional), NISN &amp; no_absen opsional. Judul tabel dan baris kosong dilewati otomatis. Untuk PDF: hanya PDF berisi teks (bukan hasil scan/foto).</p>
+        <p class="text-blue-700">Jurusan: <b>RPL, KULINER, DKV, TP, TKP</b> (boleh dikosongkan bila sudah tercantum di kolom kelas, mis. "10 RPL 1"). Gender diisi <b>L/P</b> (opsional), NISN &amp; no_absen opsional. Judul tabel dan baris kosong dilewati otomatis. Untuk PDF: hanya PDF berisi teks (bukan hasil pindai/foto).</p>
         <div class="flex flex-wrap gap-2 pt-1">
             <a href="{{ route('admin.students.import.template', ['format' => 'csv']) }}" class="px-3 py-1.5 rounded-lg bg-white border border-blue-200 font-semibold text-blue-800 hover:bg-blue-100 transition">Unduh Template CSV</a>
             <a href="{{ route('admin.students.import.template', ['format' => 'xlsx']) }}" class="px-3 py-1.5 rounded-lg bg-white border border-blue-200 font-semibold text-blue-800 hover:bg-blue-100 transition">Unduh Template Excel</a>

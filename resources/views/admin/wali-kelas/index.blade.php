@@ -170,13 +170,13 @@
                         <td class="px-5 py-3.5 text-right">
                             <div class="inline-flex items-center gap-1.5 justify-end">
                                 {{-- Tombol Edit --}}
-                                <button type="button" @click="showEdit = true" title="Edit Data Wali Kelas"
+                                <button type="button" @click="showEdit = true" title="Ubah Data Wali Kelas"
                                         class="inline-flex items-center justify-center h-8 w-8 rounded-lg border border-slate-200 bg-white text-slate-600 hover:text-amber-600 hover:bg-amber-50 hover:border-amber-200 transition shadow-2xs">
                                     <x-icon name="pencil" class="h-4 w-4" />
                                 </button>
 
                                 {{-- Tombol Reset Password --}}
-                                <button type="button" @click="showReset = true" title="Reset Kata Sandi"
+                                <button type="button" @click="showReset = true" title="Atur Ulang Kata Sandi"
                                         class="inline-flex items-center justify-center h-8 w-8 rounded-lg border border-slate-200 bg-white text-slate-600 hover:text-blue-600 hover:bg-blue-50 hover:border-blue-200 transition shadow-2xs">
                                     <x-icon name="key" class="h-4 w-4" />
                                 </button>
@@ -198,7 +198,7 @@
                             <div x-show="showEdit" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs text-left" style="display: none;" @keydown.escape.window="showEdit = false">
                                 <div class="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl border border-slate-200" @click.outside="showEdit = false">
                                     <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
-                                        <h3 class="font-bold text-slate-900 text-sm">Edit Data Wali Kelas</h3>
+                                        <h3 class="font-bold text-slate-900 text-sm">Ubah Data Wali Kelas</h3>
                                         <button type="button" @click="showEdit = false" class="text-slate-400 hover:text-slate-600 cursor-pointer" aria-label="Tutup">
                                             <x-icon name="x" class="h-4 w-4" />
                                         </button>
@@ -252,13 +252,13 @@
                             {{-- Modal Reset Sandi Inline --}}
                             <div x-show="showReset" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs text-left" style="display: none;" @keydown.escape.window="showReset = false">
                                 <div class="w-full max-w-sm rounded-3xl bg-white p-6 shadow-2xl border border-slate-200" @click.outside="showReset = false">
-                                    <h3 class="font-bold text-slate-900 text-sm mb-1">Reset Kata Sandi</h3>
-                                    <p class="text-xs text-slate-500 mb-4">Ubah password akun {{ $wk->name }} ({{ $wk->email }}):</p>
+                                    <h3 class="font-bold text-slate-900 text-sm mb-1">Atur Ulang Kata Sandi</h3>
+                                    <p class="text-xs text-slate-500 mb-4">Ubah kata sandi akun {{ $wk->name }} ({{ $wk->email }}):</p>
                                     <form method="POST" action="{{ route('admin.wali-kelas.password', $wk) }}" class="space-y-3">
                                         @csrf
                                         @method('PUT')
                                         <div>
-                                            <input type="password" name="password" required minlength="8" placeholder="Password baru (min. 8 karakter)"
+                                            <input type="password" name="password" required minlength="8" placeholder="Kata sandi baru (min. 8 karakter)"
                                                    class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-xs font-medium focus:border-blue-600 focus:outline-hidden">
                                         </div>
                                         <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">

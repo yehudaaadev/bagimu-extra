@@ -340,7 +340,7 @@ class EskulSayaController extends Controller
                     'no_absen' => $student->no_absen ?? 1,
                     'nama_wali_kelas' => $student->wali_nama ?? 'Belum ditentukan',
                     'usia' => $student->usia ?? 16,
-                    'gender' => $student->gender ?? \App\Enums\Gender::LAKI_LAKI,
+                    'gender' => $student->gender,
                     'whatsapp' => $wa,
                     'eskul_utama' => $eskul->name,
                     'eskul_cadangan' => null,

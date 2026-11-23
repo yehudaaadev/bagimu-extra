@@ -68,7 +68,7 @@ class ParitasTest extends TestCase
     {
         [$siswa] = $this->siapkan();
 
-        $this->actingAs($siswa)->post('/siswa/daftar', $this->daftarPayload())
+        $this->actingAs($siswa)->withSession(['sekolah_dibaca' => true])->post('/siswa/daftar', $this->daftarPayload())
             ->assertRedirect('/siswa/sukses');
 
         $this->assertDatabaseHas('registrations', ['user_id' => $siswa->id, 'status' => 'APPROVED']);
@@ -89,7 +89,7 @@ class ParitasTest extends TestCase
         ]);
 
         // Kuota penuh → ditolak dengan pesan penuh (tanpa pengalihan cadangan).
-        $this->actingAs($siswa)->post('/siswa/daftar', $this->daftarPayload())
+        $this->actingAs($siswa)->withSession(['sekolah_dibaca' => true])->post('/siswa/daftar', $this->daftarPayload())
             ->assertSessionHasErrors('eskul_utama');
     }
 
@@ -198,7 +198,7 @@ class ParitasTest extends TestCase
         [$siswa] = $this->siapkan();
         AppSetting::set('app.maintenance', '1');
 
-        $this->actingAs($siswa)->post('/siswa/daftar', $this->daftarPayload())
+        $this->actingAs($siswa)->withSession(['sekolah_dibaca' => true])->post('/siswa/daftar', $this->daftarPayload())
             ->assertStatus(503);
 
         // Admin tetap bisa (baca + kelola).
@@ -277,7 +277,7 @@ class ParitasTest extends TestCase
     {
         [$siswa] = $this->siapkan();
 
-        $this->actingAs($siswa)->post('/siswa/daftar', $this->daftarPayload(['kelas' => 'XI RPL 1']))
+        $this->actingAs($siswa)->withSession(['sekolah_dibaca' => true])->post('/siswa/daftar', $this->daftarPayload(['kelas' => 'XI RPL 1']))
             ->assertRedirect('/siswa/sukses');
 
         $this->assertDatabaseHas('registrations', ['user_id' => $siswa->id, 'kelas' => '11 RPL 1']);
@@ -343,17 +343,17 @@ class ParitasTest extends TestCase
         [$siswa] = $this->siapkan();
 
         // Kelas 12 tidak boleh daftar.
-        $res = $this->actingAs($siswa)->post('/siswa/daftar', $this->daftarPayload(['kelas' => '12 RPL 1']));
+        $res = $this->actingAs($siswa)->withSession(['sekolah_dibaca' => true])->post('/siswa/daftar', $this->daftarPayload(['kelas' => '12 RPL 1']));
         $res->assertSessionHasErrors('kelas');
 
         // Kelas 11 semester 2 (magang) tidak boleh.
         AppSetting::set('eskul.semester_aktif', '2');
-        $res = $this->actingAs($siswa)->post('/siswa/daftar', $this->daftarPayload(['kelas' => '11 RPL 1']));
+        $res = $this->actingAs($siswa)->withSession(['sekolah_dibaca' => true])->post('/siswa/daftar', $this->daftarPayload(['kelas' => '11 RPL 1']));
         $res->assertSessionHasErrors('kelas');
 
         // Kelas 11 semester 1 boleh.
         AppSetting::set('eskul.semester_aktif', '1');
-        $this->actingAs($siswa)->post('/siswa/daftar', $this->daftarPayload(['kelas' => '11 RPL 1']))
+        $this->actingAs($siswa)->withSession(['sekolah_dibaca' => true])->post('/siswa/daftar', $this->daftarPayload(['kelas' => '11 RPL 1']))
             ->assertRedirect('/siswa/sukses');
     }
 
@@ -388,7 +388,7 @@ class ParitasTest extends TestCase
         ]);
         $izin = \App\Models\Izin::create([
             'registration_id' => $reg->id, 'eskul_id' => $eskul->id,
-            'tanggal' => '2026-10-20', 'jenis' => 'IZIN', 'alasan' => 'Acara keluarga',
+            'tanggal' => now()->toDateString(), 'jenis' => 'IZIN', 'alasan' => 'Acara keluarga',
             'status' => 'PENDING',
         ]);
 

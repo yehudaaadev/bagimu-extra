@@ -24,7 +24,7 @@
         <div class="inline-flex rounded-xl border border-slate-300 bg-white p-0.5 shadow-2xs">
             <button type="button" onclick="exportData('xlsx')" class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-700 hover:text-emerald-700 hover:bg-slate-50 rounded-lg transition-colors cursor-pointer" title="Unduh data dalam format Excel (.xlsx)">
                 <x-icon name="file" class="h-3.5 w-3.5 text-emerald-600" />
-                <span>Export Excel</span>
+                <span>Ekspor Excel</span>
             </button>
             <div class="w-px bg-slate-200 my-1"></div>
             <button type="button" onclick="exportData('csv')" class="inline-flex items-center gap-1.5 px-2.5 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition-colors cursor-pointer" title="Unduh data dalam format CSV mentah">
@@ -33,7 +33,7 @@
         </div>
 
         {{-- Tombol Generate Semua Token --}}
-        <button type="button" onclick="openBulkTokenModal()" class="inline-flex items-center gap-2 rounded-xl border border-amber-300 bg-amber-50 px-3.5 py-2.5 text-xs font-bold text-amber-800 hover:bg-amber-100 shadow-2xs transition-all cursor-pointer" title="Generate token login otomatis untuk siswa">
+        <button type="button" onclick="openBulkTokenModal()" class="inline-flex items-center gap-2 rounded-xl border border-amber-300 bg-amber-50 px-3.5 py-2.5 text-xs font-bold text-amber-800 hover:bg-amber-100 shadow-2xs transition-all cursor-pointer" title="Terbitkan token login otomatis untuk siswa">
             <x-icon name="key" class="h-3.5 w-3.5 text-amber-600 shrink-0" />
             <span>Generate Semua Token</span>
         </button>
@@ -183,9 +183,9 @@
 
     {{-- Tombol Reset --}}
     <div>
-        <a href="{{ route('admin.students.index') }}" class="inline-flex w-full items-center justify-center gap-1.5 rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors shadow-2xs h-[38px]" title="Reset semua filter">
+        <a href="{{ route('admin.students.index') }}" class="inline-flex w-full items-center justify-center gap-1.5 rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors shadow-2xs h-[38px]" title="Atur ulang semua filter">
             <x-icon name="history" class="h-3.5 w-3.5 text-slate-500" />
-            <span>Reset</span>
+            <span>Atur Ulang</span>
         </a>
     </div>
 </form>
@@ -207,7 +207,7 @@
         </button>
         <button type="button" onclick="confirmBulkTokenSelected()" class="inline-flex items-center gap-1.5 rounded-xl border border-blue-300 bg-white px-3 py-1.5 font-bold text-blue-700 hover:bg-blue-100 transition-colors shadow-2xs cursor-pointer">
             <x-icon name="key" class="h-3.5 w-3.5 text-blue-600" />
-            <span>Generate Token Terpilih</span>
+            <span>Terbitkan Token Terpilih</span>
         </button>
         <button type="button" onclick="confirmBulkDelete()" class="inline-flex items-center gap-1.5 rounded-xl bg-rose-600 px-3 py-1.5 font-bold text-white hover:bg-rose-700 transition-colors shadow-2xs cursor-pointer">
             <x-icon name="trash" class="h-3.5 w-3.5" />
@@ -279,7 +279,7 @@
                 <x-icon name="key" class="h-5 w-5" />
             </div>
             <div>
-                <h3 class="text-base font-bold text-slate-900">Generate Token Massal</h3>
+                <h3 class="text-base font-bold text-slate-900">Penerbitan Token Massal</h3>
                 <p class="text-xs text-slate-500">Buat atau perbarui kredensial token login siswa secara otomatis.</p>
             </div>
         </div>
@@ -299,13 +299,13 @@
                     <input type="radio" name="mode" value="untokenized" checked class="mt-0.5 text-blue-600 focus:ring-blue-500">
                     <div>
                         <span class="block text-xs font-bold text-slate-800">Hanya siswa yang belum memiliki token (Direkomendasikan)</span>
-                        <span class="block text-[11px] text-slate-500 mt-0.5">Token siswa yang sudah aktif tidak akan diganti atau ter-reset.</span>
+                        <span class="block text-[11px] text-slate-500 mt-0.5">Token siswa yang sudah aktif tidak akan diganti atau diatur ulang.</span>
                     </div>
                 </label>
                 <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer">
                     <input type="radio" name="mode" value="all" class="mt-0.5 text-blue-600 focus:ring-blue-500">
                     <div>
-                        <span class="block text-xs font-bold text-slate-800">Seluruh siswa (Reset & Terbitkan Token Baru)</span>
+                        <span class="block text-xs font-bold text-slate-800">Seluruh siswa (Atur Ulang & Terbitkan Token Baru)</span>
                         <span class="block text-[11px] text-slate-500 mt-0.5">Token lama semua siswa akan hangus dan digantikan token baru 8 digit.</span>
                     </div>
                 </label>
@@ -321,7 +321,7 @@
                     Batal
                 </button>
                 <button type="submit" id="btn-submit-bulk-token" class="rounded-xl bg-amber-600 px-4 py-2 text-xs font-bold text-white hover:bg-amber-700 transition cursor-pointer">
-                    Mulai Generate Token
+                    Mulai Terbitkan Token
                 </button>
             </div>
         </form>
@@ -550,7 +550,7 @@ function confirmBulkTokenSelected() {
     if (count === 0) return;
 
     openConfirmModal(
-        'Generate Token ' + count + ' Siswa?',
+        'Terbitkan Token ' + count + ' Siswa?',
         `Sistem akan menerbitkan/memperbarui kredensial token login untuk ${count} siswa yang dipilih. Lanjutkan?`,
         function() {
             const form = document.createElement('form');
@@ -580,7 +580,7 @@ function confirmBulkTokenSelected() {
             document.body.appendChild(form);
             form.submit();
         },
-        'Generate Token',
+        'Terbitkan Token',
         false
     );
 }

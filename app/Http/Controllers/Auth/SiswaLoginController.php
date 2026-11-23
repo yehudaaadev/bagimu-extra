@@ -114,25 +114,29 @@ class SiswaLoginController extends Controller
         }
 
         // Kunci data: Siswa yang sudah memilih eskul di periode aktif berjalan tidak dapat login lagi dengan token sekali pakai
-        $periodeAktif = Periode::where('status', \App\Enums\PeriodeStatus::DIBUKA)->orderByDesc('periode')->first();
+        $periodeAktif = Periode::where('status', \App\Enums\PeriodeStatus::DIBUKA)->orderByDesc('periode')->first()
+            ?? Periode::orderByDesc('periode')->first();
 
-        $sudahPilih = $periodeAktif
-            ? \App\Models\Registration::where('periode', $periodeAktif->periode)
-                ->where(function ($q) use ($user, $master) {
-                    $q->where('user_id', $user->id)
-                      ->orWhere('nis', $master->nis);
-                })
-                ->exists()
-            : false;
+        $sudahPilihQuery = \App\Models\Registration::where(function ($q) use ($user, $master) {
+            $q->where('user_id', $user->id)
+              ->orWhere('nis', $master->nis);
+        });
+
+        if ($periodeAktif) {
+            $sudahPilihQuery->where('periode', $periodeAktif->periode);
+        }
+
+        $sudahPilih = $sudahPilihQuery->exists();
 
         if ($sudahPilih) {
+            $periodeNama = $periodeAktif ? "periode {$periodeAktif->periode}" : 'periode ini';
             return $this->handleFailure(
                 $request,
                 $throttleKey,
                 $user->getAuthIdentifier(),
                 $user->email,
                 'Pendaftaran terkunci',
-                "Data Anda sudah terkunci karena sudah memilih ekstrakurikuler pada periode {$periodeAktif->periode}. Token pendaftaran bersifat sekali pakai dan tidak dapat digunakan lagi.",
+                "Data Anda sudah terkunci karena sudah memilih ekstrakurikuler pada {$periodeNama}. Token pendaftaran bersifat sekali pakai dan tidak dapat digunakan lagi.",
                 'token',
                 $isDirectLogin,
                 $nis
@@ -207,8 +211,8 @@ class SiswaLoginController extends Controller
         );
 
         if ($isDirectLogin) {
-            return redirect()->route('siswa.daftar')
-                ->with('status', 'Halo '.$master->nama.', kamu berhasil masuk! Silakan tentukan pilihan ekstrakurikuler kamu.');
+            return redirect()->route('siswa.aturan')
+                ->with('status', 'Halo '.$master->nama.', kamu berhasil masuk! Baca dan pahami ketentuan pendaftaran terlebih dahulu.');
         }
 
         // Siswa tidak punya akses /admin/* dan /pembina/*: kembalikan ke aturan/daftar eskul.
@@ -333,14 +337,28 @@ class SiswaLoginController extends Controller
             ?? Periode::where('status', \App\Enums\PeriodeStatus::DIBUKA)->first();
 
         $schoolName = \App\Models\AppSetting::get('school.name', 'SMK Bagimu Negeriku');
+        $schoolLogo = \App\Models\AppSetting::get('school.logo');
+        $schoolMotto = \App\Models\AppSetting::get('school.motto', 'Berbudi, Berkualitas, Berdaya Saing');
+        $schoolAddress = \App\Models\AppSetting::get('school.address', '');
         $tahunAjaran = $periode?->tahun_ajaran ?? ($registration->periode ?? '2026/2027');
 
         $berlakuSampai = null;
         if ($periode && $periode->tgl_selesai) {
             $berlakuSampai = \Illuminate\Support\Carbon::parse($periode->tgl_selesai)->translatedFormat('d F Y');
         } else {
-            $tahunParts = explode('/', $tahunAjaran);
-            $berlakuSampai = isset($tahunParts[1]) ? '30 Juni '.trim($tahunParts[1]) : 'Akhir Tahun Ajaran';
+            $tahunParts = explode('/', (string) $tahunAjaran);
+            $tahunAwal = isset($tahunParts[0]) && is_numeric(trim($tahunParts[0])) ? (int) trim($tahunParts[0]) : (int) date('Y');
+            $tahunAkhir = isset($tahunParts[1]) && is_numeric(trim($tahunParts[1])) ? (int) trim($tahunParts[1]) : $tahunAwal + 1;
+
+            $semesterName = strtolower((string) ($periode?->semester ?? ''));
+            $isGanjil = str_contains($semesterName, 'ganjil') || $semesterName === '1'
+                || (empty($semesterName) && (int) date('n') >= 7);
+
+            if ($isGanjil) {
+                $berlakuSampai = '31 Desember ' . $tahunAwal;
+            } else {
+                $berlakuSampai = '30 Juni ' . $tahunAkhir;
+            }
         }
 
         return view('siswa.kartu-public', [
@@ -348,6 +366,9 @@ class SiswaLoginController extends Controller
             'registration' => $registration,
             'periode' => $periode,
             'schoolName' => $schoolName,
+            'schoolLogo' => $schoolLogo,
+            'schoolMotto' => $schoolMotto,
+            'schoolAddress' => $schoolAddress,
             'tahunAjaran' => $tahunAjaran,
             'berlakuSampai' => $berlakuSampai,
         ]);

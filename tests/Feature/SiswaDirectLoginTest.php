@@ -52,7 +52,8 @@ class SiswaDirectLoginTest extends TestCase
             'token' => $rawToken,
         ]));
 
-        $response->assertRedirect(route('siswa.daftar'));
+        // Gerbang aturan: magic link mengarahkan siswa ke halaman ketentuan terlebih dahulu.
+        $response->assertRedirect(route('siswa.aturan'));
         $response->assertSessionHas('status');
         $this->assertAuthenticatedAs($user);
     }

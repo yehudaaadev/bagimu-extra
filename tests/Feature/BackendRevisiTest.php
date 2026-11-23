@@ -203,8 +203,9 @@ class BackendRevisiTest extends TestCase
 
         $this->actingAs($user);
 
-        $response = $this->post(route('siswa.daftar.store'), [
+        $response = $this->withSession(['sekolah_dibaca' => true])->post(route('siswa.daftar.store'), [
             'eskul_utama' => 'Futsal',
+            'gender' => 'LAKI_LAKI',
         ]);
 
         $response->assertRedirect(route('siswa.sukses'));

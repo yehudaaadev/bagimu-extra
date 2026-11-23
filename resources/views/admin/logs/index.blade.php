@@ -15,7 +15,7 @@
         <input type="text" name="q" value="{{ $q }}" placeholder="Cari email, IP, aksi, detail..." class="rounded-xl border border-slate-200 px-3 py-1.5 text-sm text-slate-800 placeholder-slate-400 focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600">
         <button type="submit" class="rounded-xl bg-blue-700 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-blue-800 transition">Cari</button>
         @if ($q !== '' || $aksi !== '')
-            <a href="{{ route('admin.logs.index') }}" class="rounded-xl border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50">Reset</a>
+            <a href="{{ route('admin.logs.index') }}" class="rounded-xl border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50">Atur Ulang</a>
         @endif
     </form>
 </div>

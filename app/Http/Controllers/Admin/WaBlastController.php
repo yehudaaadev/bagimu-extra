@@ -46,7 +46,7 @@ class WaBlastController extends Controller
                     ['nama' => $clean],
                     [
                         'tingkat' => Kelas::tingkat($clean),
-                        'jurusan' => preg_match('/(RPL|DKV|KULINER|TP|TKP)/i', $clean, $m) ? strtoupper($m[1]) : null,
+                        'jurusan' => preg_match('/(RPL|DKV|KULINER|TP|TKP)/i', $clean, $m) ? strtoupper($m[1]) : '-',
                     ]
                 );
             }

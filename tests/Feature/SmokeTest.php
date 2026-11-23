@@ -104,10 +104,14 @@ class SmokeTest extends TestCase
         $this->registrasi($siswaTerdaftar, 'APPROVED');
 
         foreach ([
-            '/siswa', '/siswa/aturan', '/siswa/daftar', '/siswa/sukses',
+            '/siswa', '/siswa/aturan', '/siswa/sukses',
         ] as $url) {
             $this->actingAs($siswa)->get($url)->assertOk();
         }
+
+        // Gerbang aturan: halaman pilih eskul baru terbuka setelah siswa menyatakan sudah membaca dan memahami.
+        $this->actingAs($siswa)->get('/siswa/daftar')->assertRedirect('/siswa/aturan');
+        $this->actingAs($siswa)->withSession(['sekolah_dibaca' => true])->get('/siswa/daftar')->assertOk();
 
         // Rute lama dialihkan otomatis
         $this->actingAs($siswa)->get('/siswa/status')->assertRedirect('/siswa/sukses');
@@ -121,7 +125,7 @@ class SmokeTest extends TestCase
         $siswa = $this->siswa();
         $admin = $this->admin();
 
-        $res = $this->actingAs($siswa)->post('/siswa/daftar', [
+        $res = $this->actingAs($siswa)->withSession(['sekolah_dibaca' => true])->post('/siswa/daftar', [
             'kelas' => '10 RPL 1',
             'no_absen' => 5,
             'nama_wali_kelas' => 'Bu Wali',
@@ -137,7 +141,7 @@ class SmokeTest extends TestCase
         $this->assertDatabaseHas('status_history', ['new_status' => 'APPROVED']);
 
         // Kirim kedua = ditolak (pilihan final, tidak dapat diubah).
-        $this->actingAs($siswa)->from('/siswa/daftar')->post('/siswa/daftar', [
+        $this->actingAs($siswa)->withSession(['sekolah_dibaca' => true])->from('/siswa/daftar')->post('/siswa/daftar', [
             'kelas' => '10 RPL 1',
             'no_absen' => 5,
             'nama_wali_kelas' => 'Bu Wali',

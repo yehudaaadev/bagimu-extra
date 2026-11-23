@@ -4,17 +4,13 @@
 
 @section('content')
 <div class="space-y-6">
-    {{-- Header Banner Sesuai Foto Desain Resmi (Latar Gedung Sekolah) --}}
-    <div class="relative overflow-hidden rounded-3xl bg-[#0e5cda] text-white shadow-lg shadow-blue-900/10 min-h-[240px] sm:min-h-[280px] p-6 sm:p-8 xl:p-9 flex flex-col justify-between"
-         style="background-color: #0e5cda;">
-        {{-- Foto Asli Kampus SMK Bagimu Negeriku (Bersih Tanpa Teks Bawaan) --}}
-        <img src="{{ asset('images/dashboard-banner-clean.jpg') }}?v={{ filemtime(public_path('images/dashboard-banner-clean.jpg')) }}"
-             alt="Kampus SMK Bagimu Negeriku"
-             class="pointer-events-none absolute inset-0 h-full w-full object-cover object-right select-none z-0" />
-
-        {{-- Gradient Overlay untuk Menjamin Keterbacaan Teks di Semua Resolusi Layar --}}
-        <div class="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#0a4fc0]/90 via-[#0e5cda]/75 to-transparent sm:from-transparent sm:via-transparent z-0"
-             style="background: linear-gradient(to right, rgba(10, 79, 192, 0.9), rgba(14, 92, 218, 0.75), transparent);"></div>
+    {{-- Header Banner - Tema Biru Modern & Bersih --}}
+    <div class="relative overflow-hidden rounded-3xl text-white shadow-lg shadow-blue-900/15 min-h-[220px] sm:min-h-[250px] p-6 sm:p-8 xl:p-9 flex flex-col justify-between"
+         style="background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 50%, #2563eb 100%);">
+        {{-- Pola Latar Geometris Biru Halus --}}
+        <div class="pointer-events-none absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+        <div class="pointer-events-none absolute -right-12 -top-12 h-64 w-64 rounded-full bg-sky-400/20 blur-3xl"></div>
+        <div class="pointer-events-none absolute right-1/3 -bottom-16 h-56 w-56 rounded-full bg-blue-500/25 blur-3xl"></div>
 
         {{-- Konten Utama Banner --}}
         <div class="relative z-10 space-y-4 max-w-2xl">
@@ -85,7 +81,7 @@
             <div class="mt-1 flex items-center gap-1.5 text-xs text-slate-500 font-medium">
                 <span class="text-emerald-600 font-semibold">{{ $approved }} diterima</span>
                 <span>•</span>
-                <span class="text-amber-600 font-semibold">{{ $pending }} pending</span>
+                <span class="text-amber-600 font-semibold">{{ $pending }} menunggu</span>
             </div>
             <div class="mt-4 pt-3 border-t border-slate-100">
                 <a href="{{ route('admin.registrations.index', ['periode' => $periode]) }}" class="inline-flex items-center gap-1 text-xs font-bold text-blue-600 hover:text-blue-700">
@@ -154,35 +150,6 @@
         </div>
     </div>
 
-    {{-- Pusat Tugas Interaktif --}}
-    @if (count($tugas) > 0)
-        <div class="rounded-3xl border border-blue-200/80 bg-gradient-to-br from-blue-50/70 via-white to-blue-50/30 p-5 shadow-xs">
-            <div class="flex items-center justify-between mb-3">
-                <div class="flex items-center gap-2">
-                    <x-icon name="info" class="h-4 w-4 text-blue-600" />
-                    <h2 class="font-bold text-slate-900 text-sm">Pusat Tindakan / Tugas</h2>
-                </div>
-                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800">
-                    {{ count($tugas) }} Butuh Perhatian
-                </span>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
-                @foreach ($tugas as $t)
-                    @if ($t['url'])
-                        <a href="{{ $t['url'] }}" class="flex items-center justify-between p-3 rounded-2xl bg-white border border-blue-100 hover:border-blue-300 hover:shadow-2xs text-xs font-semibold text-slate-800 transition-all group">
-                            <span class="truncate mr-2">{{ $t['label'] }}</span>
-                            <x-icon name="arrow-right" class="h-3.5 w-3.5 text-blue-600 group-hover:translate-x-0.5 transition-transform shrink-0" />
-                        </a>
-                    @else
-                        <div class="flex items-center p-3 rounded-2xl bg-white border border-blue-100/60 text-xs font-medium text-slate-600">
-                            <span class="truncate">{{ $t['label'] }}</span>
-                        </div>
-                    @endif
-                @endforeach
-            </div>
-        </div>
-    @endif
-
     {{-- 2 Kolom: Distribusi & Pendaftar --}}
     <div class="grid gap-6 lg:grid-cols-2">
         {{-- Distribusi per eskul --}}
@@ -234,7 +201,7 @@
                         <li class="flex items-center gap-2 py-2">
                             <div class="min-w-0 flex-1">
                                 <p class="truncate font-semibold text-slate-900">{{ $r->user?->name ?? '—' }}</p>
-                                <p class="font-mono text-[11px] text-slate-400">{{ $r->kode() }} • {{ $r->created_at?->format('d M Y H:i') }}</p>
+                                <p class="font-mono text-[11px] text-slate-400">{{ $r->kode() }} • {{ $r->created_at?->translatedFormat('d M Y H:i') }}</p>
                             </div>
                             <span class="shrink-0 text-xs text-slate-500">{{ $r->eskul_utama }}</span>
                             <x-badge tone="{{ $r->status->value === 'APPROVED' ? 'emerald' : ($r->status->value === 'PENDING' ? 'amber' : 'rose') }}" class="!text-[11px]">{{ $r->status->label() }}</x-badge>

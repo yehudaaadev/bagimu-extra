@@ -22,6 +22,18 @@ class IzinController extends Controller
     {
         abort_unless($this->milikIds($request->user()->id)->contains($izin->eskul_id), 403);
 
+        $pertemuan = \App\Models\Pertemuan::where('eskul_id', $izin->eskul_id)
+            ->whereDate('tanggal', $izin->tanggal)
+            ->first();
+
+        if ($pertemuan && $pertemuan->isLocked()) {
+            return back()->withErrors(['izin' => "Sesi latihan telah selesai (pukul {$pertemuan->jam_selesai}). Izin tidak dapat diubah lagi."]);
+        }
+
+        if ($izin->tanggal->isPast() && ! $izin->tanggal->isToday()) {
+            return back()->withErrors(['izin' => 'Tanggal kegiatan telah lewat. Izin tidak dapat diubah lagi.']);
+        }
+
         $izin->update([
             'status' => IzinStatus::APPROVED,
             'decided_by' => $request->user()->email,
@@ -55,6 +67,18 @@ class IzinController extends Controller
     public function reject(Request $request, Izin $izin)
     {
         abort_unless($this->milikIds($request->user()->id)->contains($izin->eskul_id), 403);
+
+        $pertemuan = \App\Models\Pertemuan::where('eskul_id', $izin->eskul_id)
+            ->whereDate('tanggal', $izin->tanggal)
+            ->first();
+
+        if ($pertemuan && $pertemuan->isLocked()) {
+            return back()->withErrors(['izin' => "Sesi latihan telah selesai (pukul {$pertemuan->jam_selesai}). Izin tidak dapat diubah lagi."]);
+        }
+
+        if ($izin->tanggal->isPast() && ! $izin->tanggal->isToday()) {
+            return back()->withErrors(['izin' => 'Tanggal kegiatan telah lewat. Izin tidak dapat diubah lagi.']);
+        }
 
         $izin->update([
             'status' => IzinStatus::REJECTED,

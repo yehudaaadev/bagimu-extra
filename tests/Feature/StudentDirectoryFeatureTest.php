@@ -392,14 +392,14 @@ class StudentDirectoryFeatureTest extends TestCase
         Student::create([
             'user_id' => $user->id,
             'nis' => '1001',
-            'nama' => 'Siswa Terdaftar',
+            'nama' => 'Budi Terdaftar',
             'kelas' => '10 RPL 1',
             'jurusan' => 'RPL',
             'status' => 'AKTIF',
         ]);
         Student::create([
             'nis' => '1002',
-            'nama' => 'Siswa Belum Terdaftar',
+            'nama' => 'Andi Belum Terdaftar',
             'kelas' => '10 RPL 1',
             'jurusan' => 'RPL',
             'status' => 'AKTIF',
@@ -421,12 +421,12 @@ class StudentDirectoryFeatureTest extends TestCase
 
         $res1 = $this->actingAs($admin)->get(route('admin.students.index', ['eskul_status' => 'terdaftar']));
         $res1->assertOk();
-        $res1->assertSee('Siswa Terdaftar');
-        $res1->assertDontSee('Siswa Belum Terdaftar');
+        $res1->assertSee('Budi Terdaftar');
+        $res1->assertDontSee('Andi Belum Terdaftar');
 
         $res2 = $this->actingAs($admin)->get(route('admin.students.index', ['eskul_status' => 'belum']));
         $res2->assertOk();
-        $res2->assertSee('Siswa Belum Terdaftar');
-        $res2->assertDontSee('Siswa Terdaftar');
+        $res2->assertSee('Andi Belum Terdaftar');
+        $res2->assertDontSee('Budi Terdaftar');
     }
 }

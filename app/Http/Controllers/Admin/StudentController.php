@@ -9,11 +9,14 @@ use App\Enums\Role;
 use App\Http\Controllers\Controller;
 use App\Models\AdminLog;
 use App\Models\Periode;
+use App\Models\SchoolClass;
 use App\Models\Student;
 use App\Models\User;
 use App\Services\FonnteService;
+use App\Support\Kelas;
 use App\Support\LoginToken;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -85,6 +88,15 @@ class StudentController extends Controller
                           });
                     });
                 }
+            } else {
+                if ($eskulStatus === 'terdaftar') {
+                    $query->whereHas('user.registrations');
+                } elseif ($eskulStatus === 'belum') {
+                    $query->where(function ($q) {
+                        $q->whereNull('user_id')
+                          ->orWhereDoesntHave('user.registrations');
+                    });
+                }
             }
         }
 
@@ -147,8 +159,28 @@ class StudentController extends Controller
     {
         $jurusanList = Jurusan::cases();
         $genderList = Gender::cases();
+        $kelasList = SchoolClass::query()->get()->sort(function ($a, $b) {
+            $ta = Kelas::tingkat($a->nama) ?? 99;
+            $tb = Kelas::tingkat($b->nama) ?? 99;
+            if ($ta !== $tb) {
+                return $ta <=> $tb;
+            }
+            return strnatcasecmp($a->nama, $b->nama);
+        })->values();
 
-        return view('admin.students.create', compact('jurusanList', 'genderList'));
+        if ($kelasList->isEmpty()) {
+            $kelasList = Student::query()
+                ->whereNotNull('kelas')
+                ->where('kelas', '!=', '')
+                ->where('kelas', '!=', '-')
+                ->distinct()
+                ->pluck('kelas')
+                ->sort(SORT_NATURAL)
+                ->map(fn ($k) => (object) ['nama' => $k])
+                ->values();
+        }
+
+        return view('admin.students.create', compact('jurusanList', 'genderList', 'kelasList'));
     }
 
     public function store(Request $request)
@@ -160,7 +192,7 @@ class StudentController extends Controller
             'nis' => ['required', 'string', 'max:20', 'unique:students,nis'],
             'nisn' => ['nullable', 'string', 'max:20', 'unique:students,nisn'],
             'nama' => ['required', 'string', 'max:100'],
-            'kelas' => ['required', 'string', 'min:3', 'max:50', 'regex:/^(XII|XI|X|10|11|12)\s+(RPL|KULINER|DKV|TP|TKP)\s*\d{0,2}$/i'],
+            'kelas' => ['required', 'string', 'max:50'],
             'jurusan' => ['required', Rule::enum(Jurusan::class)],
             'gender' => ['nullable', Rule::enum(Gender::class)],
             'no_absen' => ['nullable', 'integer', 'min:1', 'max:99'],
@@ -170,7 +202,7 @@ class StudentController extends Controller
             'status' => ['nullable', 'string', 'in:AKTIF,LULUS,PINDAH,NONAKTIF,ALUMNI'],
         ]);
 
-        $data['status'] = $data['status'] ?? 'AKTIF';
+        $data['status'] = 'AKTIF';
         $data['kelas'] = \App\Support\Kelas::normalisasi($data['kelas']) ?? $data['kelas'];
 
         $student = Student::create($data);
@@ -217,18 +249,42 @@ class StudentController extends Controller
             'whatsapp' => ['nullable', 'string', 'max:20', 'regex:/^(\+?62|08)[\d\s\-().]{7,15}$/'],
             'status' => ['nullable', 'string', 'in:AKTIF,LULUS,PINDAH,NONAKTIF,ALUMNI'],
             'alasan' => ['required', 'string', 'max:500'],
+            'foto' => ['nullable', 'image', 'mimes:png,jpg,jpeg,webp', 'max:2048'],
+            'foto_x' => ['nullable', 'integer', 'min:0', 'max:100'],
+            'foto_y' => ['nullable', 'integer', 'min:0', 'max:100'],
+            'hapus_foto' => ['nullable', 'boolean'],
         ]);
 
         $nisLama = $student->nis;
+        $genderLama = $student->gender?->value;
+        $genderBaru = $data['gender'] ?? null;
         $alasan = $data['alasan'];
         unset($data['alasan']);
         $data['kelas'] = \App\Support\Kelas::normalisasi($data['kelas']) ?? $data['kelas'];
+
+        // Foto siswa pada kartu ID-1.
+        if ($request->boolean('hapus_foto')) {
+            $this->hapusFotoSiswa($student);
+            $data['foto'] = null;
+        } elseif ($request->hasFile('foto')) {
+            $data['foto'] = $this->simpanFotoSiswa($student, $request->file('foto'));
+        }
+
+        if ($request->has('foto_x') || $request->has('foto_y')) {
+            $data['foto_x'] = (int) ($data['foto_x'] ?? $student->foto_x ?? 50);
+            $data['foto_y'] = (int) ($data['foto_y'] ?? $student->foto_y ?? 50);
+        }
 
         $student->update($data);
 
         // Koreksi NIS merambat ke data pendaftaran.
         if ($nisLama !== $student->nis && $student->user_id) {
             \App\Models\Registration::where('user_id', $student->user_id)->update(['nis' => $student->nis]);
+        }
+
+        // Koreksi jenis kelamin merambat ke seluruh data pendaftaran siswa.
+        if ($genderLama !== $genderBaru && $student->user_id) {
+            \App\Models\Registration::where('user_id', $student->user_id)->update(['gender' => $genderBaru]);
         }
 
         // Status merambat ke akun tertaut.
@@ -286,18 +342,18 @@ class StudentController extends Controller
             }
 
             // Lewati jika siswa sudah memilih eskul di periode aktif (data pendaftaran terkunci)
-            $sudahPilih = $activePeriode
-                ? \App\Models\Registration::where('periode', $activePeriode->periode)
-                    ->where(function ($q) use ($student) {
-                        $q->where('nis', $student->nis);
-                        if ($student->user_id) {
-                            $q->orWhere('user_id', $student->user_id);
-                        }
-                    })
-                    ->exists()
-                : false;
+            $regQuery = \App\Models\Registration::where(function ($q) use ($student) {
+                $q->where('nis', $student->nis);
+                if ($student->user_id) {
+                    $q->orWhere('user_id', $student->user_id);
+                }
+            });
 
-            if ($sudahPilih) {
+            if ($activePeriode) {
+                $regQuery->where('periode', $activePeriode->periode);
+            }
+
+            if ($regQuery->exists()) {
                 continue;
             }
 
@@ -842,16 +898,18 @@ class StudentController extends Controller
             ?? Periode::orderByDesc('periode')->first();
 
         // Tolak jika siswa sudah memilih eskul di periode aktif berjalan (data terkunci)
-        $sudahPilih = $activePeriode
-            ? \App\Models\Registration::where('periode', $activePeriode->periode)
-                ->where(function ($q) use ($student) {
-                    $q->where('nis', $student->nis);
-                    if ($student->user_id) {
-                        $q->orWhere('user_id', $student->user_id);
-                    }
-                })
-                ->exists()
-            : false;
+        $regQuery = \App\Models\Registration::where(function ($q) use ($student) {
+            $q->where('nis', $student->nis);
+            if ($student->user_id) {
+                $q->orWhere('user_id', $student->user_id);
+            }
+        });
+
+        if ($activePeriode) {
+            $regQuery->where('periode', $activePeriode->periode);
+        }
+
+        $sudahPilih = $regQuery->exists();
 
         if ($sudahPilih) {
             $periodeNama = $activePeriode ? "periode {$activePeriode->periode}" : 'periode ini';
@@ -896,5 +954,49 @@ class StudentController extends Controller
         AdminLog::record('student.token.revoke', 'student', $student->id, "Mencabut token login NIS {$student->nis}");
 
         return redirect()->back()->with('status', "Token login NIS {$student->nis} telah dicabut.");
+    }
+
+    /**
+     * Simpan foto siswa yang diunggah lewat panel admin.
+     * Berkas lama dihapus agar folder unggahan tidak menumpuk.
+     */
+    private function simpanFotoSiswa(Student $student, UploadedFile $file): ?string
+    {
+        $ext = strtolower($file->guessExtension() ?: 'jpg');
+        if (! in_array($ext, ['png', 'jpg', 'jpeg', 'webp'], true)) {
+            return $student->foto;
+        }
+
+        $destDir = public_path('uploads/siswa');
+        if (! is_dir($destDir)) {
+            mkdir($destDir, 0755, true);
+        }
+
+        $filename = 'siswa_'.bin2hex(random_bytes(8)).'.'.$ext;
+        $file->move($destDir, $filename);
+
+        if ($student->foto && str_starts_with($student->foto, '/uploads/')) {
+            $lama = public_path(ltrim($student->foto, '/'));
+            if (is_file($lama)) {
+                @unlink($lama);
+            }
+        }
+
+        return '/uploads/siswa/'.$filename;
+    }
+
+    /**
+     * Hapus foto siswa beserta berkas pada penyimpanan publik.
+     */
+    private function hapusFotoSiswa(Student $student): void
+    {
+        if ($student->foto && str_starts_with($student->foto, '/uploads/')) {
+            $path = public_path(ltrim($student->foto, '/'));
+            if (is_file($path)) {
+                @unlink($path);
+            }
+        }
+
+        $student->forceFill(['foto' => null])->save();
     }
 }

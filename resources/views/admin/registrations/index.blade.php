@@ -42,7 +42,7 @@
             <x-icon name="search" class="h-4 w-4" />
             <span>Filter</span>
         </button>
-        <a href="{{ route('admin.registrations.index') }}" class="px-3.5 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 transition-colors">Reset</a>
+        <a href="{{ route('admin.registrations.index') }}" class="px-3.5 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 transition-colors">Atur Ulang</a>
         <a href="{{ route('admin.registrations.export', array_merge(request()->query(), ['format' => 'excel'])) }}"
            title="Unduh seluruh data pendaftar dalam format berkas Excel (.xls)"
            class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-emerald-600 bg-emerald-50 text-emerald-800 text-xs font-bold hover:bg-emerald-100 transition-colors">

@@ -11,6 +11,7 @@ Route::middleware(['auth', 'role:student', \App\Http\Middleware\MaintenanceMode:
         // 1. Ketentuan & Aturan (default beranda siswa)
         Route::get('/', [PendaftaranController::class, 'aturan'])->name('dashboard');
         Route::get('/aturan', [PendaftaranController::class, 'aturan'])->name('aturan');
+        Route::post('/aturan/konfirmasi', [PendaftaranController::class, 'konfirmasiAturan'])->name('aturan.konfirmasi');
 
         // 2. Pilih Eskul
         Route::get('/daftar', [PendaftaranController::class, 'create'])->name('daftar');

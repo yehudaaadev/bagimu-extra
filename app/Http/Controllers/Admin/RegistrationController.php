@@ -163,7 +163,7 @@ class RegistrationController extends Controller
             'no_absen' => ['required', 'integer', 'min:1', 'max:99'],
             'nama_wali_kelas' => ['nullable', 'string', 'max:100'],
             'nis' => ['nullable', 'string', 'max:20', 'regex:/^[0-9]+$/'],
-            'gender' => ['required', 'in:LAKI_LAKI,PEREMPUAN'],
+            'gender' => ['nullable', 'in:LAKI_LAKI,PEREMPUAN'],
             'eskul_utama' => ['required', 'string', 'exists:eskuls,name'],
             'alasan' => ['nullable', 'string', 'max:1000'],
         ]);
@@ -180,7 +180,14 @@ class RegistrationController extends Controller
 
         $validated['kelas'] = \App\Support\Kelas::normalisasi($validated['kelas']);
 
+        $genderLama = $registration->gender?->value;
+
         $registration->update($validated);
+
+        // Koreksi jenis kelamin pada form pendaftaran merambat ke master data siswa.
+        if ($genderLama !== ($validated['gender'] ?? null) && $registration->nis) {
+            \App\Models\Student::where('nis', $registration->nis)->update(['gender' => $validated['gender'] ?? null]);
+        }
 
         AdminLog::record('registration.update', 'registration', $registration->id, "Ubah data pendaftaran #{$registration->id}.");
 
@@ -237,7 +244,7 @@ class RegistrationController extends Controller
 
         AdminLog::record('registration.revoke_card', 'registration', $registration->id, "Cabut kartu & terbitkan QR baru #{$registration->id}.");
 
-        return back()->with('status', 'Kartu lama dicabut, QR E-Card baru diterbitkan. Sertifikat tetap dapat diverifikasi via nomor SRT.');
+        return back()->with('status', 'Kartu lama dicabut, token login baru diterbitkan. Sertifikat tetap dapat diverifikasi via nomor SRT.');
     }
 
     public function resetToken(Registration $registration)

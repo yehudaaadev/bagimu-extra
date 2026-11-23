@@ -61,7 +61,7 @@ class FiturTambahanTest extends TestCase
         ]);
         $siswa = User::factory()->create(['username' => '70001', 'role' => Role::STUDENT]);
 
-        $this->actingAs($siswa)->post('/siswa/daftar', [
+        $this->actingAs($siswa)->withSession(['sekolah_dibaca' => true])->post('/siswa/daftar', [
             'kelas' => '10 RPL 1',
             'no_absen' => 5,
             'nama_wali_kelas' => 'Bu Wali',
@@ -206,7 +206,7 @@ class FiturTambahanTest extends TestCase
             'tempat' => 'Aula 2',
         ]);
 
-        $res->assertRedirect("/pembina/eskul/{$eskul->id}");
+        $res->assertRedirect(route('pembina.jadwal.index', ['eskul_id' => $eskul->id]));
         $this->assertDatabaseHas('eskul_jadwals', [
             'id' => $jadwal->id,
             'hari' => 'KAMIS',

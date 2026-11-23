@@ -23,7 +23,7 @@
     <form method="GET" action="{{ route('admin.kehadiran.index') }}" class="flex flex-wrap gap-3 items-end bg-white border border-slate-200 rounded-2xl p-4 shadow-xs">
         <div>
             <label for="periode" class="block text-xs font-bold text-slate-700 mb-1">Periode / Tahun Ajaran</label>
-            <select name="periode" id="periode" class="border-slate-300 rounded-xl text-xs py-2 focus:border-blue-500 focus:ring-blue-500 font-medium">
+            <select name="periode" id="periode" class="border-slate-300 rounded-xl text-xs pl-3 pr-8 py-2 min-w-[190px] focus:border-blue-500 focus:ring-blue-500 font-medium">
                 @foreach ($allPeriodes as $p)
                     <option value="{{ $p->periode }}" @selected($selectedPeriode === $p->periode)>
                         {{ $p->periode }} {{ $p->status->value === 'DIBUKA' ? '(Aktif)' : "({$p->status->label()})" }}
@@ -100,11 +100,11 @@
                 <x-icon name="id-card" class="h-5 w-5" />
             </div>
             <div class="min-w-0 flex-1">
-                <label for="scan-nis-input" class="block text-xs font-bold text-blue-950">Scan Kartu Pelajar / Input Cepat NIS</label>
-                <p class="text-[11px] text-blue-700/80">Arahkan scanner kartu pelajar atau ketik NIS lalu tekan Enter untuk langsung menandai HADIR.</p>
+                <label for="scan-nis-input" class="block text-xs font-bold text-blue-950">Pindai Kartu Pelajar / Input Cepat NIS</label>
+                <p class="text-[11px] text-blue-700/80">Arahkan pemindai kartu pelajar atau ketik NIS lalu tekan Enter untuk langsung menandai HADIR.</p>
             </div>
             <div class="w-full sm:w-72">
-                <input id="scan-nis-input" type="text" placeholder="Scan barcode NIS lalu tekan Enter..."
+                <input id="scan-nis-input" type="text" placeholder="Pindai kode batang NIS lalu tekan Enter..."
                        class="w-full rounded-xl border-blue-300 bg-white text-xs py-2 px-3 focus:border-blue-600 focus:ring-blue-600 font-mono shadow-2xs">
             </div>
         </div>

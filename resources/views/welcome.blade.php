@@ -63,7 +63,7 @@
         <div class="flex items-center gap-2 sm:gap-3">
             @if (auth()->check())
                 <a href="{{ url('/dashboard') }}" class="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 px-4 py-2 text-xs font-bold text-white hover:bg-blue-700 transition shadow-xs shadow-blue-600/20">
-                    <span>Ke Dashboard</span>
+                    <span>Ke Beranda</span>
                     <x-icon name="arrow-right" class="h-3.5 w-3.5" />
                 </a>
             @else
@@ -79,17 +79,13 @@
         </div>
     </header>
 
-    {{-- Hero Section - Sesuai Foto Desain Resmi (Latar Kampus SMK Bagimu Negeriku) --}}
-    <section class="relative overflow-hidden rounded-3xl bg-[#0e5cda] text-white shadow-xl shadow-blue-900/10 min-h-[360px] sm:min-h-[400px] px-6 py-10 sm:px-10 sm:py-12 lg:px-12 lg:py-14 flex flex-col justify-between"
-             style="background-color: #0e5cda;">
-        {{-- Foto Asli Kampus SMK Bagimu Negeriku (Bersih Tanpa Teks Bawaan) --}}
-        <img src="{{ asset('images/dashboard-banner-clean.jpg') }}?v={{ filemtime(public_path('images/dashboard-banner-clean.jpg')) }}"
-             alt="Kampus SMK Bagimu Negeriku"
-             class="pointer-events-none absolute inset-0 h-full w-full object-cover object-right select-none z-0" />
-
-        {{-- Gradient Overlay Halus untuk Kontras & Keterbacaan Sempurna --}}
-        <div class="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#0a4fc0]/95 via-[#0e5cda]/80 to-transparent sm:via-[#0e5cda]/65 z-0"
-             style="background: linear-gradient(to right, rgba(10, 79, 192, 0.95), rgba(14, 92, 218, 0.8), transparent);"></div>
+    {{-- Hero Section - Tema Biru Modern & Bersih --}}
+    <section class="relative overflow-hidden rounded-3xl text-white shadow-xl shadow-blue-900/15 min-h-[360px] sm:min-h-[400px] px-6 py-10 sm:px-10 sm:py-12 lg:px-12 lg:py-14 flex flex-col justify-between"
+             style="background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 50%, #2563eb 100%);">
+        {{-- Pola Latar Geometris Biru Halus --}}
+        <div class="pointer-events-none absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+        <div class="pointer-events-none absolute -right-16 -top-16 h-80 w-80 rounded-full bg-sky-400/20 blur-3xl"></div>
+        <div class="pointer-events-none absolute right-1/4 -bottom-20 h-64 w-64 rounded-full bg-blue-500/25 blur-3xl"></div>
 
         <div class="relative z-10 max-w-3xl space-y-6">
             {{-- Branding Sekolah: Logo + Nama + Slogan 4B --}}
@@ -134,7 +130,7 @@
                 @if (auth()->check())
                     <a href="{{ url('/dashboard') }}" class="group inline-flex h-12 items-center gap-2.5 rounded-2xl border border-transparent bg-white px-6 text-sm font-bold text-blue-700 shadow-md shadow-blue-950/20 hover:bg-blue-50/95 hover:shadow-lg active:scale-[0.98] transition-all duration-150">
                         <x-icon name="home" class="h-4 w-4 text-blue-600 shrink-0 transition-transform group-hover:scale-110" />
-                        <span>Buka Dashboard</span>
+                        <span>Buka Beranda</span>
                         <x-icon name="arrow-right" class="h-3.5 w-3.5 text-blue-500 shrink-0 transition-transform group-hover:translate-x-0.5" />
                     </a>
                 @else

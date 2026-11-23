@@ -122,6 +122,22 @@ class AnggotaController extends Controller
         }
         $totalPertemuanEskul = $pertemuanQuery ? $pertemuanQuery->count() : 0;
 
+        $isArsip = $selectedPeriode !== ($activePeriode?->periode ?? '');
+
+        if (! $isArsip && $currentEskul) {
+            $registeredNis = Registration::where('periode', $selectedPeriode)->pluck('nis')->filter()->toArray();
+            $calonSiswa = Student::where('status', 'AKTIF')
+                ->whereNotIn('nis', $registeredNis)
+                ->orderBy('kelas')
+                ->orderBy('nama')
+                ->get();
+        } else {
+            $calonSiswa = collect();
+        }
+
+        $tingkatCalon = $calonSiswa->pluck('kelas')->map(fn ($k) => \App\Support\Kelas::tingkat($k))->filter()->unique()->sort()->values();
+        $daftarKelasCalon = $calonSiswa->pluck('kelas')->filter()->unique()->sort(SORT_NATURAL)->values();
+
         return view('pembina.anggota.index', compact(
             'eskuls',
             'currentEskul',
@@ -131,7 +147,11 @@ class AnggotaController extends Controller
             'daftarKelas',
             'totalAnggota',
             'sudahDinilai',
-            'totalPertemuanEskul'
+            'totalPertemuanEskul',
+            'isArsip',
+            'calonSiswa',
+            'tingkatCalon',
+            'daftarKelasCalon'
         ));
     }
 

@@ -80,7 +80,9 @@ class RekapController extends Controller
 
     public function show(Request $request, string $eskul)
     {
-        $model = Eskul::with('pembina')->where('name', urldecode($eskul))->firstOrFail();
+        $model = is_numeric($eskul)
+            ? Eskul::with('pembina')->findOrFail((int) $eskul)
+            : Eskul::with('pembina')->where('name', urldecode($eskul))->firstOrFail();
 
         $allPeriodes = Periode::orderByDesc('periode')->get();
         $activePeriode = $allPeriodes->firstWhere('status', PeriodeStatus::DIBUKA);

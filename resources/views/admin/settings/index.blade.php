@@ -5,7 +5,16 @@
 @php use SimpleSoftwareIO\QrCode\Facades\QrCode as SimpleQr; @endphp
 
 @section('content')
-<h1 class="text-xl font-bold text-slate-900 mb-4">Pengaturan</h1>
+<div class="mb-4">
+    <h1 class="text-xl font-bold text-slate-900 dark:text-white">Pengaturan Sistem</h1>
+    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Kelola preferensi antarmuka, akun staf, dan konfigurasi keamanan sistem.</p>
+</div>
+
+{{-- Preferensi Tema Antarmuka --}}
+<x-theme-toggle-card />
+
+{{-- Preferensi Bahasa Antarmuka --}}
+<x-language-toggle-card />
 
 {{-- Pengguna staf --}}
 <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm mb-4">
@@ -66,10 +75,10 @@
         @csrf
         <div><label class="block font-medium text-slate-700 mb-1">Nama</label><input name="name" required maxlength="100" class="w-full border-slate-300 rounded-xl"></div>
         <div>
-            <label class="block font-medium text-slate-700 mb-1">Email Gmail <span class="text-rose-500">*</span></label>
-            <div class="flex rounded-xl border border-slate-300 focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-600/20 overflow-hidden bg-white shadow-2xs">
-                <input name="email" type="text" value="{{ old('email') ? Str::before(old('email'), '@gmail.com') : '' }}" placeholder="nama_pengguna" required class="w-full px-3 py-2 text-sm border-0 focus:outline-hidden">
-                <span class="inline-flex items-center px-3 bg-slate-50 border-l border-slate-200 text-xs font-semibold text-slate-500 select-none">@gmail.com</span>
+            <label class="block font-medium text-slate-700 dark:text-slate-300 mb-1">Email Gmail <span class="text-rose-500">*</span></label>
+            <div class="flex rounded-xl border border-slate-300 dark:border-slate-700 focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-600/20 overflow-hidden bg-white dark:bg-slate-900 shadow-2xs">
+                <input name="email" type="text" value="{{ old('email') ? Str::before(old('email'), '@gmail.com') : '' }}" placeholder="nama_pengguna" required class="w-full px-3 py-2 text-sm border-0 focus:outline-hidden focus:ring-0 bg-transparent text-slate-800 dark:text-slate-100" style="border: 0 !important; outline: none !important; box-shadow: none !important;">
+                <span class="inline-flex items-center px-3 bg-slate-50 dark:bg-slate-800 border-l border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-500 dark:text-slate-400 select-none">@gmail.com</span>
             </div>
         </div>
         <div><label class="block font-medium text-slate-700 mb-1">Username (opsional)</label><input name="username" maxlength="30" class="w-full border-slate-300 rounded-xl"></div>

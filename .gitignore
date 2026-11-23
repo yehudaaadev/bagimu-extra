@@ -1,31 +1,66 @@
-*.log
-.DS_Store
+# 1. Environment & Credentials
 .env
-.env.backup
-.env.production
-.env.qa
-*.sqlite
-.phpactor.json
-.phpunit.result.cache
-/.fleet
-/.idea
-/.nova
-/.phpunit.cache
-/.vscode
-/.zed
+.env.*
+!.env.example
+!.env.*.example
 /auth.json
+
+# 2. Dependencies
 /node_modules
+/vendor
+
+# 3. Build & Assets
 /public/build
 /public/hot
 /public/storage
+
+# 4. Storage & Runtime Cache
+*.log
 /storage/*.key
 /storage/pail
-/vendor
+/storage/inertia-devtools
+/storage/framework/cache/data/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+
+# 5. Database & Exports
+*.sqlite
+*.sqlite-journal
+*.sqlite-shm
+*.sqlite-wal
+*.sql
+*.sql.gz
+*.dump
+*.csv
+*.xls
+*.xlsx
+
+# 6. User Uploads (Foto Siswa & Berkas)
+/public/uploads/*
+!/public/uploads/.gitkeep
+!/public/uploads/.htaccess
+!/public/uploads/siswa/.gitkeep
+!/public/uploads/siswa/.htaccess
+
+# 7. Testing & Quality Tools
+.phpunit.result.cache
+/.phpunit.cache
+/coverage
+
+# 8. IDE & Operating System
+.DS_Store
+Thumbs.db
+Desktop.ini
+/.fleet
+/.idea
+/.nova
+/.vscode
+/.zed
+.phpactor.json
 Homestead.json
 Homestead.yaml
-Thumbs.db
 
-# Antigravity AI internal instructions & session state
+# 9. AI Instructions & Session State
 /AGENTS.md
 /PROJECT_STATE.md
 opencode.json

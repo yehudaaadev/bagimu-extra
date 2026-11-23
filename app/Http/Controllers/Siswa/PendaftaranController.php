@@ -18,6 +18,7 @@ use App\Support\Kuota;
 use App\Support\Notifier;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -51,14 +52,37 @@ class PendaftaranController extends Controller
         return view('siswa.aturan', [
             'user' => $user,
             'periode' => $periode,
+            'sudahDibaca' => (bool) request()->session()->get('sekolah_dibaca', false),
         ]);
+    }
+
+    /**
+     * Langkah 1b: Siswa menyatakan sudah membaca dan memahami ketentuan.
+     * Tanpa persetujuan ini siswa belum boleh memilih ekstrakurikuler.
+     */
+    public function konfirmasiAturan(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'sudah_dibaca' => ['accepted'],
+        ], [
+            'sudah_dibaca.accepted' => 'Anda harus menyatakan sudah membaca dan memahami ketentuan pendaftaran.',
+        ]);
+
+        $request->session()->put('sekolah_dibaca', true);
+
+        return redirect()->route('siswa.daftar');
     }
 
     /**
      * Langkah 2 alur siswa: Pilih ekstrakurikuler.
      */
-    public function create(): View|RedirectResponse
+    public function create(Request $request): View|RedirectResponse
     {
+        if (! $request->session()->get('sekolah_dibaca', false)) {
+            return redirect()->route('siswa.aturan')
+                ->with('error', 'Baca dan pahami ketentuan pendaftaran terlebih dahulu.');
+        }
+
         $user = auth()->user()->load('student');
         $periode = $this->periodeAktif();
 
@@ -115,6 +139,9 @@ class PendaftaranController extends Controller
             'genders' => Gender::cases(),
             'windowOpen' => $windowOpen,
             'windowLabel' => $window?->label() ?? 'Jendela belum diatur admin — pendaftaran ditutup.',
+            'fotoAwal' => $user->student?->foto,
+            'fotoPosisi' => $user->student?->fotoPosisi() ?? ['x' => 50, 'y' => 50],
+            'genderAwal' => $user->student?->gender?->value,
         ]);
     }
 
@@ -123,6 +150,11 @@ class PendaftaranController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        if (! $request->session()->get('sekolah_dibaca', false)) {
+            return redirect()->route('siswa.aturan')
+                ->with('error', 'Baca dan pahami ketentuan pendaftaran terlebih dahulu.');
+        }
+
         $user = auth()->user()->load('student');
         $periode = $this->periodeAktif();
 
@@ -137,6 +169,10 @@ class PendaftaranController extends Controller
                         $fail('Eskul tidak tersedia.');
                     }
                 }],
+            'gender' => ['nullable', Rule::enum(Gender::class)],
+            'foto' => ['nullable', 'image', 'mimes:png,jpg,jpeg,webp', 'max:2048'],
+            'foto_x' => ['nullable', 'integer', 'min:0', 'max:100'],
+            'foto_y' => ['nullable', 'integer', 'min:0', 'max:100'],
         ]);
 
         $existing = Registration::where('user_id', $user->id)
@@ -198,6 +234,21 @@ class PendaftaranController extends Controller
 
                 $wa = $request->input('whatsapp') ?? $master->whatsapp;
 
+                // Foto & data siswa disinkronkan ke master bila ada perubahan.
+                $genderInput = $request->input('gender');
+                $gender = $genderInput ? (Gender::tryFrom($genderInput) ?? $master?->gender) : $master?->gender;
+                if ($master) {
+                    $masterUpdate = [
+                        'foto' => $this->simpanFoto($master, $request->file('foto')),
+                        'foto_x' => (int) ($request->input('foto_x') ?? $master->foto_x ?? 50),
+                        'foto_y' => (int) ($request->input('foto_y') ?? $master->foto_y ?? 50),
+                    ];
+                    if ($gender) {
+                        $masterUpdate['gender'] = $gender;
+                    }
+                    $master->update($masterUpdate);
+                }
+
                 $waliKelasNama = $request->input('nama_wali_kelas')
                     ?? \App\Models\SchoolClass::where('nama', $kelas)->first()?->wali_kelas_nama
                     ?? $master->wali_nama
@@ -212,7 +263,7 @@ class PendaftaranController extends Controller
                     'no_absen' => $request->input('no_absen') ?? $master->no_absen ?? 1,
                     'nama_wali_kelas' => $waliKelasNama,
                     'usia' => $request->input('usia') ?? 16,
-                    'gender' => $request->input('gender') ? (\App\Enums\Gender::tryFrom($request->input('gender')) ?? $master->gender ?? \App\Enums\Gender::LAKI_LAKI) : ($master->gender ?? \App\Enums\Gender::LAKI_LAKI),
+                    'gender' => $gender,
                     'whatsapp' => $wa,
                     'eskul_utama' => $dipakai,
                     'eskul_cadangan' => null,
@@ -273,24 +324,28 @@ class PendaftaranController extends Controller
         }
 
         $schoolName = \App\Models\AppSetting::get('school.name', 'SMK Bagimu Negeriku');
+        $schoolLogo = \App\Models\AppSetting::get('school.logo');
+        $schoolMotto = \App\Models\AppSetting::get('school.motto', 'Berbudi, Berkualitas, Berdaya Saing');
+        $schoolAddress = \App\Models\AppSetting::get('school.address', '');
         $tahunAjaran = $periode?->tahun_ajaran ?? ($periode?->periode ?? ($registration?->periode ?? '2026/2027'));
 
         $berlakuSampai = null;
         if ($periode && $periode->tgl_selesai) {
             $berlakuSampai = \Illuminate\Support\Carbon::parse($periode->tgl_selesai)->translatedFormat('d F Y');
         } else {
-            $tahunParts = explode('/', $tahunAjaran);
-            $berlakuSampai = isset($tahunParts[1]) ? '30 Juni ' . trim($tahunParts[1]) : 'Akhir Tahun Ajaran';
-        }
+            $tahunParts = explode('/', (string) $tahunAjaran);
+            $tahunAwal = isset($tahunParts[0]) && is_numeric(trim($tahunParts[0])) ? (int) trim($tahunParts[0]) : (int) date('Y');
+            $tahunAkhir = isset($tahunParts[1]) && is_numeric(trim($tahunParts[1])) ? (int) trim($tahunParts[1]) : $tahunAwal + 1;
 
-        $qrCodeData = $user->student?->nis ?? ($registration?->nis ?? $user->username);
-        $qrSvg = null;
-        try {
-            if (class_exists(\SimpleSoftwareIO\QrCode\Facades\QrCode::class)) {
-                $qrSvg = (string) \SimpleSoftwareIO\QrCode\Facades\QrCode::size(120)->margin(0)->generate($qrCodeData);
+            $semesterName = strtolower((string) ($periode?->semester ?? ''));
+            $isGanjil = str_contains($semesterName, 'ganjil') || $semesterName === '1'
+                || (empty($semesterName) && (int) date('n') >= 7);
+
+            if ($isGanjil) {
+                $berlakuSampai = '31 Desember ' . $tahunAwal;
+            } else {
+                $berlakuSampai = '30 Juni ' . $tahunAkhir;
             }
-        } catch (\Throwable $e) {
-            $qrSvg = null;
         }
 
         return view('siswa.sukses', [
@@ -298,11 +353,46 @@ class PendaftaranController extends Controller
             'registration' => $registration,
             'periode' => $periode,
             'schoolName' => $schoolName,
+            'schoolLogo' => $schoolLogo,
+            'schoolMotto' => $schoolMotto,
+            'schoolAddress' => $schoolAddress,
             'tahunAjaran' => $tahunAjaran,
             'berlakuSampai' => $berlakuSampai,
-            'qrSvg' => $qrSvg,
-            'qrCodeData' => $qrCodeData,
         ]);
+    }
+
+    /**
+     * Simpan foto siswa yang diunggah sendiri oleh siswa.
+     * Nama berkas diacak agar tidak dapat ditebak dan berkas lama dihapus.
+     */
+    private function simpanFoto(Student $master, ?UploadedFile $file): ?string
+    {
+        if (! $file) {
+            return $master->foto;
+        }
+
+        $ext = strtolower($file->guessExtension() ?: 'jpg');
+        if (! in_array($ext, ['png', 'jpg', 'jpeg', 'webp'], true)) {
+            return $master->foto;
+        }
+
+        $destDir = public_path('uploads/siswa');
+        if (! is_dir($destDir)) {
+            mkdir($destDir, 0755, true);
+        }
+
+        $filename = 'siswa_'.bin2hex(random_bytes(8)).'.'.$ext;
+        $file->move($destDir, $filename);
+
+        // Hapus berkas foto lama supaya folder unggahan tidak menumpuk.
+        if ($master->foto && str_starts_with($master->foto, '/uploads/')) {
+            $lama = public_path(ltrim($master->foto, '/'));
+            if (is_file($lama)) {
+                @unlink($lama);
+            }
+        }
+
+        return '/uploads/siswa/'.$filename;
     }
 
     /**

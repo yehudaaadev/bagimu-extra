@@ -68,7 +68,7 @@
                                     @endif
                                     <tr>
                                         <td style="color: #64748b; font-weight: 500;">Tanggal Daftar</td>
-                                        <td style="color: #0f172a;">{{ $registration->created_at->format('d M Y') }}</td>
+                                        <td style="color: #0f172a;">{{ $registration->created_at->translatedFormat('d M Y') }}</td>
                                     </tr>
                                 </table>
                             </div>

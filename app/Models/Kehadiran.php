@@ -41,6 +41,24 @@ class Kehadiran extends Model
 
     public function isLocked(): bool
     {
-        return $this->locked_at !== null;
+        if ($this->locked_at !== null) {
+            return true;
+        }
+
+        if ($this->tanggal && $this->eskul_id) {
+            $pertemuan = Pertemuan::where('eskul_id', $this->eskul_id)
+                ->whereDate('tanggal', $this->tanggal)
+                ->first();
+
+            if ($pertemuan && $pertemuan->isLocked()) {
+                return true;
+            }
+        }
+
+        if ($this->tanggal && $this->tanggal->isPast() && ! $this->tanggal->isToday()) {
+            return true;
+        }
+
+        return false;
     }
 }

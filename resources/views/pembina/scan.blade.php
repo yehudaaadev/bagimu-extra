@@ -1,16 +1,16 @@
 @extends('layouts.staff')
 
-@section('title', 'Scan Presensi Kamera HP — '.$eskul->name)
+@section('title', 'Pindai Presensi Kamera HP — '.$eskul->name)
 
 @section('content')
 <div class="mx-auto w-full max-w-2xl space-y-4">
     <div>
-        <a href="{{ route('pembina.dashboard') }}" class="text-xs font-semibold text-blue-600 hover:text-blue-700">← Kembali ke Dashboard Pembina</a>
-        <h1 class="mt-1 text-xl font-bold text-slate-900">Scan Presensi Siswa (Kamera HP)</h1>
+        <a href="{{ route('pembina.dashboard') }}" class="text-xs font-semibold text-blue-600 hover:text-blue-700">← Kembali ke Beranda Pembina</a>
+        <h1 class="mt-1 text-xl font-bold text-slate-900">Pindai Presensi Siswa (Kamera HP)</h1>
         <p class="text-xs sm:text-sm text-slate-500">{{ $eskul->name }} • Hasil pemindaian langsung mencatat kehadiran siswa dan tersimpan ke daftar hadir.</p>
         <div class="mt-2 flex flex-wrap gap-2">
             <span class="inline-flex items-center gap-1 rounded-md bg-blue-50 px-2.5 py-0.5 text-[11px] font-semibold text-blue-700">
-                Format Kartu: Barcode Garis 1D (Landscape / Portrait) & QR Code
+                Format Kartu: Kode Batang Garis 1D (Mendatar / Tegak) & Kode QR
             </span>
             <span class="inline-flex items-center gap-1 rounded-md bg-slate-100 px-2.5 py-0.5 text-[11px] font-semibold text-slate-600">
                 Identifikasi: NIS / NISN Otomatis
@@ -92,7 +92,7 @@
             <div class="flex items-start gap-2">
                 <x-icon name="alert" class="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
                 <p>
-                    <b>Peringatan Keamanan Browser:</b> Akses kamera HP memerlukan koneksi aman (HTTPS) atau Localhost. Jika kamera tidak dapat dibuka, gunakan opsi <b>Scan via Foto</b> atau <b>Input Cepat Manual NIS</b> di bawah.
+                    <b>Peringatan Keamanan Peramban:</b> Akses kamera HP memerlukan koneksi aman (HTTPS) atau Localhost. Jika kamera tidak dapat dibuka, gunakan opsi <b>Pindai via Foto</b> atau <b>Pencatatan Manual Cepat NIS</b> di bawah.
                 </p>
             </div>
         </div>
@@ -100,10 +100,10 @@
         <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-3">
             <h2 class="flex items-center gap-2 font-bold text-slate-900 text-sm">
                 <svg class="h-4 w-4 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 7h.01"/><path d="M17 7h.01"/><path d="M7 17h.01"/><path d="M17 17h.01"/></svg>
-                Pemindai Kamera HP / Barcode Kartu Pelajar
+                Pemindai Kamera HP / Kode Batang Kartu Pelajar
             </h2>
             <span class="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700">
-                Kamera Real-time
+                Kamera Langsung
             </span>
         </div>
 
@@ -115,7 +115,7 @@
                 <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 text-white">
                     <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
                 </div>
-                <p class="text-xs text-slate-300 max-w-xs px-4">Arahkan kamera ke QR Code atau Barcode yang tertera di Kartu Pelajar siswa.</p>
+                <p class="text-xs text-slate-300 max-w-xs px-4">Arahkan kamera ke Kode QR atau Barcode yang tertera di Kartu Pelajar siswa.</p>
                 <div class="flex flex-wrap items-center justify-center gap-2 pt-1">
                     <button id="btn-start-camera" type="button" class="inline-flex items-center gap-2 rounded-xl bg-emerald-500 px-5 py-2.5 text-xs font-bold text-white hover:bg-emerald-600 transition shadow-sm cursor-pointer">
                         <span>Mulai Kamera HP</span>
@@ -136,7 +136,7 @@
                 <div class="flex items-center gap-2">
                     <button id="btn-flip-camera" type="button" class="inline-flex items-center gap-1.5 rounded-lg border border-slate-600 bg-slate-700/80 px-3 py-1.5 font-bold text-white hover:bg-slate-700 transition cursor-pointer">
                         <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 21h5v-5"/></svg>
-                        <span>Ganti Kamera (Flip)</span>
+                        <span>Balik Kamera</span>
                     </button>
                     <button id="btn-stop-camera" type="button" class="rounded-lg bg-rose-600 px-3 py-1.5 font-bold text-white hover:bg-rose-700 transition cursor-pointer">
                         Hentikan
@@ -152,10 +152,10 @@
     {{-- Alternatif Ketik Manual NIS --}}
     <x-card>
         <h2 class="flex items-center gap-2 font-bold text-slate-900 text-sm">
-            <x-icon name="pencil" class="h-4 w-4 text-blue-700" /> Input Cepat Manual (NIS / NISN Siswa)
+            <x-icon name="pencil" class="h-4 w-4 text-blue-700" /> Pencatatan Manual Cepat (NIS / NISN Siswa)
         </h2>
         <p class="mt-1 text-xs text-slate-500">
-            Jika kartu pelajar buram atau kamera tidak dapat digunakan, Anda dapat mengetik NIS atau NISN siswa di bawah ini:
+            Jika kartu pelajar buram, kamera tidak dapat digunakan, atau siswa kehilangan kartu pelajarnya, Anda dapat mengetik NIS atau NISN siswa di bawah ini. Presensi tetap tercatat pada nama siswa yang terdaftar di eskul ini.
         </p>
         <form id="scan-manual" method="POST" action="{{ route('pembina.scan.store', $eskul) }}" class="mt-3 flex gap-2">
             @csrf

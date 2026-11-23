@@ -24,6 +24,9 @@ class Student extends Model
         'whatsapp',
         'status',
         'user_id',
+        'foto',
+        'foto_x',
+        'foto_y',
     ];
 
     protected function casts(): array
@@ -47,5 +50,24 @@ class Student extends Model
     public function scopeAktif(Builder $query): Builder
     {
         return $query->where('status', 'AKTIF');
+    }
+
+    /**
+     * URL foto siswa pada kartu, atau null bila belum mengunggah foto.
+     */
+    public function fotoUrl(): ?string
+    {
+        return $this->foto ? asset($this->foto) : null;
+    }
+
+    /**
+     * Posisi foto dalam bingkai kartu (persentase 0-100).
+     */
+    public function fotoPosisi(): array
+    {
+        return [
+            'x' => (int) ($this->foto_x ?? 50),
+            'y' => (int) ($this->foto_y ?? 50),
+        ];
     }
 }

@@ -118,10 +118,10 @@
                     </button>
                 @endif
                 <a href="{{ route('pembina.eskul.export', [$eskul, 'format' => 'excel', 'periode' => $selectedPeriode]) }}" class="inline-flex items-center gap-1.5 rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700 hover:bg-emerald-100 transition shadow-sm">
-                    <x-icon name="chart" class="h-3.5 w-3.5" /> Export Excel
+                    <x-icon name="chart" class="h-3.5 w-3.5" /> Ekspor Excel
                 </a>
                 <a href="{{ route('pembina.eskul.export', [$eskul, 'format' => 'csv', 'periode' => $selectedPeriode]) }}" class="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition shadow-sm">
-                    <x-icon name="file" class="h-3.5 w-3.5" /> Export CSV
+                    <x-icon name="file" class="h-3.5 w-3.5" /> Ekspor CSV
                 </a>
             </div>
         </div>
@@ -324,13 +324,13 @@
                     <x-icon name="qr" class="h-6 w-6" />
                 </span>
                 <div>
-                    <h3 class="text-sm font-bold text-slate-900">Presensi Digital: Scan Kartu Pelajar Siswa</h3>
+                    <h3 class="text-sm font-bold text-slate-900">Presensi Digital: Pindai Kartu Pelajar Siswa</h3>
                     <p class="text-xs text-slate-500 mt-0.5">Pindai barcode/QR pada kartu pelajar siswa di lokasi latihan untuk verifikasi kehadiran seketika.</p>
                 </div>
             </div>
             <a href="{{ route('pembina.scan.show', $eskul) }}" class="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-700 px-4 py-2.5 text-xs font-bold text-white shadow-xs hover:bg-blue-800 transition shrink-0 cursor-pointer">
                 <x-icon name="qr" class="h-4 w-4" />
-                <span>Buka Scanner Kamera &rarr;</span>
+                <span>Buka Pemindai Kamera &rarr;</span>
             </a>
         </div>
 
@@ -368,7 +368,7 @@
                         </span>
                         <div class="min-w-0 flex-1">
                             <p class="text-sm font-bold text-slate-900">Pertemuan {{ $p->nomor }}</p>
-                            <p class="text-[11px] text-slate-500">{{ $p->tanggal->format('l, d M Y') }} • {{ $p->rentangJam() }}{{ $p->keterangan ? ' • '.$p->keterangan : '' }}</p>
+                            <p class="text-[11px] text-slate-500">{{ $p->tanggal->translatedFormat('l, d F Y') }} • {{ $p->rentangJam() }}{{ $p->keterangan ? ' • '.$p->keterangan : '' }}</p>
                             <p class="text-[11px] {{ $p->isLocked() ? 'text-slate-400' : 'text-emerald-600' }}">
                                 {{ $p->isLocked() ? 'Disahkan' : $p->hadir_count.' hadir' }}
                             </p>
@@ -376,7 +376,7 @@
                         <div class="flex shrink-0 flex-col gap-1">
                             @unless ($p->isLocked())
                                 <a href="{{ route('pembina.scan.show', ['eskul' => $eskul->id, 'pertemuan_id' => $p->id]) }}" class="inline-flex items-center gap-1 rounded-lg bg-blue-700 px-2.5 py-1 text-[11px] font-bold text-white hover:bg-blue-800">
-                                    <x-icon name="qr" class="h-3 w-3" /> Scan Presensi
+                                    <x-icon name="qr" class="h-3 w-3" /> Pindai Presensi
                                 </a>
                                 <a href="{{ route('pembina.eskul.show', ['eskul' => $eskul->id, 'tanggal' => $p->tanggal->toDateString()]) }}" class="rounded-lg border px-2.5 py-1 text-center text-[11px] font-semibold hover:bg-slate-50">Absen</a>
                             @endunless
@@ -409,7 +409,7 @@
                 <p class="text-[11px] text-slate-500">Urutan siswa dimulai dari Kelas 10 lalu Kelas 11, dikelompokkan per rombel.</p>
             </div>
             <a href="{{ route('pembina.scan.show', $eskul) }}" class="inline-flex items-center gap-1.5 rounded-xl bg-blue-700 px-4 py-2 text-xs font-bold text-white shadow-xs hover:bg-blue-800">
-                <x-icon name="qr" class="h-4 w-4" /> Scan Kartu Pelajar
+                <x-icon name="qr" class="h-4 w-4" /> Pindai Kartu Pelajar
             </a>
         </div>
 

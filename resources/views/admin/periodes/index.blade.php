@@ -110,11 +110,11 @@
                     </div>
                     <div class="rounded-xl bg-slate-50 p-3 border border-slate-100">
                         <span class="block text-slate-400 font-medium">Tanggal Mulai</span>
-                        <span class="text-sm font-bold text-slate-800 mt-0.5 block">{{ $selectedPeriode->tgl_mulai ? $selectedPeriode->tgl_mulai->format('d M Y') : 'Belum diatur' }}</span>
+                        <span class="text-sm font-bold text-slate-800 mt-0.5 block">{{ $selectedPeriode->tgl_mulai ? $selectedPeriode->tgl_mulai->translatedFormat('d M Y') : 'Belum diatur' }}</span>
                     </div>
                     <div class="rounded-xl bg-slate-50 p-3 border border-slate-100">
                         <span class="block text-slate-400 font-medium">Tanggal Selesai</span>
-                        <span class="text-sm font-bold text-slate-800 mt-0.5 block">{{ $selectedPeriode->tgl_selesai ? $selectedPeriode->tgl_selesai->format('d M Y') : 'Belum diatur' }}</span>
+                        <span class="text-sm font-bold text-slate-800 mt-0.5 block">{{ $selectedPeriode->tgl_selesai ? $selectedPeriode->tgl_selesai->translatedFormat('d M Y') : 'Belum diatur' }}</span>
                     </div>
                     <div class="rounded-xl bg-slate-50 p-3 border border-slate-100">
                         <span class="block text-slate-400 font-medium">Status Pendaftaran Siswa</span>

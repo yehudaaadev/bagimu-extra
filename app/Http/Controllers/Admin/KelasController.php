@@ -97,6 +97,9 @@ class KelasController extends Controller
         if (empty($data['tingkat'])) {
             $data['tingkat'] = Kelas::tingkat($data['nama']);
         }
+        if (empty($data['jurusan'])) {
+            $data['jurusan'] = preg_match('/(RPL|DKV|KULINER|TP|TKP)/i', $data['nama'], $m) ? strtoupper($m[1]) : '-';
+        }
 
         if (! empty($data['wali_kelas_id'])) {
             $user = User::find($data['wali_kelas_id']);
@@ -138,6 +141,9 @@ class KelasController extends Controller
         $data['nama'] = Kelas::normalisasi($data['nama']);
         if (empty($data['tingkat'])) {
             $data['tingkat'] = Kelas::tingkat($data['nama']);
+        }
+        if (empty($data['jurusan'])) {
+            $data['jurusan'] = preg_match('/(RPL|DKV|KULINER|TP|TKP)/i', $data['nama'], $m) ? strtoupper($m[1]) : '-';
         }
 
         if (! empty($data['wali_kelas_id'])) {
@@ -237,7 +243,7 @@ class KelasController extends Controller
                 continue;
             }
             $tingkat = Kelas::tingkat($clean);
-            $jurusan = $ds->jurusan?->value ?? (preg_match('/(RPL|DKV|KULINER|TP|TKP)/i', $clean, $m) ? strtoupper($m[1]) : null);
+            $jurusan = $ds->jurusan?->value ?? (preg_match('/(RPL|DKV|KULINER|TP|TKP)/i', $clean, $m) ? strtoupper($m[1]) : 'UMUM');
 
             $sc = SchoolClass::firstOrCreate(
                 ['nama' => $clean],

@@ -85,7 +85,7 @@
                             @csrf
                             <button type="submit" class="flex w-full items-center gap-2 rounded-xl px-2.5 py-2 hover:bg-blue-50 text-blue-700 font-medium text-left cursor-pointer">
                                 <x-icon name="key" class="h-3.5 w-3.5 text-blue-500" />
-                                <span>{{ $user?->login_token ? 'Reset Token' : 'Terbitkan Token' }}</span>
+                                <span>{{ $user?->login_token ? 'Atur Ulang Token' : 'Terbitkan Token' }}</span>
                             </button>
                         </form>
                         @if ($user?->login_token && !$user?->login_token_revoked_at)

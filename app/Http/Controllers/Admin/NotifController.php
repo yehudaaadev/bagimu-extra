@@ -32,13 +32,84 @@ class NotifController extends Controller
         $counts = NotificationLog::selectRaw('status, COUNT(*) as c')
             ->groupBy('status')->pluck('c', 'status')->all();
 
+        // Pusat Tindakan / Tugas yang butuh perhatian admin
+        $tugas = self::getTasks();
+
         return view('admin.notifikasi.index', [
             'templates' => self::TEMPLATES,
             'logs' => $logs,
             'status' => $status,
             'counts' => $counts,
             'statusList' => NotifStatus::cases(),
+            'tugas' => $tugas,
         ]);
+    }
+
+    /**
+     * Dapatkan daftar tugas / tindakan yang memerlukan perhatian admin.
+     *
+     * @return array<int, array{label: string, url: string|null}>
+     */
+    public static function getTasks(): array
+    {
+        $tugas = [];
+        $izinPending = \App\Models\Izin::where('status', \App\Enums\IzinStatus::PENDING)->count();
+        if ($izinPending > 0) {
+            $tugas[] = [
+                'label' => "{$izinPending} pengajuan izin menunggu konfirmasi pembina",
+                'url' => route('admin.kehadiran.index'),
+            ];
+        }
+
+        $periode = \App\Models\Periode::where('status', \App\Enums\PeriodeStatus::DIBUKA)->value('periode');
+
+        $eskulCounts = \App\Models\Registration::query()
+            ->when($periode, fn ($q) => $q->where('periode', $periode))
+            ->where('status', \App\Enums\Status::APPROVED)
+            ->groupBy('eskul_utama')
+            ->selectRaw('eskul_utama, count(*) as c')
+            ->pluck('c', 'eskul_utama');
+
+        $eskuls = \App\Models\Eskul::orderBy('name')->get();
+
+        foreach ($eskuls as $e) {
+            $count = (int) ($eskulCounts[$e->name] ?? 0);
+            if ($e->kuota_aktif && $count >= $e->kuota) {
+                $tugas[] = [
+                    'label' => "Kuota {$e->name} penuh ({$count}/{$e->kuota})",
+                    'url' => route('admin.eskuls.show', $e),
+                ];
+            }
+            if ($e->aktif && is_null($e->pembina_id)) {
+                $tugas[] = [
+                    'label' => "{$e->name} belum punya pembina",
+                    'url' => route('admin.eskuls.show', $e),
+                ];
+            }
+            if ($e->aktif && $count === 0) {
+                $tugas[] = [
+                    'label' => "{$e->name} belum punya anggota",
+                    'url' => route('admin.eskuls.show', $e),
+                ];
+            }
+        }
+
+        $notifGagal = NotificationLog::where('status', NotifStatus::GAGAL)->count();
+        if ($notifGagal > 0) {
+            $tugas[] = [
+                'label' => "{$notifGagal} notifikasi gagal terkirim",
+                'url' => route('admin.notifikasi.index', ['status' => NotifStatus::GAGAL->value]),
+            ];
+        }
+
+        $kegiatan = \App\Models\ActivityPlan::whereDate('tanggal', '>=', today())
+            ->whereDate('tanggal', '<=', today()->addDays(7))
+            ->count();
+        if ($kegiatan > 0) {
+            $tugas[] = ['label' => "{$kegiatan} kegiatan 7 hari ke depan", 'url' => null];
+        }
+
+        return $tugas;
     }
 
     public function retry(NotificationLog $log, \App\Services\FonnteService $fonnte)

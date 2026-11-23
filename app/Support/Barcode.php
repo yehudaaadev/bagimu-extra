@@ -22,9 +22,12 @@ class Barcode
     ];
 
     /**
-     * Generate an SVG Code 128 barcode string.
+     * Susunan modul Code 128 (Code B) sebagai string biner.
+     * '1' berarti bar (garis gelap), '0' berarti space (celah terang).
+     * Dipakai bersama oleh render SVG (layar) dan render Canvas (PNG/PDF)
+     * agar barcode pada kartu fisik selalu identik dengan hasil unduhan.
      */
-    public static function svg(string $text, int $height = 32, int $barWidth = 2, string $color = '#0f172a'): string
+    public static function modules(string $text): string
     {
         $text = trim($text);
         if ($text === '') {
@@ -52,12 +55,21 @@ class Barcode
             $pattern = self::$patterns[$code];
             $isBar = true;
             for ($p = 0; $p < strlen($pattern); $p++) {
-                $w = (int) $pattern[$p];
-                $modules .= str_repeat($isBar ? '1' : '0', $w);
+                $modules .= str_repeat($isBar ? '1' : '0', (int) $pattern[$p]);
                 $isBar = ! $isBar;
             }
         }
         $modules .= '11'; // Stop terminator bar
+
+        return $modules;
+    }
+
+    /**
+     * Generate an SVG Code 128 barcode string.
+     */
+    public static function svg(string $text, int $height = 32, int $barWidth = 2, string $color = '#0f172a'): string
+    {
+        $modules = self::modules($text);
 
         $totalModules = strlen($modules);
         $totalWidth = $totalModules * $barWidth;

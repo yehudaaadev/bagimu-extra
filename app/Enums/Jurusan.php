@@ -21,6 +21,17 @@ enum Jurusan: string
         };
     }
 
+    public function fullName(): string
+    {
+        return match ($this) {
+            self::RPL => 'Rekayasa Perangkat Lunak',
+            self::KULINER => 'Kuliner',
+            self::DKV => 'Desain Komunikasi Visual',
+            self::TP => 'Teknik Pengelasan',
+            self::TKP => 'Teknik Konstruksi Perumahan',
+        };
+    }
+
     public function short(): string
     {
         return match ($this) {

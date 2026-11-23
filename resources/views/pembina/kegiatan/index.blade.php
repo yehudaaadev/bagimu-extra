@@ -88,7 +88,7 @@
                     <li class="rounded-xl border border-slate-100 p-3 text-sm">
                         <div class="flex flex-wrap items-center gap-2">
                             <b>{{ $iz->registration?->user?->name ?? '—' }}</b>
-                            <span class="text-slate-500">{{ $iz->tanggal->format('d M Y') }} • {{ $iz->jenis->label() }}</span>
+                            <span class="text-slate-500">{{ $iz->tanggal->translatedFormat('d M Y') }} • {{ $iz->jenis->label() }}</span>
                             <span class="ms-auto flex gap-1.5">
                                 <form method="POST" action="{{ route('pembina.izin.approve', $iz) }}">
                                     @csrf
@@ -116,7 +116,7 @@
             <ul class="divide-y divide-slate-100 text-sm">
                 @foreach ($pertemuan as $t)
                     <li class="flex items-center gap-2 py-2">
-                        <span>{{ \Carbon\Carbon::parse($t->tanggal)->format('d M Y') }} ({{ $t->c }} baris)</span>
+                        <span>{{ \Carbon\Carbon::parse($t->tanggal)->translatedFormat('d M Y') }} ({{ $t->c }} baris)</span>
                         @if ($t->terkunci)
                             <span class="rounded-full bg-slate-200 px-2 py-0.5 text-[11px] font-semibold text-slate-600">TERKUNCI</span>
                         @else

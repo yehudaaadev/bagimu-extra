@@ -13,8 +13,23 @@
     <link href="https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700,800&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
     <noscript><link href="https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700,800&display=swap" rel="stylesheet" /></noscript>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script>
+        (function() {
+            const saved = localStorage.getItem('theme');
+            if (saved === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+
+            const savedLang = localStorage.getItem('app_lang') || 'id';
+            document.documentElement.setAttribute('lang', savedLang);
+        })();
+    </script>
     @include('layouts.partials.session-guard')
     @include('layouts.partials.speed-accelerator')
+    @include('layouts.partials.dark-theme')
+    @include('layouts.partials.lang-engine')
 </head>
 <body class="bg-slate-50 font-sans text-slate-800 antialiased selection:bg-blue-600 selection:text-white">
 <a href="#konten-utama" class="skip-link">Lewati ke konten utama</a>

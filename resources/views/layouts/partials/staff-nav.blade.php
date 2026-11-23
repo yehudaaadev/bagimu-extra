@@ -2,30 +2,30 @@
 <div class="space-y-4">
     {{-- 1. Bagian Utama --}}
     <div>
-        <div class="px-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 select-none">
+        <div class="px-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 select-none">
             Bagian Utama
         </div>
         <div class="space-y-0.5">
             @if ($isAdmin)
                 <a href="{{ route('admin.dashboard') }}" class="{{ $link(Route::is('admin.dashboard')) }}">
                     <x-icon name="home" class="h-4 w-4 shrink-0" />
-                    <span>Dashboard</span>
+                    <span>Beranda Utama</span>
                 </a>
             @endif
             @if ($isPembina)
                 <a href="{{ route('pembina.dashboard') }}" class="{{ $link(Route::is('pembina.dashboard')) }}">
                     <x-icon name="home" class="h-4 w-4 shrink-0" />
-                    <span>Dashboard Saya</span>
+                    <span>Beranda Saya</span>
                 </a>
                 <a href="{{ route('pembina.anggota.index') }}" class="{{ $link(Route::is('pembina.anggota.*')) }}">
                     <x-icon name="users" class="h-4 w-4 shrink-0" />
-                    <span>Direktori Anggota</span>
+                    <span>Anggota Eskul</span>
                 </a>
             @endif
             @if ($isWaliKelas)
                 <a href="{{ route('wali-kelas.dashboard') }}" class="{{ $link(Route::is('wali-kelas.dashboard')) }}">
                     <x-icon name="home" class="h-4 w-4 shrink-0" />
-                    <span>Dashboard Kelas</span>
+                    <span>Beranda Kelas</span>
                 </a>
                 <a href="{{ route('wali-kelas.siswa') }}" class="{{ $link(Route::is('wali-kelas.siswa')) }}">
                     <x-icon name="users" class="h-4 w-4 shrink-0" />
@@ -35,14 +35,18 @@
                     <x-icon name="file" class="h-4 w-4 shrink-0" />
                     <span>Rekap Nilai Rapor</span>
                 </a>
+                <a href="{{ route('wali-kelas.pengaturan.index') }}" class="{{ $link(Route::is('wali-kelas.pengaturan.*')) }}">
+                    <x-icon name="sliders" class="h-4 w-4 shrink-0" />
+                    <span>Pengaturan</span>
+                </a>
             @endif
         </div>
     </div>
 
     {{-- 2. Eskul & Kegiatan --}}
     @if ($isAdmin || $isPembina)
-        <div class="pt-3 border-t border-slate-100">
-            <div class="px-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 select-none">
+        <div class="pt-3 border-t border-slate-100 dark:border-slate-800">
+            <div class="px-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 select-none">
                 Eskul / Kegiatan
             </div>
             <div class="space-y-0.5">
@@ -81,26 +85,25 @@
                     </a>
                 @endif
                 @if ($isPembina)
-                    @php
-                        $pembinaEskul = \App\Models\Eskul::where('pembina_id', $user->id)->first();
-                    @endphp
-                    <a href="{{ route('pembina.eskul.index') }}" class="{{ $link(Route::is('pembina.eskul.index') || (Route::is('pembina.eskul.show') && request('tab') !== 'nilai')) }}">
-                        <x-icon name="trophy" class="h-4 w-4 shrink-0" />
-                        <span>Eskul Saya</span>
+                    <a href="{{ route('pembina.sesi.index') }}" class="{{ $link(Route::is('pembina.sesi.*') || Route::is('pembina.presensi.*')) }}">
+                        <x-icon name="calendar-check" class="h-4 w-4 shrink-0" />
+                        <span>Sesi</span>
                     </a>
-                    @if ($pembinaEskul)
-                        <a href="{{ route('pembina.scan.show', $pembinaEskul->id) }}" class="{{ $link(Route::is('pembina.scan.*')) }}">
-                            <x-icon name="scan" class="h-4 w-4 shrink-0" />
-                            <span>Scan Presensi</span>
-                        </a>
-                        <a href="{{ route('pembina.eskul.show', [$pembinaEskul->id, 'tab' => 'nilai']) }}" class="{{ $link(Route::is('pembina.eskul.show') && request('tab') === 'nilai') }}">
-                            <x-icon name="file" class="h-4 w-4 shrink-0" />
-                            <span>Penilaian Rapor</span>
-                        </a>
-                    @endif
-                    <a href="{{ route('pembina.kegiatan.index') }}" class="{{ $link(Route::is('pembina.kegiatan.*')) }}">
+                    <a href="{{ route('pembina.nilai.index') }}" class="{{ $link(Route::is('pembina.nilai.*')) }}">
+                        <x-icon name="file" class="h-4 w-4 shrink-0" />
+                        <span>Penilaian Rapor</span>
+                    </a>
+                    <a href="{{ route('pembina.jadwal.index') }}" class="{{ $link(Route::is('pembina.jadwal.*')) }}">
                         <x-icon name="calendar" class="h-4 w-4 shrink-0" />
-                        <span>Kegiatan & Jadwal</span>
+                        <span>Jadwal Latihan</span>
+                    </a>
+                    <a href="{{ route('pembina.kegiatan.index') }}" class="{{ $link(Route::is('pembina.kegiatan.*')) }}">
+                        <x-icon name="clipboard" class="h-4 w-4 shrink-0" />
+                        <span>Jurnal Agenda</span>
+                    </a>
+                    <a href="{{ route('pembina.pengaturan.index') }}" class="{{ $link(Route::is('pembina.pengaturan.*')) }}">
+                        <x-icon name="sliders" class="h-4 w-4 shrink-0" />
+                        <span>Pengaturan</span>
                     </a>
                 @endif
             </div>
@@ -109,8 +112,8 @@
 
     {{-- 3. Data Kesiswaan --}}
     @if ($isAdmin)
-        <div class="pt-3 border-t border-slate-100">
-            <div class="px-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 select-none">
+        <div class="pt-3 border-t border-slate-100 dark:border-slate-800">
+            <div class="px-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 select-none">
                 Data Kesiswaan
             </div>
             <div class="space-y-0.5">
@@ -144,8 +147,8 @@
 
     {{-- 4. Informasi & Laporan --}}
     @if ($isAdmin)
-        <div class="pt-3 border-t border-slate-100">
-            <div class="px-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 select-none">
+        <div class="pt-3 border-t border-slate-100 dark:border-slate-800">
+            <div class="px-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 select-none">
                 Informasi / Laporan
             </div>
             <div class="space-y-0.5">
@@ -153,10 +156,14 @@
                     <a href="{{ route('admin.notifikasi.index') }}" class="{{ $link(Route::is('admin.notifikasi.*')) }}">
                         <x-icon name="bell" class="h-4 w-4 shrink-0" />
                         <span class="flex-1">Notifikasi</span>
-                        @php($notifBelum = \App\Support\Notifier::belumDibaca(auth()->id()))
-                        @if ($notifBelum > 0)
+                        @php
+                            $notifBelum = \App\Support\Notifier::belumDibaca(auth()->id());
+                            $taskCount = count(\App\Http\Controllers\Admin\NotifController::getTasks());
+                            $totalBadge = $notifBelum + $taskCount;
+                        @endphp
+                        @if ($totalBadge > 0)
                             <span class="rounded-full bg-rose-500 px-1.5 py-0.5 text-[10px] font-bold text-white leading-none">
-                                {{ $notifBelum > 99 ? '99+' : $notifBelum }}
+                                {{ $totalBadge > 99 ? '99+' : $totalBadge }}
                             </span>
                         @endif
                     </a>
@@ -167,8 +174,8 @@
 
     {{-- 5. Sistem & Admin --}}
     @if ($isAdmin)
-        <div class="pt-3 border-t border-slate-100">
-            <div class="px-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 select-none">
+        <div class="pt-3 border-t border-slate-100 dark:border-slate-800">
+            <div class="px-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 select-none">
                 Sistem / Admin
             </div>
             <div class="space-y-0.5">

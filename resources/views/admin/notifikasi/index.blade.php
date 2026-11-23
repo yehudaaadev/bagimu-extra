@@ -3,7 +3,41 @@
 @section('title', 'Pusat Notifikasi')
 
 @section('content')
-<h1 class="text-xl font-bold text-slate-900 mb-4">Pusat Notifikasi</h1>
+<div class="mb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <div>
+        <h1 class="text-xl font-bold text-slate-900">Pusat Notifikasi &amp; Tindakan</h1>
+        <p class="text-xs text-slate-500 mt-0.5">Tinjau log pengiriman pesan serta daftar tindakan tugas yang memerlukan perhatian admin.</p>
+    </div>
+</div>
+
+{{-- Pusat Tindakan / Tugas Interaktif --}}
+@if (!empty($tugas) && count($tugas) > 0)
+    <div class="rounded-2xl border border-blue-200/80 bg-gradient-to-br from-blue-50/70 via-white to-blue-50/30 p-5 shadow-xs mb-5">
+        <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+                <x-icon name="info" class="h-4 w-4 text-blue-600" />
+                <h2 class="font-bold text-slate-900 text-sm">Pusat Tindakan / Tugas</h2>
+            </div>
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800">
+                {{ count($tugas) }} Butuh Perhatian
+            </span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+            @foreach ($tugas as $t)
+                @if ($t['url'])
+                    <a href="{{ $t['url'] }}" class="flex items-center justify-between p-3 rounded-xl bg-white border border-blue-100 hover:border-blue-300 hover:shadow-2xs text-xs font-semibold text-slate-800 transition-all group">
+                        <span class="truncate mr-2">{{ $t['label'] }}</span>
+                        <x-icon name="arrow-right" class="h-3.5 w-3.5 text-blue-600 group-hover:translate-x-0.5 transition-transform shrink-0" />
+                    </a>
+                @else
+                    <div class="flex items-center p-3 rounded-xl bg-white border border-blue-100/60 text-xs font-medium text-slate-600">
+                        <span class="truncate">{{ $t['label'] }}</span>
+                    </div>
+                @endif
+            @endforeach
+        </div>
+    </div>
+@endif
 
 <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm mb-4">
     <h2 class="font-bold text-slate-900 text-sm mb-2">Template Terdaftar</h2>

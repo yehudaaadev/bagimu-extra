@@ -12,7 +12,7 @@
             </span>
             <div>
                 <span class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-bold bg-blue-50 text-blue-700 mb-1">
-                    Langkah 1 dari 2: Ketentuan / Aturan
+                    Langkah 2 dari 3: Baca dan Pahami Ketentuan
                 </span>
                 <h1 class="text-lg sm:text-xl font-bold text-slate-900 leading-tight">Halo, {{ $user->name }}!</h1>
                 <p class="text-xs text-slate-500 mt-0.5 font-mono">NIS: {{ $user->student?->nis ?? $user->username }} • Kelas: {{ $user->student?->kelas ?? '—' }}</p>
@@ -43,7 +43,10 @@
                 <strong class="font-bold text-slate-900">Data Pendaftaran Terkunci:</strong> Setelah Anda menekan tombol "Kirim Pendaftaran", pilihan eskul resmi tersimpan dan <strong>tidak dapat diubah atau dibatalkan</strong> kembali.
             </li>
             <li class="pl-1">
-                <strong class="font-bold text-slate-900">Simpan Bukti / Screenshot (15 Detik):</strong> Segera simpan atau ambil tangkapan layar (screenshot) kartu bukti pendaftaran Anda dalam waktu 15 detik sebagai tanda bukti resmi sebelum sistem otomatis keluar (logout) demi keamanan akun.
+                <strong class="font-bold text-slate-900">Simpan Bukti / Screenshot (20 Detik):</strong> Segera simpan atau ambil tangkapan layar (screenshot) kartu bukti pendaftaran Anda dalam waktu 20 detik sebagai tanda bukti resmi sebelum sistem otomatis keluar (logout) demi keamanan akun.
+            </li>
+            <li class="pl-1">
+                <strong class="font-bold text-slate-900">Pas Foto 3x4:</strong> Pada langkah berikutnya Anda dapat mengunggah foto 3x4 dan mengatur posisinya pada kartu. Foto bersifat opsional; bila belum diunggah, kartu Anda akan otomatis menampilkan avatar inisial nama resmi sebagai gantinya.
             </li>
         </ol>
 
@@ -54,12 +57,37 @@
             </p>
         </div>
 
-        <div class="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <span class="text-xs text-slate-400">Siap memilih ekstrakurikuler?</span>
-            <a href="{{ route('siswa.daftar') }}" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-2xl bg-blue-600 px-6 py-3.5 text-sm font-bold text-white hover:bg-blue-700 transition shadow-sm shadow-blue-600/30">
-                <span>Mulai Pendaftaran Sekarang</span>
-                <x-icon name="arrow-right" class="h-4 w-4" />
-            </a>
+        <div class="pt-4 border-t border-slate-100">
+            @if ($sudahDibaca)
+                <div class="rounded-2xl border border-emerald-200/90 bg-emerald-50/70 p-4 flex items-start gap-3 mb-4">
+                    <x-icon name="check-circle" class="h-5 w-5 shrink-0 text-emerald-600 mt-0.5" />
+                    <p class="text-xs text-emerald-900 font-semibold leading-relaxed">
+                        Anda telah menyatakan sudah membaca dan memahami ketentuan di atas. Silakan lanjut memilih ekstrakurikuler.
+                    </p>
+                </div>
+            @endif
+
+            <form method="POST" action="{{ route('siswa.aturan.konfirmasi') }}"
+                  class="rounded-2xl border border-slate-200/90 bg-slate-50/70 p-4 sm:p-5 space-y-4">
+                @csrf
+
+                <label for="sudah_dibaca" class="flex items-start gap-3 cursor-pointer select-none">
+                    <input type="checkbox" id="sudah_dibaca" name="sudah_dibaca" value="1" required
+                           class="mt-0.5 h-5 w-5 shrink-0 rounded-md border-slate-300 text-blue-600 focus:ring-blue-500 focus:ring-offset-0 cursor-pointer">
+                    <span class="text-xs font-bold text-slate-900 leading-relaxed">
+                        Saya sudah baca dan memahami seluruh ketentuan pendaftaran di atas, termasuk aturan satu ekstrakurikuler per siswa, token sekali pakai, dan penguncian data setelah pendaftaran dikirim.
+                    </span>
+                </label>
+                @error('sudah_dibaca')
+                    <p class="text-[11px] font-semibold text-rose-600">{{ $message }}</p>
+                @enderror
+
+                <button type="submit"
+                        class="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-blue-600 px-6 py-3.5 text-sm font-bold text-white hover:bg-blue-700 transition shadow-sm shadow-blue-600/30">
+                    <x-icon name="check" class="h-4 w-4" />
+                    <span>{{ $sudahDibaca ? 'Lanjut ke Pemilihan Eskul' : 'Saya Mengerti, Lanjut' }}</span>
+                </button>
+            </form>
         </div>
     </div>
 </div>
