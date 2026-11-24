@@ -32,12 +32,14 @@ class CheckSessionVersion
             $request->session()->invalidate();
             $request->session()->regenerateToken();
 
-            $loginRoute = $user && in_array($user->role, [
-                \App\Enums\Role::ADMIN,
-                \App\Enums\Role::OPERATOR,
-                \App\Enums\Role::PEMBINA,
-                \App\Enums\Role::WALI_KELAS,
-            ], true) ? 'admin.login' : 'login';
+            $loginRoute = 'login';
+            if ($user) {
+                if (in_array($user->role, [\App\Enums\Role::ADMIN, \App\Enums\Role::OPERATOR], true)) {
+                    $loginRoute = 'admin.login';
+                } elseif (in_array($user->role, [\App\Enums\Role::PEMBINA, \App\Enums\Role::WALI_KELAS], true)) {
+                    $loginRoute = 'pembina.login';
+                }
+            }
 
             return redirect()->route($loginRoute)->withErrors([
                 'email' => 'Sesi Anda telah berakhir. Silakan login kembali.',

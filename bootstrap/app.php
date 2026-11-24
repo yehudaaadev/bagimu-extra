@@ -11,11 +11,15 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->redirectGuestsTo(fn (\Illuminate\Http\Request $request) =>
-            $request->is('admin*') || $request->is('pembina*')
-                ? route('pembina.login')
-                : route('siswa.login')
-        );
+        $middleware->redirectGuestsTo(function (\Illuminate\Http\Request $request) {
+            if ($request->is('admin*')) {
+                return route('admin.login');
+            }
+            if ($request->is('pembina*') || $request->is('wali-kelas*')) {
+                return route('pembina.login');
+            }
+            return route('siswa.login');
+        });
 
         $middleware->alias([
             'role' => \App\Http\Middleware\EnsureRole::class,
@@ -24,7 +28,6 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\CheckSessionVersion::class,
             \App\Http\Middleware\SecurityHeaders::class,
             \App\Http\Middleware\CompressResponse::class,
-            \App\Http\Middleware\HandleInertiaRequests::class,
         ]);
 
         // Percayai reverse proxy / load balancer bila dikonfigurasi
@@ -41,7 +44,7 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->render(function (\Illuminate\Database\QueryException $e, \Illuminate\Http\Request $request) {
-            if (! $request->expectsJson()) {
+            if (! $request->expectsJson() && ! in_array($request->method(), ['GET', 'HEAD'], true)) {
                 \Illuminate\Support\Facades\Log::error('Form Database Query Error: ' . $e->getMessage());
                 return back()->withInput()->with('error', 'Terjadi kendala saat menyimpan data. Pastikan semua isian wajib telah lengkap dan data tidak duplikat.');
             }
