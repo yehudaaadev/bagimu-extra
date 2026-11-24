@@ -10,12 +10,32 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700,800&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
     <noscript><link href="https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700,800&display=swap" rel="stylesheet" /></noscript>
+@php
+    $ref = request()->headers->get('referer');
+    $isInternalNav = false;
+    if ($ref) {
+        $refPath = parse_url($ref, PHP_URL_PATH) ?? '';
+        $isInternalNav = str_starts_with($refPath, '/login')
+            || str_starts_with($refPath, '/admin')
+            || str_starts_with($refPath, '/pembina')
+            || str_starts_with($refPath, '/wali-kelas')
+            || str_starts_with($refPath, '/siswa');
+    }
+    $skipSplash = session('tanpa_splash') || $isInternalNav || request()->has('nosplash') || request()->has('keluar') || request()->has('logout');
+@endphp
+    @if($skipSplash)
+    <style>
+        #splash { display: none !important; }
+        #app-content { opacity: 1 !important; transform: none !important; }
+    </style>
+    @else
     <link rel="stylesheet" href="{{ asset('splash.css') }}">
     <style>
         #app-content { opacity: 0; }
         #app-content.show { animation: muncul .7s ease forwards; }
         @keyframes muncul { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
     </style>
+    @endif
     <noscript>
         <style>
             #splash { display: none !important; }
@@ -40,6 +60,7 @@
     $splashLogo = $logoSetting ? (str_starts_with($logoSetting, 'http') ? $logoSetting : asset(ltrim($logoSetting, '/'))) : asset('logo.png');
 @endphp
 
+@if(!$skipSplash)
 <!-- ====== SPLASH SCREEN ====== -->
 <div id="splash" role="status" aria-label="Memuat aplikasi">
   <div class="sp-badge"><img src="{{ $splashLogo }}" alt="Logo {{ $sekolah }}" style="object-fit: contain; padding: 12px;" onerror="this.onerror=null; this.src='{{ asset('logo.png') }}';"></div>
@@ -49,6 +70,7 @@
   <div class="sp-pct"><b id="sp-num">1</b>%</div>
 </div>
 <!-- =========================== -->
+@endif
 
 <div id="app-content" class="w-full max-w-7xl mx-auto space-y-10 px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
     {{-- Top Navbar Mini --}}
@@ -416,6 +438,7 @@
     </div>
 </div>
 
+@if(!$skipSplash)
 <script src="{{ asset('splash.js') }}"></script>
 <script>
     document.addEventListener('splash:selesai', function () {
@@ -425,5 +448,6 @@
         }
     });
 </script>
+@endif
 </body>
 </html>
