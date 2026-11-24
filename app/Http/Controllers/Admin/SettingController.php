@@ -85,7 +85,15 @@ class SettingController extends Controller
             AppSetting::set($key, (string) ($data[$input] ?? ''));
         }
 
+        $logoLama = AppSetting::get('school.logo');
+
         if ($request->boolean('reset_logo')) {
+            if ($logoLama && str_starts_with($logoLama, '/uploads/')) {
+                $pathLama = public_path(ltrim($logoLama, '/'));
+                if (is_file($pathLama)) {
+                    @unlink($pathLama);
+                }
+            }
             AppSetting::set('school.logo', '');
         } elseif ($request->hasFile('school_logo_file')) {
             $file = $request->file('school_logo_file');
@@ -99,6 +107,14 @@ class SettingController extends Controller
                 mkdir($destDir, 0755, true);
             }
             $file->move($destDir, $filename);
+
+            if ($logoLama && str_starts_with($logoLama, '/uploads/')) {
+                $pathLama = public_path(ltrim($logoLama, '/'));
+                if (is_file($pathLama)) {
+                    @unlink($pathLama);
+                }
+            }
+
             AppSetting::set('school.logo', '/uploads/' . $filename);
         } elseif ($request->filled('school_logo')) {
             AppSetting::set('school.logo', (string) $data['school_logo']);
