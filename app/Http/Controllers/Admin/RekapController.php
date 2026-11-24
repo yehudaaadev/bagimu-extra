@@ -203,15 +203,46 @@ class RekapController extends Controller
         $allPeriodes = Periode::orderByDesc('periode')->get();
         $activePeriode = $allPeriodes->firstWhere('status', PeriodeStatus::DIBUKA);
         $periode = $request->query('periode') ?: ($activePeriode?->periode ?: $allPeriodes->first()?->periode);
+        $periodeModel = $allPeriodes->firstWhere('periode', $periode);
 
-        $registrations = Registration::with(['user', 'student', 'kehadiran'])
+        $registrations = Registration::with([
+            'user',
+            'student',
+            'kehadiran' => function ($q) use ($periodeModel) {
+                if ($periodeModel) {
+                    if ($periodeModel->tgl_mulai && $periodeModel->tgl_selesai) {
+                        $q->whereBetween('tanggal', [
+                            $periodeModel->tgl_mulai->toDateString(),
+                            $periodeModel->tgl_selesai->toDateString(),
+                        ]);
+                    } elseif (preg_match('/(\d{4})\/(\d{4})/', $periodeModel->periode, $m)) {
+                        $q->whereBetween('tanggal', ["{$m[1]}-07-01", "{$m[2]}-06-30"]);
+                    } elseif (preg_match('/^\d{4}$/', $periodeModel->periode)) {
+                        $q->whereBetween('tanggal', ["{$periodeModel->periode}-01-01", "{$periodeModel->periode}-12-31"]);
+                    }
+                }
+            },
+        ])
             ->when($periode, fn ($q) => $q->where('periode', $periode))
             ->orderBy('eskul_utama')
             ->orderBy('kelas')
             ->orderBy('nis')
             ->get();
 
-        $eskuls = Eskul::with(['pembina', 'pertemuans'])->orderBy('name')->get();
+        $eskuls = Eskul::with(['pembina', 'pertemuans' => function ($q) use ($periodeModel) {
+            if ($periodeModel) {
+                if ($periodeModel->tgl_mulai && $periodeModel->tgl_selesai) {
+                    $q->whereBetween('tanggal', [
+                        $periodeModel->tgl_mulai->toDateString(),
+                        $periodeModel->tgl_selesai->toDateString(),
+                    ]);
+                } elseif (preg_match('/(\d{4})\/(\d{4})/', $periodeModel->periode, $m)) {
+                    $q->whereBetween('tanggal', ["{$m[1]}-07-01", "{$m[2]}-06-30"]);
+                } elseif (preg_match('/^\d{4}$/', $periodeModel->periode)) {
+                    $q->whereBetween('tanggal', ["{$periodeModel->periode}-01-01", "{$periodeModel->periode}-12-31"]);
+                }
+            }
+        }])->orderBy('name')->get();
         $regByEskul = $registrations->groupBy('eskul_utama');
 
         // Sheet 1: Ringkasan Kesiswaan

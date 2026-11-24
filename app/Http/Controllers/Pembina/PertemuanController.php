@@ -206,7 +206,24 @@ class PertemuanController extends Controller
         $jamMulai = ! empty($data['jam_mulai']) ? $data['jam_mulai'] : ($jadwalHariIni?->jam_mulai);
         $jamSelesai = ! empty($data['jam_selesai']) ? $data['jam_selesai'] : ($jadwalHariIni?->jam_selesai);
 
-        $nomor = ((int) $eskul->pertemuans()->max('nomor')) + 1;
+        $activePeriode = Periode::where('status', PeriodeStatus::DIBUKA)->orderByDesc('periode')->first()
+            ?? Periode::orderByDesc('periode')->first();
+
+        $pertemuanPeriodeQuery = $eskul->pertemuans();
+        if ($activePeriode) {
+            if ($activePeriode->tgl_mulai && $activePeriode->tgl_selesai) {
+                $pertemuanPeriodeQuery->whereBetween('tanggal', [
+                    $activePeriode->tgl_mulai->toDateString(),
+                    $activePeriode->tgl_selesai->toDateString(),
+                ]);
+            } elseif (preg_match('/(\d{4})\/(\d{4})/', $activePeriode->periode, $m)) {
+                $pertemuanPeriodeQuery->whereBetween('tanggal', ["{$m[1]}-07-01", "{$m[2]}-06-30"]);
+            } elseif (preg_match('/^\d{4}$/', $activePeriode->periode)) {
+                $pertemuanPeriodeQuery->whereBetween('tanggal', ["{$activePeriode->periode}-01-01", "{$activePeriode->periode}-12-31"]);
+            }
+        }
+
+        $nomor = ((int) $pertemuanPeriodeQuery->max('nomor')) + 1;
 
         $pertemuan = $eskul->pertemuans()->create([
             'nomor' => $nomor,
