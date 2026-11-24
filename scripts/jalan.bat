@@ -3,7 +3,7 @@ REM ============================================================
 REM  JALAN.BAT - Menjalankan Bagimu Extra
 REM  Akses: http://localhost:8000
 REM ============================================================
-cd /d "%~dp0"
+cd /d "%~dp0\.."
 
 where php >nul 2>nul
 if errorlevel 1 (

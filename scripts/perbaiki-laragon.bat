@@ -6,7 +6,7 @@ REM  2. Bersihkan cache view/config basi (penyebab error tiap start)
 REM  3. Pastikan database + APP_KEY siap
 REM  Jalankan, lalu RESTART Laragon (Stop All + Start All).
 REM ============================================================
-cd /d "%~dp0"
+cd /d "%~dp0\.."
 setlocal EnableDelayedExpansion
 
 echo == [1/4] Cari php.ini Laragon...

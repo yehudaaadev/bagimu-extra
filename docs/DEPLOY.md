@@ -21,7 +21,7 @@ Cek otomatis kapan saja di server: `php artisan deploy:check` (exit 0 = siap).
 
 ```bash
 cd /var/www && git clone <repo> bagimu && cd bagimu
-cp .env.production.example .env
+cp docs/.env.production.example .env
 nano .env            # isi APP_URL, DB_*, MAIL_*, dsb.
 php artisan key:generate
 composer install --no-dev --optimize-autoloader
@@ -50,7 +50,7 @@ Arahkan document-root web server ke `<path>/public`, lalu buka `https://domain/u
    - Sesuaikan `public_html/index.php`: `$app = require __DIR__.'/../bagimu/bootstrap/app.php';`
      dan path `storage` bila perlu. (Paling aman: gunakan fitur "Addon Domain →
      Document Root = bagimu/public" bila tersedia.)
-3. Buat `.env` dari `.env.production.example`, generate APP_KEY:
+3. Buat `.env` dari `docs/.env.production.example`, generate APP_KEY:
    bila ada SSH: `php artisan key:generate`. Bila tidak ada SSH: generate di laptop
    (`php artisan key:generate --show`), tempel hasilnya.
 4. Database:
@@ -76,7 +76,7 @@ php artisan deploy:check
 php artisan up
 ```
 
-atau cukup `bash deploy.sh`.
+atau cukup `bash scripts/deploy.sh`.
 
 ## 4. Yang TIDAK perlu disiapkan
 

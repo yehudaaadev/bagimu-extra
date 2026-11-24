@@ -13,12 +13,12 @@ Langkah tiap menyalakan laptop:
 1. Buka Laragon → **Start All** → tunggu Apache hijau.
 2. Buka `http://bagimuextra.test`.
 
-> Jalankan `perbaiki-laragon.bat` cukup **1 kali** (atau tiap ada error aneh):
+> Jalankan `scripts/perbaiki-laragon.bat` cukup **1 kali** (atau tiap ada error aneh):
 > mengaktifkan `extension=zip`, membersihkan cache basi, dan migrate database.
 
-## Pilihan B — tanpa Laragon (paling anti-error): `jalan.bat`
+## Pilihan B — tanpa Laragon (paling anti-error): `scripts/jalan.bat`
 
-Klik 2x `jalan.bat` di folder proyek → buka `http://localhost:8000`.
+Klik 2x `scripts/jalan.bat` di folder proyek → buka `http://localhost:8000`.
 Tidak butuh Apache/MySQL Laragon sama sekali (database memakai SQLite).
 
 ## Yang sudah diperbaiki (akar masalah error tiap-start)

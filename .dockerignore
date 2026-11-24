@@ -22,9 +22,9 @@ tests
 .env
 .env.*
 !.env.example
-!.env.production.example
+!docs/.env.production.example
 *.bat
+scripts/
+docs/
 CARA-JALAN-LARAGON.md
-perbaiki-laragon.bat
-jalan.bat
 Demo*.txt

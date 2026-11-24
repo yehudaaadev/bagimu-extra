@@ -3,7 +3,7 @@
 # Cara pakai:  sudo -u www-user ./deploy.sh
 # Berhenti saat ada error.
 set -euo pipefail
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."
 
 echo "[1/7] Mode perawatan..."
 php artisan down --render="errors.maintenance" --with-secret="$(php artisan tinker --execute="echo md5(config('app.key'));" 2>/dev/null | tr -d '[:space:]')" || php artisan down || true
