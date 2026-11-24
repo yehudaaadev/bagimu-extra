@@ -225,4 +225,4 @@ Sistem dilengkapi dengan rangkaian pengujian otomatis yang mencakup seluruh lapi
 
 ## Lisensi
 
-Proyek ini dilisensikan di bawah ketentuan [MIT License](LICENSE).
+Proyek ini dilisensikan di bawah ketentuan [PolyForm Noncommercial License 1.0.0](LICENSE). Kode sumber terbuka untuk dipelajari, digunakan, dimodifikasi, dan dikontribusikan untuk tujuan non-komersial dan pendidikan. **DILARANG KERAS** memperjualbelikan, menyewakan, atau mengomersialisasikan perangkat lunak ini baik sebagian maupun seluruhnya tanpa izin tertulis dari pemegang hak cipta.
