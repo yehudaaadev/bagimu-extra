@@ -247,6 +247,7 @@ class WaBlastController extends Controller
         }
 
         @set_time_limit(300);
+        @ignore_user_abort(true);
 
         $successCount = 0;
         $failCount = 0;
@@ -344,7 +345,7 @@ class WaBlastController extends Controller
             }
 
             if (! app()->runningUnitTests()) {
-                usleep(1500000);
+                usleep(1000000);
             }
         }
 
@@ -430,6 +431,7 @@ class WaBlastController extends Controller
         }
 
         @set_time_limit(300);
+        @ignore_user_abort(true);
 
         $successCount = 0;
         $failCount = 0;
@@ -506,7 +508,7 @@ class WaBlastController extends Controller
             }
 
             if (! app()->runningUnitTests()) {
-                usleep(1500000);
+                usleep(1000000);
             }
         }
 

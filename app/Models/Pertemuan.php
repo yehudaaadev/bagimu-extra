@@ -40,14 +40,29 @@ class Pertemuan extends Model
 
     public function resolveRouteBinding($value, $field = null)
     {
+        if (is_numeric($value)) {
+            $item = static::find($value);
+            if ($item) {
+                return $item;
+            }
+        }
+
         if (preg_match('/(?:pertemuan[-_\s]*)?(\d+)/i', (string) $value, $m)) {
             $nomor = (int) $m[1];
-            $pembinaId = auth()->id();
             $query = static::where('nomor', $nomor);
-            if ($pembinaId) {
-                $query->whereHas('eskul', fn ($q) => $q->where('pembina_id', $pembinaId));
+
+            $user = auth()->user();
+            if ($user && $user->role === \App\Enums\Role::PEMBINA) {
+                $query->whereHas('eskul', fn ($q) => $q->where('pembina_id', $user->id));
             }
-            $found = $query->first();
+
+            $eskulParam = request()->route('eskul');
+            $eskulId = is_object($eskulParam) ? ($eskulParam->id ?? null) : (is_numeric($eskulParam) ? (int) $eskulParam : request('eskul_id'));
+            if ($eskulId) {
+                $query->where('eskul_id', $eskulId);
+            }
+
+            $found = $query->latest('id')->first();
             if ($found) {
                 return $found;
             }
@@ -67,10 +82,10 @@ class Pertemuan extends Model
             return true;
         }
 
-        // Otomatis sah/terkunci jika hari ini dan waktu sekarang sudah mencapai atau melewati jam_selesai
+        // Otomatis sah/terkunci jika hari ini dan waktu sekarang sudah mencapai atau melewati jam_selesai + toleransi 60 menit
         if ($this->tanggal && $this->tanggal->isToday() && $this->jam_selesai) {
-            $nowTime = now()->format('H:i');
-            if ($nowTime >= $this->jam_selesai) {
+            $batasKunci = \Illuminate\Support\Carbon::parse($this->tanggal->toDateString() . ' ' . $this->jam_selesai)->addMinutes(60);
+            if (now()->gte($batasKunci)) {
                 return true;
             }
         }
@@ -152,18 +167,24 @@ class Pertemuan extends Model
             $mulai = $this->jam_mulai ?? null;
             $selesai = $this->jam_selesai ?? null;
 
-            if ($mulai && $nowTime < $mulai) {
-                return [
-                    'buka' => false,
-                    'pesan' => "Presensi belum dibuka. Pertemuan {$this->nomor} baru dimulai pukul {$mulai} (saat ini pukul {$nowTime}).",
-                ];
+            if ($mulai) {
+                $batasBuka = \Illuminate\Support\Carbon::parse($tanggal->toDateString() . ' ' . $mulai)->subMinutes(30);
+                if (now()->lt($batasBuka)) {
+                    return [
+                        'buka' => false,
+                        'pesan' => "Presensi belum dibuka. Pertemuan {$this->nomor} baru dapat dipindai mulai pukul {$batasBuka->format('H:i')} (30 menit sebelum latihan dimulai pukul {$mulai}).",
+                    ];
+                }
             }
 
-            if ($selesai && $nowTime > $selesai) {
-                return [
-                    'buka' => false,
-                    'pesan' => "Presensi telah ditutup. Sesi Pertemuan {$this->nomor} berakhir pada pukul {$selesai}.",
-                ];
+            if ($selesai) {
+                $batasTutup = \Illuminate\Support\Carbon::parse($tanggal->toDateString() . ' ' . $selesai)->addMinutes(60);
+                if (now()->gte($batasTutup)) {
+                    return [
+                        'buka' => false,
+                        'pesan' => "Presensi telah ditutup. Sesi Pertemuan {$this->nomor} berakhir pada pukul {$selesai} (toleransi presensi hingga {$batasTutup->format('H:i')}).",
+                    ];
+                }
             }
         } elseif ($tanggal && $tanggal->isFuture()) {
             return [
