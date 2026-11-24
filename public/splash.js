@@ -44,7 +44,4 @@
     }
   }
   setTimeout(ketik, 700);
-
-  /* tombol "back" browser → splash tampil lagi */
-  window.addEventListener('pageshow', function (e) { if (e.persisted) location.reload(); });
 })();
