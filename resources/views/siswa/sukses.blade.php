@@ -637,7 +637,7 @@
 @endphp
 
 <div class="space-y-6 w-full max-w-2xl mx-auto py-4 sm:py-6" x-data="{
-    countdown: 10,
+    countdown: 30,
     timer: null,
     init() {
         this.timer = setInterval(() => {
@@ -791,26 +791,33 @@
                 Pendaftaran berhasil! Token sekali pakai telah tuntas digunakan.
             </p>
             <div class="flex items-center justify-center gap-1.5 font-black text-blue-700 text-2xl font-mono">
-                <span x-text="countdown">10</span>
+                <span x-text="countdown">30</span>
                 <span class="text-xs uppercase font-sans font-bold text-blue-600">detik</span>
             </div>
             <p class="text-[11px] font-medium text-slate-500">
-                Sesi login otomatis berakhir dalam hitungan mundur di atas. Silakan buka kartu permanen Anda melalui tombol di bawah untuk mengunduh PDF, PNG, atau mencetak kartu kapan saja.
+                Sesi login otomatis berakhir dalam hitungan mundur di atas demi keamanan data. Silakan unduh kartu peserta Anda dalam format PDF atau gambar PNG sebelum sesi ditutup.
             </p>
         </div>
 
         {{-- Tombol Aksi (No-Print) --}}
         <div class="no-print space-y-2.5 pt-1">
-            <a href="{{ route('siswa.kartu.public', $nisValue) }}" target="_blank"
-               class="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-blue-600 hover:bg-blue-700 px-5 py-3.5 text-xs sm:text-sm font-bold text-white transition shadow-md shadow-blue-600/20 active:scale-[0.99] cursor-pointer">
-                <x-icon name="arrow-up-right" class="h-4 w-4 text-white" />
-                <span>Buka Kartu Peserta (Cetak / Unduh PDF &amp; PNG)</span>
-            </a>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <button type="button" onclick="unduhKartuPdf()"
+                        class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 px-4 py-3 text-xs sm:text-sm font-bold text-white transition shadow-sm active:scale-[0.99] cursor-pointer">
+                    <x-icon name="arrow-down-tray" class="h-4 w-4 text-white" />
+                    <span>Unduh Dokumen PDF (ID-1)</span>
+                </button>
+                <button type="button" onclick="unduhKartuPng()"
+                        class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-slate-800 hover:bg-slate-900 px-4 py-3 text-xs sm:text-sm font-bold text-white transition shadow-sm active:scale-[0.99] cursor-pointer">
+                    <x-icon name="photo" class="h-4 w-4 text-white" />
+                    <span>Unduh Gambar (PNG)</span>
+                </button>
+            </div>
 
             <form id="logout-form" method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit" class="w-full rounded-2xl border border-slate-200 bg-white px-5 py-2.5 text-xs sm:text-sm font-semibold text-slate-700 hover:bg-slate-50 transition shadow-2xs cursor-pointer">
-                    Keluar Sekarang
+                    Selesai &amp; Keluar Sesi
                 </button>
             </form>
         </div>

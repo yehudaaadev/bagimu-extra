@@ -120,17 +120,14 @@ class KartuPesertaTest extends TestCase
         $response->assertSee('Wisma Remaja Putri SMK Bagimu Negeriku');
     }
 
-    public function test_kartu_publik_tanpa_login_menampilkan_biodata(): void
+    public function test_jalur_kartu_publik_tanpa_login_ditutup_demi_keamanan(): void
     {
         $this->periodeTerbuka();
         $siswa = $this->masterSiswa('1011916', Gender::PEREMPUAN);
         $user = $this->akunSiswa($siswa);
         $this->daftar($user, $siswa, Gender::PEREMPUAN);
 
-        $response = $this->get('/siswa/kartu/1011916')->assertOk();
-        $response->assertSee('Vines Fernando Akbar');
-        $response->assertSee('Wisma Remaja Putri SMK Bagimu Negeriku');
-        $response->assertSee(Barcode::modules('1011916'), false);
+        $this->get('/siswa/kartu/1011916')->assertNotFound();
     }
 
     public function test_pendaftaran_tidak_memaksa_jenis_kelamin_laki_laki(): void

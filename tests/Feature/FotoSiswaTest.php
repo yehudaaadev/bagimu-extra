@@ -147,7 +147,7 @@ class FotoSiswaTest extends TestCase
         $this->bersihkanFoto($siswa);
     }
 
-    public function test_siswa_tanpa_foto_tetap_bisa_lanjut_dan_kartu_publik_terbit(): void
+    public function test_siswa_tanpa_foto_tetap_bisa_lanjut_dan_kartu_terbit(): void
     {
         $this->periodeTerbuka();
         [$siswa, $user] = $this->siswaDanAkun('1011917');
@@ -163,19 +163,20 @@ class FotoSiswaTest extends TestCase
         $this->assertNull($siswa->fresh()->foto);
     }
 
-    public function test_kartu_publik_menampilkan_nama_jika_tidak_ada_foto(): void
+    public function test_kartu_sukses_menampilkan_nama_jika_tidak_ada_foto(): void
     {
         $this->periodeTerbuka();
         [$siswa, $user] = $this->siswaDanAkun('1011917');
         $this->registrasiLangsung($user, $siswa, Gender::LAKI_LAKI);
 
-        $this->get('/siswa/kartu/1011917')
+        $this->actingAs($user)
+            ->get('/siswa/sukses')
             ->assertOk()
             ->assertSee($siswa->nama)
             ->assertSee('card-photo-name', false);
     }
 
-    public function test_kartu_publik_menampilkan_foto_dengan_posisi_tersimpan(): void
+    public function test_kartu_sukses_menampilkan_foto_dengan_posisi_tersimpan(): void
     {
         $this->periodeTerbuka();
         [$siswa, $user] = $this->siswaDanAkun('1011919');
@@ -186,7 +187,8 @@ class FotoSiswaTest extends TestCase
         ]);
         $this->registrasiLangsung($user, $siswa, Gender::LAKI_LAKI);
 
-        $this->get('/siswa/kartu/1011919')
+        $this->actingAs($user)
+            ->get('/siswa/sukses')
             ->assertOk()
             ->assertSee('/uploads/siswa/preview.jpg', false)
             ->assertSee('--foto-x: 12%', false)
