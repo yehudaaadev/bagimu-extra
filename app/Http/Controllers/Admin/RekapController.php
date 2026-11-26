@@ -280,8 +280,6 @@ class RekapController extends Controller
         $i = 1;
         foreach ($registrations as $r) {
             $nama = $r->student?->nama ?: ($r->user?->name ?: '-');
-            $gender = $r->gender?->value ?: ($r->student?->gender?->value ?: '-');
-            $genderLabel = in_array($gender, ['L', 'LAKI_LAKI']) ? 'Laki-laki' : (in_array($gender, ['P', 'PEREMPUAN']) ? 'Perempuan' : '-');
             $kelas = $r->kelas ?: ($r->student?->kelas ?: '-');
             $wa = $r->whatsapp ?: ($r->student?->whatsapp ?: '-');
 
@@ -289,7 +287,6 @@ class RekapController extends Controller
                 $i++,
                 $r->nis,
                 $nama,
-                $genderLabel,
                 $kelas,
                 $wa,
                 $r->eskul_utama,
@@ -373,7 +370,7 @@ class RekapController extends Controller
                 'rows' => $sheet1Rows,
             ],
             'Data Pendaftar' => [
-                'headers' => ['No', 'NIS', 'Nama Siswa', 'L/P', 'Kelas Rombel', 'WhatsApp Siswa', 'Ekstrakurikuler Pilihan', 'Tahun Periode', 'Status Pendaftaran', 'Tanggal Mendaftar'],
+                'headers' => ['No', 'NIS', 'Nama Siswa', 'Kelas Rombel', 'WhatsApp Siswa', 'Ekstrakurikuler Pilihan', 'Tahun Periode', 'Status Pendaftaran', 'Tanggal Mendaftar'],
                 'rows' => $sheet2Rows,
             ],
             'Rekap Presensi' => [

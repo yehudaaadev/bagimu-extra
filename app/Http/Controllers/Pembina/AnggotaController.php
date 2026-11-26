@@ -192,7 +192,7 @@ class AnggotaController extends Controller
         $output .= '<p><strong>Tahun Ajaran:</strong> ' . e($selectedPeriode) . ' | <strong>Pembina:</strong> ' . e($me->name) . '</p>';
         $output .= '<table border="1" cellpadding="5" cellspacing="0">';
         $output .= '<tr style="background-color: #1e3a8a; color: #ffffff; font-weight: bold;">';
-        $output .= '<th>No</th><th>NIS</th><th>Nama Lengkap</th><th>L/P</th><th>Kelas</th><th>WhatsApp</th><th>Hadir</th><th>Tidak Hadir (Izin/Sakit/Alpa)</th><th>Total Pertemuan</th><th>Nilai Angka</th><th>Predikat</th><th>Catatan Rapor</th>';
+        $output .= '<th>No</th><th>NIS</th><th>Nama Lengkap</th><th>Kelas</th><th>WhatsApp</th><th>Hadir</th><th>Tidak Hadir (Izin/Sakit/Alpa)</th><th>Total Pertemuan</th><th>Nilai Angka</th><th>Predikat</th><th>Catatan Rapor</th>';
         $output .= '</tr>';
 
         $no = 1;
@@ -209,7 +209,6 @@ class AnggotaController extends Controller
             $output .= '<td align="center">' . $no++ . '</td>';
             $output .= '<td style="mso-number-format:\'@\';">' . e($reg->nis) . '</td>';
             $output .= '<td>' . e($student?->nama ?: ($reg->user?->name ?: '-')) . '</td>';
-            $output .= '<td align="center">' . e($reg->gender?->value ?: ($student?->gender?->value ?: '-')) . '</td>';
             $output .= '<td>' . e($reg->kelas ?: ($student?->kelas ?: '-')) . '</td>';
             $output .= '<td style="mso-number-format:\'@\';">' . e($reg->whatsapp ?: ($student?->whatsapp ?: '-')) . '</td>';
             $output .= '<td align="center">' . $hadir . '</td>';

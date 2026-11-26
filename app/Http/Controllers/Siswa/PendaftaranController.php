@@ -136,12 +136,10 @@ class PendaftaranController extends Controller
             'semuaJadwal' => $semuaJadwal,
             'pilihanAwal' => $pilihanAwal,
             'jurusans' => Jurusan::cases(),
-            'genders' => Gender::cases(),
             'windowOpen' => $windowOpen,
             'windowLabel' => $window?->label() ?? 'Jendela belum diatur admin — pendaftaran ditutup.',
             'fotoAwal' => $user->student?->foto,
             'fotoPosisi' => $user->student?->fotoPosisi() ?? ['x' => 50, 'y' => 50],
-            'genderAwal' => $user->student?->gender?->value,
         ]);
     }
 
@@ -169,7 +167,6 @@ class PendaftaranController extends Controller
                         $fail('Eskul tidak tersedia.');
                     }
                 }],
-            'gender' => ['nullable', Rule::enum(Gender::class)],
             'foto' => ['nullable', 'image', 'mimes:png,jpg,jpeg,webp', 'max:2048'],
             'foto_x' => ['nullable', 'integer', 'min:0', 'max:100'],
             'foto_y' => ['nullable', 'integer', 'min:0', 'max:100'],
@@ -235,18 +232,12 @@ class PendaftaranController extends Controller
                 $wa = $request->input('whatsapp') ?? $master->whatsapp;
 
                 // Foto & data siswa disinkronkan ke master bila ada perubahan.
-                $genderInput = $request->input('gender');
-                $gender = $genderInput ? (Gender::tryFrom($genderInput) ?? $master?->gender) : $master?->gender;
                 if ($master) {
-                    $masterUpdate = [
+                    $master->update([
                         'foto' => $this->simpanFoto($master, $request->file('foto')),
                         'foto_x' => (int) ($request->input('foto_x') ?? $master->foto_x ?? 50),
                         'foto_y' => (int) ($request->input('foto_y') ?? $master->foto_y ?? 50),
-                    ];
-                    if ($gender) {
-                        $masterUpdate['gender'] = $gender;
-                    }
-                    $master->update($masterUpdate);
+                    ]);
                 }
 
                 $waliKelasNama = $request->input('nama_wali_kelas')
@@ -262,8 +253,8 @@ class PendaftaranController extends Controller
                     'nis' => $master->nis,
                     'no_absen' => $request->input('no_absen') ?? $master->no_absen ?? 1,
                     'nama_wali_kelas' => $waliKelasNama,
-                    'usia' => $request->input('usia') ?? 16,
-                    'gender' => $gender,
+                    'usia' => null,
+                    'gender' => null,
                     'whatsapp' => $wa,
                     'eskul_utama' => $dipakai,
                     'eskul_cadangan' => null,

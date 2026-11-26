@@ -69,8 +69,6 @@
                     <th class="py-2 px-3 hidden xl:table-cell">Email</th>
                     <th class="py-2 px-3">Kelas</th>
                     <th class="py-2 px-3">Jurusan</th>
-                    <th class="py-2 px-3">Gender</th>
-                    <th class="py-2 px-3">Usia</th>
                     <th class="py-2 px-3">Eskul</th>
                     <th class="py-2 px-3">Periode</th>
                     <th class="py-2 px-3">Aksi</th>
@@ -87,8 +85,6 @@
                         <td class="py-2 px-3 hidden xl:table-cell text-slate-600">{{ $r->user?->email ?? '-' }}</td>
                         <td class="py-2 px-3">{{ $r->kelas }}</td>
                         <td class="py-2 px-3">{{ $r->jurusan?->short() ?? '-' }}</td>
-                        <td class="py-2 px-3">{{ $r->gender?->label() ?? '-' }}</td>
-                        <td class="py-2 px-3">{{ $r->usia }}</td>
                         <td class="py-2 px-3">{{ $r->eskul_utama }}</td>
                         <td class="py-2 px-3">{{ $r->periode }}</td>
                         <td class="py-2 px-3">

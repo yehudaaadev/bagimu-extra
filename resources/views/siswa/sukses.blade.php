@@ -617,14 +617,8 @@
     $brandInstansi = \App\Models\AppSetting::get('school.instansi', '');
     $brandJudul = 'Kartu Peserta Ekstrakurikuler';
     $schoolSlogan = '4B Berbudi, Berkualitas, Berdaya, Berhasil';
-    $genderEnum = $student?->gender ?? $registration?->gender;
-    $genderValue = $genderEnum?->short() ?? '-';
     $tanggalDaftar = $registration?->created_at?->translatedFormat('d F Y') ?? '-';
-    $alamatWisma = match ($genderEnum?->value) {
-        'LAKI_LAKI' => 'Wisma Remaja Putra ' . $schoolName,
-        'PEREMPUAN' => 'Wisma Remaja Putri ' . $schoolName,
-        default => 'Wisma Remaja ' . $schoolName,
-    };
+    $alamatWisma = 'Wisma Remaja ' . $schoolName;
     $barcodeModules = \App\Support\Barcode::modules($nisValue);
     $kepsekNama = \App\Models\AppSetting::get('school.kepsek', 'Daniel Setyo Wibowo, S.Pd.');
     $tanggalKepsek = $periode?->tgl_mulai
@@ -846,7 +840,6 @@ function renderKartuCanvas(callback) {
     const nama = '{{ addslashes($namaValue) }}';
     const inisialNama = '{{ addslashes($inisialNama) }}';
     const tanggalDaftar = '{{ addslashes($tanggalDaftar) }}';
-    const genderValue = '{{ addslashes($genderValue) }}';
     const alamatWisma = '{{ addslashes($alamatWisma) }}';
     const kelasValue = '{{ addslashes($kelasValue) }}';
     const jurusanValue = '{{ addslashes($jurusanValue) }}';

@@ -38,15 +38,6 @@
                 @endforeach
             </select>
         </div>
-        <div>
-            <label class="block text-sm font-medium mb-1">Jenis Kelamin</label>
-            <select name="gender" class="w-full border rounded px-3 py-2 text-sm">
-                <option value="">— Pilih —</option>
-                @foreach ($genderList as $g)
-                    <option value="{{ $g->value }}" @selected(old('gender') === $g->value)>{{ $g->label() }}</option>
-                @endforeach
-            </select>
-        </div>
     </div>
     <div class="flex gap-2">
         <button class="px-4 py-2 rounded bg-blue-600 text-white text-sm hover:bg-blue-700">Simpan</button>

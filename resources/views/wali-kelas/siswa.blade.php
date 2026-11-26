@@ -192,7 +192,6 @@
                         <th class="py-2.5 px-3 text-center">No</th>
                         <th class="py-2.5 px-4 text-left">NIS</th>
                         <th class="py-2.5 px-4 text-left">Nama Siswa</th>
-                        <th class="py-2.5 px-4 text-center">L/P</th>
                         <th class="py-2.5 px-4 text-left">Ekstrakurikuler Diikuti</th>
                         <th class="py-2.5 px-4 text-center">Status</th>
                         <th class="py-2.5 px-4 text-center">Aksi</th>
@@ -211,7 +210,6 @@
                             <td class="py-2.5 px-3 text-center font-bold text-slate-400">{{ $s->no_absen ?? ($index + 1) }}</td>
                             <td class="py-2.5 px-4 font-mono font-bold text-slate-800">{{ $s->nis }}</td>
                             <td class="py-2.5 px-4 font-semibold text-slate-900">{{ $s->nama }}</td>
-                            <td class="py-2.5 px-4 text-center font-bold text-slate-600">{{ $s->gender?->short() ?? '-' }}</td>
                             <td class="py-2.5 px-4">
                                 @if ($reg)
                                     <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full font-bold bg-blue-100 text-blue-800 text-[11px]">
@@ -344,7 +342,6 @@
                                 <tr>
                                     <th class="py-2 px-3 text-left">NIS</th>
                                     <th class="py-2 px-3 text-left">Nama Siswa</th>
-                                    <th class="py-2 px-3 text-center">L/P</th>
                                     <th class="py-2 px-3 text-left">Kelas Saat Ini</th>
                                     <th class="py-2 px-3 text-center">Pilih</th>
                                 </tr>
@@ -354,7 +351,6 @@
                                     <tr class="hover:bg-blue-50/40 transition-colors" :class="selected.includes(s.id) ? 'bg-blue-50/60 font-semibold' : ''">
                                         <td class="py-2 px-3 font-mono font-bold text-slate-800" x-text="s.nis"></td>
                                         <td class="py-2 px-3 text-slate-900" x-text="s.nama"></td>
-                                        <td class="py-2 px-3 text-center text-slate-500 font-bold" x-text="s.gender ? (s.gender.value ? s.gender.value[0] : s.gender[0]) : '-'"></td>
                                         <td class="py-2 px-3">
                                             <span x-show="s.kelas" class="inline-flex items-center px-2 py-0.5 rounded-md font-semibold bg-slate-100 text-slate-600 text-[10px]" x-text="s.kelas"></span>
                                             <span x-show="!s.kelas" class="inline-flex items-center px-2 py-0.5 rounded-md font-semibold bg-amber-50 text-amber-700 text-[10px]">Belum Ada Kelas</span>
@@ -365,7 +361,7 @@
                                     </tr>
                                 </template>
                                 <tr x-show="filteredList.length === 0">
-                                    <td colspan="5" class="py-8 text-center text-slate-400">
+                                    <td colspan="4" class="py-8 text-center text-slate-400">
                                         Tidak ada data siswa yang cocok dengan filter atau pencarian.
                                     </td>
                                 </tr>

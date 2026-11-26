@@ -763,7 +763,6 @@
                             <tr>
                                 <th class="py-2 px-3 text-left">NIS</th>
                                 <th class="py-2 px-3 text-left">Nama Siswa</th>
-                                <th class="py-2 px-3 text-center">L/P</th>
                                 <th class="py-2 px-3 text-left">Kelas</th>
                                 <th class="py-2 px-3 text-center w-12">Pilih</th>
                             </tr>
@@ -773,7 +772,6 @@
                                 <tr class="hover:bg-blue-50/40 transition-colors" :class="selected.includes(s.id) ? 'bg-blue-50/60 font-semibold' : ''">
                                     <td class="py-2 px-3 font-mono font-bold text-slate-800" x-text="s.nis"></td>
                                     <td class="py-2 px-3 text-slate-900" x-text="s.nama"></td>
-                                    <td class="py-2 px-3 text-center text-slate-500 font-bold" x-text="s.gender ? (s.gender.value ? s.gender.value[0] : s.gender[0]) : '-'"></td>
                                     <td class="py-2 px-3">
                                         <span x-show="s.kelas" class="inline-flex items-center px-2 py-0.5 rounded-md font-semibold bg-slate-100 text-slate-600 text-[10px]" x-text="s.kelas"></span>
                                         <span x-show="!s.kelas" class="inline-flex items-center px-2 py-0.5 rounded-md font-semibold bg-amber-50 text-amber-700 text-[10px]">Belum Ada Kelas</span>
@@ -784,7 +782,7 @@
                                 </tr>
                             </template>
                             <tr x-show="filteredList.length === 0">
-                                <td colspan="5" class="py-8 text-center text-slate-400">
+                                <td colspan="4" class="py-8 text-center text-slate-400">
                                     Tidak ada data calon siswa yang cocok dengan filter atau pencarian.
                                 </td>
                             </tr>

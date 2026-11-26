@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('nama_wali_kelas', 100)->nullable();
             $table->string('nis', 20)->nullable();
             $table->string('jurusan', 10);
-            $table->unsignedInteger('usia');
+            $table->unsignedInteger('usia')->nullable();
             $table->string('gender', 15);
             $table->string('whatsapp', 20)->nullable();
             $table->string('eskul_utama', 100);

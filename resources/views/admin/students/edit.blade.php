@@ -84,15 +84,6 @@
             </select>
         </div>
         <div>
-            <label class="block text-sm font-medium mb-1 text-slate-700">Jenis Kelamin</label>
-            <select name="gender" class="w-full border-slate-300 rounded-xl px-3 py-2 text-sm">
-                <option value="">— Pilih —</option>
-                @foreach ($genderList as $g)
-                    <option value="{{ $g->value }}" @selected(old('gender', $student->gender?->value) === $g->value)>{{ $g->label() }}</option>
-                @endforeach
-            </select>
-        </div>
-        <div>
             <label class="block text-sm font-medium mb-1 text-slate-700">No. Absen</label>
             <input type="number" name="no_absen" value="{{ old('no_absen', $student->no_absen) }}" min="1" class="w-full border-slate-300 rounded-xl px-3 py-2 text-sm">
         </div>

@@ -26,8 +26,6 @@
         <p><span class="text-slate-500">No. Absen:</span> {{ $registration->no_absen ?? '-' }}</p>
         <p><span class="text-slate-500">Wali Kelas:</span> {{ $registration->nama_wali_kelas ?? '-' }}</p>
         <p><span class="text-slate-500">Jurusan:</span> {{ $registration->jurusan?->label() ?? $registration->jurusan }}</p>
-        <p><span class="text-slate-500">Usia:</span> {{ $registration->usia }}</p>
-        <p><span class="text-slate-500">Jenis Kelamin:</span> {{ $registration->gender?->label() ?? '-' }}</p>
         <p><span class="text-slate-500">Tgl Daftar/Ubah:</span> {{ $registration->created_at?->format('d/m/Y H:i') }} / {{ $registration->updated_at?->format('d/m/Y H:i') }}</p>
         <p><span class="text-slate-500">Eskul Pilihan:</span> {{ $registration->eskul_utama }}</p>
         <p class="sm:col-span-2"><span class="text-slate-500">Alasan:</span> {{ $registration->alasan ?? '-' }}</p>
@@ -60,20 +58,9 @@
                 @endforeach
             </select>
         </div>
-        <div><label class="block font-medium text-slate-700 mb-1">Usia</label><input name="usia" type="number" min="13" max="20" value="{{ old('usia', $registration->usia) }}" required class="w-full border-slate-300 rounded-xl"></div>
         <div><label class="block font-medium text-slate-700 mb-1">No. Absen</label><input name="no_absen" type="number" min="1" max="99" value="{{ old('no_absen', $registration->no_absen) }}" required class="w-full border-slate-300 rounded-xl"></div>
         <div><label class="block font-medium text-slate-700 mb-1">Wali Kelas</label><input name="nama_wali_kelas" value="{{ old('nama_wali_kelas', $registration->nama_wali_kelas) }}" class="w-full border-slate-300 rounded-xl"></div>
         <div><label class="block font-medium text-slate-700 mb-1">NIS</label><input name="nis" value="{{ old('nis', $registration->nis) }}" class="w-full border-slate-300 rounded-xl"></div>
-        <div><label class="block font-medium text-slate-700 mb-1">Gender</label>
-            @php
-                $genderVal = old('gender', $registration->gender instanceof \BackedEnum ? $registration->gender->value : (string) ($registration->gender ?? ''));
-            @endphp
-            <select name="gender" class="w-full border-slate-300 rounded-xl">
-                <option value="" @selected($genderVal === '')>Tidak diisi</option>
-                <option value="LAKI_LAKI" @selected($genderVal === 'LAKI_LAKI')>Laki-laki</option>
-                <option value="PEREMPUAN" @selected($genderVal === 'PEREMPUAN')>Perempuan</option>
-            </select>
-        </div>
         <div><label class="block font-medium text-slate-700 mb-1">Eskul Utama</label>
             <select name="eskul_utama" class="w-full border-slate-300 rounded-xl">
                 @foreach ($eskulOptions as $o)

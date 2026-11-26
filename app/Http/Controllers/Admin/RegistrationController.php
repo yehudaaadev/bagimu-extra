@@ -87,7 +87,7 @@ class RegistrationController extends Controller
 
         $query = $this->terapkanFilter(Registration::with('user')->orderByDesc('created_at'), $request, $request->query('periode', $defaultPeriode));
 
-        $headers = ['No', 'Kode Pendaftaran', 'Nama', 'Email', 'NIS', 'Kelas', 'No Absen', 'Wali Kelas', 'Jurusan', 'Jenis Kelamin', 'Usia', 'No WhatsApp', 'Periode', 'Eskul Pilihan', 'Alasan', 'Nilai', 'Predikat', 'Tanggal Daftar'];
+        $headers = ['No', 'Kode Pendaftaran', 'Nama', 'Email', 'NIS', 'Kelas', 'No Absen', 'Wali Kelas', 'Jurusan', 'No WhatsApp', 'Periode', 'Eskul Pilihan', 'Alasan', 'Nilai', 'Predikat', 'Tanggal Daftar'];
 
         $tampilkanToken = true;
 
@@ -107,8 +107,6 @@ class RegistrationController extends Controller
                 $r->no_absen ?? '-',
                 $r->nama_wali_kelas ?? '-',
                 $r->jurusan?->label() ?? '-',
-                $r->gender?->label() ?? '-',
-                $r->usia,
                 $r->whatsapp ?? '-',
                 $r->periode,
                 $r->eskul_utama,
@@ -158,12 +156,10 @@ class RegistrationController extends Controller
         $validated = $request->validate([
             'kelas' => ['required', 'string', 'min:3', 'max:50', 'regex:/^(XII|XI|X|10|11|12)\s+(RPL|KULINER|DKV|TP|TKP)\s*\d{0,2}$/i'],
             'jurusan' => ['required', 'in:RPL,KULINER,DKV,TP,TKP'],
-            'usia' => ['required', 'integer', 'min:13', 'max:20'],
             'whatsapp' => ['nullable', 'string', 'max:20', 'regex:/^(\+?62|08)[\d\s\-().]{7,15}$/'],
             'no_absen' => ['required', 'integer', 'min:1', 'max:99'],
             'nama_wali_kelas' => ['nullable', 'string', 'max:100'],
             'nis' => ['nullable', 'string', 'max:20', 'regex:/^[0-9]+$/'],
-            'gender' => ['nullable', 'in:LAKI_LAKI,PEREMPUAN'],
             'eskul_utama' => ['required', 'string', 'exists:eskuls,name'],
             'alasan' => ['nullable', 'string', 'max:1000'],
         ]);
@@ -180,14 +176,7 @@ class RegistrationController extends Controller
 
         $validated['kelas'] = \App\Support\Kelas::normalisasi($validated['kelas']);
 
-        $genderLama = $registration->gender?->value;
-
         $registration->update($validated);
-
-        // Koreksi jenis kelamin pada form pendaftaran merambat ke master data siswa.
-        if ($genderLama !== ($validated['gender'] ?? null) && $registration->nis) {
-            \App\Models\Student::where('nis', $registration->nis)->update(['gender' => $validated['gender'] ?? null]);
-        }
 
         AdminLog::record('registration.update', 'registration', $registration->id, "Ubah data pendaftaran #{$registration->id}.");
 

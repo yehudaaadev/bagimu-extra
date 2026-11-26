@@ -158,7 +158,6 @@ class StudentController extends Controller
     public function create()
     {
         $jurusanList = Jurusan::cases();
-        $genderList = Gender::cases();
         $kelasList = SchoolClass::query()->get()->sort(function ($a, $b) {
             $ta = Kelas::tingkat($a->nama) ?? 99;
             $tb = Kelas::tingkat($b->nama) ?? 99;
@@ -180,7 +179,7 @@ class StudentController extends Controller
                 ->values();
         }
 
-        return view('admin.students.create', compact('jurusanList', 'genderList', 'kelasList'));
+        return view('admin.students.create', compact('jurusanList', 'kelasList'));
     }
 
     public function store(Request $request)
@@ -194,7 +193,6 @@ class StudentController extends Controller
             'nama' => ['required', 'string', 'max:100'],
             'kelas' => ['required', 'string', 'max:50'],
             'jurusan' => ['required', Rule::enum(Jurusan::class)],
-            'gender' => ['nullable', Rule::enum(Gender::class)],
             'no_absen' => ['nullable', 'integer', 'min:1', 'max:99'],
             'wali_nama' => ['nullable', 'string', 'max:100'],
             'wali_kontak' => ['nullable', 'string', 'max:20', 'regex:/^(\+?62|08)[\d\s\-().]{7,15}$/'],
@@ -226,9 +224,8 @@ class StudentController extends Controller
     public function edit(Student $student)
     {
         $jurusanList = Jurusan::cases();
-        $genderList = Gender::cases();
 
-        return view('admin.students.edit', compact('student', 'jurusanList', 'genderList'));
+        return view('admin.students.edit', compact('student', 'jurusanList'));
     }
 
     public function update(Request $request, Student $student)
@@ -242,7 +239,6 @@ class StudentController extends Controller
             'nama' => ['required', 'string', 'max:100'],
             'kelas' => ['required', 'string', 'min:3', 'max:50', 'regex:/^(XII|XI|X|10|11|12)\s+(RPL|KULINER|DKV|TP|TKP)\s*\d{0,2}$/i'],
             'jurusan' => ['required', Rule::enum(Jurusan::class)],
-            'gender' => ['nullable', Rule::enum(Gender::class)],
             'no_absen' => ['nullable', 'integer', 'min:1', 'max:99'],
             'wali_nama' => ['nullable', 'string', 'max:100'],
             'wali_kontak' => ['nullable', 'string', 'max:20', 'regex:/^(\+?62|08)[\d\s\-().]{7,15}$/'],
@@ -256,8 +252,6 @@ class StudentController extends Controller
         ]);
 
         $nisLama = $student->nis;
-        $genderLama = $student->gender?->value;
-        $genderBaru = $data['gender'] ?? null;
         $alasan = $data['alasan'];
         unset($data['alasan']);
         $data['kelas'] = \App\Support\Kelas::normalisasi($data['kelas']) ?? $data['kelas'];
@@ -280,11 +274,6 @@ class StudentController extends Controller
         // Koreksi NIS merambat ke data pendaftaran.
         if ($nisLama !== $student->nis && $student->user_id) {
             \App\Models\Registration::where('user_id', $student->user_id)->update(['nis' => $student->nis]);
-        }
-
-        // Koreksi jenis kelamin merambat ke seluruh data pendaftaran siswa.
-        if ($genderLama !== $genderBaru && $student->user_id) {
-            \App\Models\Registration::where('user_id', $student->user_id)->update(['gender' => $genderBaru]);
         }
 
         // Status merambat ke akun tertaut.
@@ -687,7 +676,6 @@ class StudentController extends Controller
             'Jurusan',
             'Status Siswa',
             'No. Absen',
-            'Gender',
             'No. WhatsApp',
             'Token Login',
             'Status Eskul',
@@ -712,7 +700,6 @@ class StudentController extends Controller
                 $s->jurusan?->short() ?? (string) $s->jurusan,
                 $s->status,
                 $s->no_absen ?? '',
-                $s->gender?->value ?? '',
                 $wa,
                 $token,
                 $statusEskul,
@@ -769,11 +756,11 @@ class StudentController extends Controller
     {
         $format = strtolower((string) $request->query('format', 'csv'));
 
-        $headers = ['nis', 'nisn', 'nama', 'kelas', 'jurusan', 'gender', 'no_absen'];
+        $headers = ['nis', 'nisn', 'nama', 'kelas', 'jurusan', 'no_absen'];
         $contoh = [
-            ['10001', '0081234567', 'Andi Pratama', '10 RPL 1', 'RPL', 'L', '1'],
-            ['10002', '', 'Citra Ayu', '11 DKV 1', 'DKV', 'P', '2'],
-            ['10003', '', 'Budi Santoso', '10 KULINER 2', 'KULINER', 'L', '3'],
+            ['10001', '0081234567', 'Andi Pratama', '10 RPL 1', 'RPL', '1'],
+            ['10002', '', 'Citra Ayu', '11 DKV 1', 'DKV', '2'],
+            ['10003', '', 'Budi Santoso', '10 KULINER 2', 'KULINER', '3'],
         ];
 
         if ($format === 'xlsx') {
@@ -781,7 +768,7 @@ class StudentController extends Controller
             $sheet = $spreadsheet->getActiveSheet();
             $sheet->setTitle('Siswa');
             $sheet->fromArray([$headers, ...$contoh], null, 'A1', true);
-            foreach (range('A', 'G') as $kolom) {
+            foreach (range('A', 'F') as $kolom) {
                 $sheet->getColumnDimension($kolom)->setAutoSize(true);
             }
 

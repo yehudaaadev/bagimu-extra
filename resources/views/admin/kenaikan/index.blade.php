@@ -79,7 +79,6 @@
                             <th class="py-2.5 px-3 text-center w-12">Naik?</th>
                             <th class="py-2.5 px-4 text-left">NIS</th>
                             <th class="py-2.5 px-4 text-left">Nama Lengkap Siswa</th>
-                            <th class="py-2.5 px-3 text-center">L/P</th>
                             <th class="py-2.5 px-4 text-left">Status Kenaikan</th>
                             <th class="py-2.5 px-4 text-right">Opsi Siswa Keluar</th>
                         </tr>
@@ -99,9 +98,6 @@
                                 </td>
                                 <td class="py-2.5 px-4 font-semibold text-slate-900">
                                     {{ $s->nama }}
-                                </td>
-                                <td class="py-2.5 px-3 text-center font-bold text-slate-600">
-                                    {{ $s->gender?->short() ?? '-' }}
                                 </td>
                                 <td class="py-2.5 px-4">
                                     <span id="label-status-{{ $s->id }}" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">

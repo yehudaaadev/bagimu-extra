@@ -22,7 +22,6 @@
         <p><span class="text-slate-500">Nama:</span> {{ $student->nama }}</p>
         <p><span class="text-slate-500">Kelas:</span> {{ $student->kelas }}</p>
         <p><span class="text-slate-500">Jurusan:</span> {{ $student->jurusan?->label() ?? '-' }}</p>
-        <p><span class="text-slate-500">Jenis Kelamin:</span> {{ $student->gender?->label() ?? '-' }}</p>
         <p><span class="text-slate-500">No. Absen:</span> {{ $student->no_absen ?? '-' }}</p>
         <p><span class="text-slate-500">Akun:</span> {{ $student->user ? '@'.$student->user->username : 'Belum ada' }}</p>
         <p><span class="text-slate-500">Wali:</span> {{ $student->wali_nama ?? '—' }}{{ $student->wali_kontak ? ' • '.$student->wali_kontak : '' }}</p>

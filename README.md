@@ -79,7 +79,7 @@ Antarmuka menerapkan palet warna korporat (*slate*, *blue*, *emerald*, *amber*, 
 ```text
 bagimu-extra-laravel/
 |-- app/
-|   |-- Enums/               Definisi tipe data enum (Role, Jurusan, Gender, Status)
+|   |-- Enums/               Definisi tipe data enum (Role, Jurusan, Status)
 |   |-- Http/Controllers/   Pengendali logika (Admin, Pembina, Siswa, WaliKelas)
 |   |-- Models/              Model Eloquent dan relasi basis data
 |   `-- Support/             Helper sistem (Barcode Code 128, Format Text, Fonnte)
